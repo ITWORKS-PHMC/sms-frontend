@@ -13,16 +13,16 @@
 </head>
 
 <body>
-    <div class="container login">
+    <div class="login">
         <form action="authenticate.php" method="post">
             <h2> Perpetual Help Medical Center - Las Piñas Hospital </h2>
 
             <div class="signin">
-                <input type="login" name="username" placeholder="Username" id="username" required>
+                <input type="login" class="username" name="username" placeholder="Username" id="username" required>
 
-                <input type="password" name="password" placeholder="Password" id="password" required>
+                <input type="password" class="password" name="password" placeholder="Password" id="password" required>
 
-                <input type="submit" value="Login">
+                <input type="submit" class="login-submit" value="Login">
             </div>
         </form>
     </div>

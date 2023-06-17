@@ -1,6 +1,6 @@
 var myText = document.getElementById("message");
 var result = document.getElementById("result");
-var limit = 160;
+var limit = 140;
 result.textContent = 0 + "/" + limit;
 let x = []
 

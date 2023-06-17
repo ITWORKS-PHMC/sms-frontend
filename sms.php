@@ -15,7 +15,6 @@ if (!isset($_SESSION['loggedin'])) {
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
@@ -31,7 +30,7 @@ if (!isset($_SESSION['loggedin'])) {
             <h1>PHMC</h1>
             <a href="home.php"><i class="fas fa-solid fa-house"></i>HOME</a>
             <a href="sms.php"><i class="fas fa-solid fa-message"></i>SMS</a>
-            <a href="search.php"><i class="fa-solid fa-magnifying-glass"></i>SEARCH</a>
+            <a href="contacts.php"><i class="fa-solid fa-address-book"></i>CONTACTS</a>
             <a href="logout.php"><i class="fas fa-sign-out-alt"></i>LOGOUT</a>
         </div>
     </nav>
@@ -48,30 +47,47 @@ if (!isset($_SESSION['loggedin'])) {
             <a href="smsbroadcastsent.php"><button type="button" class="sms button"> Broadcast Sent Messages </button></a>
             <a href="smsbroadcastunsent.php"><button type="button" class="sms button"> Broadcast Unsent Messages </button></a>
         </div>
+      
     </div>
 
+    <div class="vertical-line"></div>
+    
     <div class="container new-message">
-        <h1> Create New Messages </h1>
-        
+        <h1> Create New Messages </h1>   
         <form action="" method="post">
             <div class="contact">
                 <div class="top">
-                    <img src="./img/ph-flag.png" alt="ph-flag"><span class="country">+639</span>
+                    <!-- <img src="./img/ph-flag.png" alt="ph-flag"><span class="country">+639</span> -->
+                    <span class="country">+639</span>
                     <input type="number" name="number" id="contact-input" onKeyPress="if(this.value.length==13) return false;" placeholder="Input number here..">
-                    <button type="button" class="add-button" onclick="addContact()">Add</button>
+                    <button type="button" class="add-button" onclick="addContact()">Add to Recipient</button>
                 </div>
-                <div class='d-flex justify-content-end'>
-                    <a href="smscontacts.php">Contacts</a>
-                </div>
+
+                <a href="contacts.php" class="contacts-button">Contacts</a>
+                
+            </div>
+            
+            <div class="sms-broadcast">
+                <form action="" method="post">
+                    <input type="checkbox" class="checkbox" id="checkbox" name="checkbox"> Broadcast Schedule: </input>
+                    <input type="datetime-local" class="schedule" id="schedule" name="schedule"></input>
+                    <input type="submit" class="submit" value="Submit">
+                    
+                    <div class="broadcasttitle">
+                        <label class="title">  Broadcast Title: </label>
+                        <input type="text" class="titlebox" id="title" name="title"></input>
+                    </div>
+                </form>
             </div>
 
-            <textarea id="message" name="message" rows="5" placeholder="Type something here.." required maxlength="160"></textarea>
-
-            <p id="result"></p>
-
-            <input type="hidden" name="numbers" id="hidden-numbers">
-            <input type="submit" name="submit" placeholder="Send here" value="Send" required>
+            <div class="sms-message">
+                <textarea id="message" name="message" rows="5" placeholder="Type something here.." required maxlength="140"></textarea>
+                <p id="result"></p>
+                <input type="hidden" id="hidden-numbers" name="numbers" >
+                <input type="submit" class="submit" name="submit" placeholder="Send here" value="Send" required>
+            </div>
         </form>
+
 
         <script src="script.js">
             /* attach a submit handler to the form */
@@ -100,6 +116,7 @@ if (!isset($_SESSION['loggedin'])) {
             });
         </script>
 
+
         <?php
         //for input db
         /*
@@ -118,7 +135,6 @@ if (!isset($_SESSION['loggedin'])) {
             $stmt->close();
         }
         */
-
         if (isset($_POST['submit'])) {
             // echo "+639"; 
             $number = $_POST['numbers'];
@@ -127,11 +143,8 @@ if (!isset($_SESSION['loggedin'])) {
             //echo " </fieldset>";
         }
         ?>
-    
     </div>
-
     <!-- <script src="script.js"></script> -->
-
 </body>
 
 </html>

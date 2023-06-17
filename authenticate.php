@@ -18,9 +18,9 @@
             <h2> Perpetual Help Medical Center - Las Piñas Hospital </h2>
 
             <div class="signin">
-                <input type="login" name="username" placeholder="Username" id="username" required>
+            <input type="login" class="username" name="username" placeholder="Username" id="username" required>
 
-                <input type="password" name="password" placeholder="Password" id="password" required>
+            <input type="password" class="password" name="password" placeholder="Password" id="password" required>
                 
                 <?php
                 require_once("./database/connection.php");
@@ -61,8 +61,9 @@
                     // header( "Location: login.php" );
                 }
                 ?>
+                
+            <input type="submit" class="login-submit" value="Login">
 
-                <input type="submit" value="Login">
             </div>
         </form>
     </div>
