@@ -1,9 +1,9 @@
 <?php
-session_start();
-if (!isset($_SESSION['loggedin'])) {
-    header('Location: login.php');
-    exit;
-}
+// session_start();
+// if (!isset($_SESSION['loggedin'])) {
+//     header('Location: login.php');
+//     exit;
+// }
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +22,7 @@ if (!isset($_SESSION['loggedin'])) {
         <div>
             <h1>PHMC</h1>
             <a href="home.php"><i class="fas fa-solid fa-house"></i>HOME</a>
-            <a href="sms.php"><i class="fas fa-solid fa-message"></i>SMS</a>
+            <a href="./sms.html"><i class="fas fa-solid fa-message"></i>SMS</a>
             <a href="contacts.php"><i class="fa-solid fa-address-book"></i>CONTACTS</a>
             <a href="logout.php"><i class="fas fa-sign-out-alt"></i>LOGOUT</a>
         </div>

@@ -1,3 +1,8 @@
+<!-- Programmer: Chasey Larrisse V. Elizarde
+Project: SMS 
+Date: May 8, 2023
+Description: Frontend SMS  -->
+
 <!DOCTYPE html>
 <html lang="en">
 

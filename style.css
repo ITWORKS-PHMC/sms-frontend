@@ -273,15 +273,28 @@ textarea {
   border-radius: 5px;
   gap: 5rem;
 }
-
-
- 
-
-
-
-
-
-
+.container.new-message .sms-message .submit:hover {
+  background-color: #1b4332;
+  color: #eff3f4;
+  transition: background-color 0.2s;
+} 
+.container.new-message .sms-recipient{
+  display: inline-flex;
+  padding: 10px;
+  color: #202020;
+  border: 1.5px solid #b2b2b2;
+  border-radius: 5px;
+  gap: 5rem;
+}
+.container.new-message .sms-recipient.button{
+  /* display: inline-flex;
+  padding: 10px;
+  color: #202020;
+  border: 1.5px solid #b2b2b2;
+  border-radius: 5px;
+  gap: 5rem; */
+  background-color: pink;
+}
 
 
 

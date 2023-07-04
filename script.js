@@ -20,11 +20,14 @@ myText.addEventListener("input",function(){
 });
 
 function addContact() {
-    x.push(document.getElementById("contact-input").value)
-
-    document.getElementById("hidden-numbers").value = x
+    // x.push(document.getElementById("contact-input").value)
+    // document.getElementById("hidden-numbers").value = x
 }
 
 function printContact() {
-    console.log(x)
+    // console.log(x)
 }
+
+
+
+

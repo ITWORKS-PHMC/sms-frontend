@@ -1,11 +1,16 @@
 <?php
+    include("./database/connection.php");
 
-session_start();
-if (!isset($_SESSION['loggedin'])) {
-    header('Location: login.php');
-    exit;
-}
+    $conn = sqlsrv_connect( $serverName, $connectionInfo);
+    if( $conn === false ) {
+        die( print_r( sqlsrv_errors(), true));
+    }
 
+// session_start();
+// if (!isset($_SESSION['loggedin'])) {
+//     header('Location: login.php');
+//     exit;
+// }
 ?>
 
 <!DOCTYPE html>
@@ -37,19 +42,41 @@ if (!isset($_SESSION['loggedin'])) {
         </div>
     </nav>
 
-    <div class="container">
+
+    <div class="container contacts">
         <h1> Contacts </h1>
         <table action="" method="post">
-            <tr>
-                <th> Date/Time of Error </th>
-                <th> Option </th>
-            </tr>
+        <tr>
+            <th> Contact ID </th>
+            <th> Employee Number </th>
+            <th> First Name </th>
+            <th> Middle Name </th>
+            <th> Last Name </th>
+            <th> Phone Number </th>
+        </tr>
 
-            <tr>
-                <th> 5/9/2023 11:41:50 AM </th>
-                <th> <a href="smsunsent.php"><button type="button" class="sms button"> View </button></a> </th>
-            </tr>
+        <?php 
+        $tsql = "SELECT * from contacts";
+        $stmt = sqlsrv_query($conn,$tsql);
 
+        if($stmt == false){
+            echo 'ERROR';
+        }
+
+        while($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)){
+            echo "<tr>";
+            echo "<th>"; echo $obj['contact_id']; echo "</th>"; 
+            echo "<th>"; echo $obj['employee_no']; echo "</th>"; 
+            echo "<th>"; echo $obj['contact_fname']; echo "</th>"; 
+            echo "<th>"; echo $obj['contact_mname']; echo "</th>"; 
+            echo "<th>"; echo $obj['contact_lname']; echo "</th>"; 
+            echo "<th>"; echo $obj['mobile_no']; echo "</th>"; 
+            echo "</tr>";
+        }
+
+        sqlsrv_free_stmt($stmt);
+        sqlsrv_close($conn);
+        ?>
         </table>
     </div>
 
