@@ -4,6 +4,15 @@
 //     header('Location: login.php');
 //     exit;
 // }
+
+ //HandLe AJAX request
+ if( isset($_POST['ajax']) && isset($_POST['checked'])){
+    $checked_arr = $_POST['check'];
+
+echo json_decode($checked_arr);  
+exit;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -61,13 +70,13 @@
     <div class="container new-message">
         <h1> Create New Messages </h1>
         <!-- <form onsubmit="return sendToQueue(event)"> -->
-        <form action="" method="post">
+        <form action="sendToQueue.php" method="post">
             <div class="contact">
                 <div class="top">
                     <span class="country">+63</span>
                     <input type="number" id="recipientInput" name="number"
                         onKeyPress="if(this.value.length==10) return false;" placeholder="Input number here..">
-                    <button type="button" id="addToRecipientBtn" class="add-button">Add to Recipient</button>
+                    <button type="button" class="add-button" onClick="addRecipient()">Add to Recipient</button>
                 </div>
                 <a href="contacts.php" class="contacts-button">Contacts</a>
             </div>
@@ -76,28 +85,27 @@
                 <textarea id="message" name="message" rows="5" placeholder="Type something here.." required
                     maxlength="140"></textarea>
                 <p id="result"></p>
-                <input type="hidden" id="hidden-numbers" name="numbers">
-                <input type="submit" id="submit-msg" class="submit" name="submit-msg" placeholder="Send here"
-                    value="Send" required>
+                <input type="submit" id="submit-msg" class="submit" name="submit-msg" placeholder="Send here" value="Send" required>
             </div>
+            <input type="hidden" id="hidden-numbers" name="hidden-numbers">
         </form>
 
-        <!-- for broadcast -->
-        <!-- <div class="sms-broadcast">
-            <form action="" method="post">
-                <input type="checkbox" class="checkbox" id="checkbox" name="checkbox"> Broadcast Schedule: </input>
-                <input type="datetime-local" class="schedule" id="schedule" name="schedule"></input>
-                <input type="submit" class="broadcast-submit" value="Submit">
-                
-                <div class="broadcasttitle">
-                    <label class="title">  Broadcast Title: </label>
-                    <input type="text" class="titlebox" id="title" name="title"></input>
-                </div>
-            </form>
-        </div> -->
+    <!-- for broadcast -->
+    <!-- <div class="sms-broadcast">
+        <form action="" method="post">
+            <input type="checkbox" class="checkbox" id="checkbox" name="checkbox"> Broadcast Schedule: </input>
+            <input type="datetime-local" class="schedule" id="schedule" name="schedule"></input>
+            <input type="submit" class="broadcast-submit" value="Submit">
+            
+            <div class="broadcasttitle">
+                <label class="title">  Broadcast Title: </label>
+                <input type="text" class="titlebox" id="title" name="broadcast-msg"></input>
+            </div>
+        </form>
+    </div> -->
 
-        <!-- Recipient Table -->
-        <div class="sms-recipient">
+    <!-- Recipient Table -->
+    <div class="sms-recipient">
             <table id="recipientTable">
                 <thead>
                     <tr>
@@ -112,7 +120,6 @@
     <script>
     // Retrieve the required elements
     const recipientInput = document.getElementById("recipientInput");
-    const addToRecipientBtn = document.getElementById("addToRecipientBtn");
     const recipientTableBody = document.getElementById("recipientTableBody");
 
     // Store the recipients
@@ -163,6 +170,11 @@
     // Function to add a recipient
     function addRecipient() {
         const recipientValue = recipientInput.value.trim();
+        let contactNumbers = document.getElementById('hidden-numbers').value
+
+        // Concatenate numbers in hidden-numbers
+        contactNumbers += '+63' + recipientValue + ';'
+        document.getElementById('hidden-numbers').value = contactNumbers
 
         if (recipientValue !== "") {
             const recipient = {
@@ -196,9 +208,6 @@
         renderRecipientTable();
     }
 
-    // Add click event listener to the "Add to Recipient" button
-    addToRecipientBtn.addEventListener("click", addRecipient);
-
     // Add click event listener to the submit button
     submitBtn.addEventListener("click", function() {
         const checkedRecipients = Array.from(document.querySelectorAll('input[name="recipients[]"]:checked'));
@@ -221,41 +230,28 @@
         e.preventDefault();
 
         let contactNums = document.getElementsByClassName("contactNum")
+        let hiddenNumbers =""
         
         let contactNumsArray = [];
         for (let i = 0; i < contactNums.length; i++) {
             // console.log(contactNums[i].innerHTML)
             contactNumsArray.push(contactNums[i].innerHTML)
+            hiddenNumbers += contactNums[i].innerHTML + ';'
         }
+        hiddenNumbers.trimRight(';')
+
+        console.log(hiddenNumbers)
+        document.getElementById('hidden-numbers').value = hiddenNumbers
 
         let dictionary = {
             "contactNumbers": contactNumsArray,
             "message": document.getElementById("message")
         }
-
     
         // console.log(JSON.parse(dictionary))
         console.log(contactNumsArray) //echo phone number
 
-        // AJAX request:
-        // fetch('https://localhost:7277/Sms/QueueMessage', {
-        //     method: 'POST',
-        //     body: JSON.stringify(dictionary)
-        // }).then(response => response.json())
-        //   .then(data => console.log(data))
-        
-        // data: {contactNumsArray : JSON.stringify( contactNumsArray )},
-        // console.log(res + JSON.stringify(contactNumsArray) );
-
-        $.ajax({
-            type:"post",
-            data: {ajax: 1, contactNumsArray : JSON.stringify(contactNumsArray)},
-            dataType: 'json',                
-            success: function(res) {
-                $('#res').text(+ JSON.stringify(contactNumsArray) );
-            }
-        });
-
+        return true
     }
 
     </script>
@@ -287,49 +283,7 @@
         });
     </script>
 
-    <?php
-        // $contactNumArray = json_decode($_POST['contactNumsArray']);
-        // print_r($contactNumArray);
-
-        // if(isset($_POST['ajax']) && isset($_POST['contactNumsArray'])){
-        //     echo $_POST['contactNumsArray'];
-        //     exit;
-        // }
-
-        //HandLe AJAX request
-        if( isset($_POST['ajax']) && isset($_POST['checked'])){
-            $checked_arr = $_POST['check'];
-
-        echo json_decode($checked_arr);  
-        exit;
-        }
-
-        //Database Connection 
-        include("./database/connection.php");
-        $conn = sqlsrv_connect( $serverName, $connectionInfo);
-        if( $conn === false ) {
-             die( print_r( sqlsrv_errors(), true));
-        }
-       
-        function getData(){
-            $data = array();
-            $data[2] = $_POST['number'];
-            $data[3] = $_POST['message'];
-            return $data;    
-        }
-
-        // This is for inserting unregistered numbers to sms_queue table 
-        if(isset($_POST['submit-msg'])){
-            $info = getData();
-            $insert = "INSERT INTO [sms_queue] ([contact_id], [mobile_no],
-            [sms_message]) VALUES ('0', '$info[2]', '$info[3]')";
-        
-            $stmt = sqlsrv_query($conn, $insert);
-            if( $stmt === false ) {
-                die( print_r( sqlsrv_errors(), true));
-           }
-        }
-    ?>
+    
 
     </div>
 </body>
