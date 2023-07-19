@@ -38,3 +38,5 @@ if (isset($_POST['submit-msg'])) {
     header("Location: sms.php");
     die();
 }
+
+?>

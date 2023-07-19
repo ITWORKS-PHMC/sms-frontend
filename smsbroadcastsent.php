@@ -20,9 +20,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
     
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous"> -->
-
-    <link rel="stylesheet" href="style.css">
+   <!-- bootstrap -->
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    
+   <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="loggedin">
@@ -40,7 +41,7 @@
         <div class="menubuttons">
             <h1> Main Menu </h1>
             <a href="sms.php"><button type="button" class="sms button"> Create New Message </button></a>
-            <a href="smsqueued.php"><button type="button" class="sms button"> Queued Messages </button></a>
+            <a href="smsqueued.php"><button type="button" class="sms button"> Queue Messages </button></a>
             <a href="smsinbox.php"><button type="button" class="sms button"> Inbox </button></a>
             <a href="smssent.php"><button type="button" class="sms button"> Sent Messages </button></a>
             <a href="smsunsent.php"><button type="button" class="sms button"> Unsent Messages </button></a>
