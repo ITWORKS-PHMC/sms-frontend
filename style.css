@@ -12,6 +12,10 @@
 
 body {
   background-color: #eff3f4;
+  /* overflow: hidden; */
+  /* height: 100vh;
+  position: relative; */
+  
 }
 
 .navtop {
@@ -21,6 +25,7 @@ body {
   height: 60px;
   width: 100%;
   border: 0;
+  /* position: fixed; */
 }
 .navtop div {
   display: inline-flex;
@@ -72,7 +77,7 @@ body {
   justify-content: space-around;
   gap: 2rem; 
   width: 30%;
-  height: auto;
+  height: 100vh;
   float: left;
   border: 1.5px solid #b2b2b2;
   border-radius: 5px; 
@@ -121,7 +126,6 @@ body {
   border-radius: 5px;
   cursor: pointer;
 }
-
 .menu.contacts .add-button:hover, 
 .menu.contacts .select-button:hover {
   background-color: #1b4332;
@@ -131,39 +135,23 @@ body {
 
 
 
-
-
-
-
-
-
-
-
-
 .container{
   display: inline-flex;
   flex-direction: column;
   flex-wrap: nowrap;
-  justify-content: space-around;
+  justify-content: center;
   gap: 2rem; 
   float: right;
   width: 70%;
-  height: auto;
+  height: 100vh;
   border: 1.5px solid #b2b2b2;
   border-radius: 5px;
-
-
+  /* overflow: scroll; */
 }
 .container h1{
   color:#1b4332;
   text-align: center;
 }
-
-
-
-
-
-
 
 /* SMS  */
 textarea {
@@ -236,7 +224,16 @@ textarea {
   background-color: #1b4332;
   color: #eff3f4;
   transition: background-color 0.2s;
-}   
+} 
+.container.new-message .sms-message{
+    /* display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.5rem;
+    background-color: pink; */
+}
+
+
 .container.new-message .sms-broadcast .schedule{
   display: inline-flex;
   justify-content: flex-start;
@@ -295,7 +292,7 @@ textarea {
   border: 1.5px solid #b2b2b2;
   border-radius: 5px;
   gap: 5rem; */
-  background-color: pink;
+  /* background-color: pink; */
 }
 
 
@@ -308,7 +305,9 @@ td,
 th {
   border: 1px solid #dddddd;
   text-align: left;
-  padding: 8px;
+  padding: 3px;
+  /* word-wrap: break-word; */
+  /* background-color: pink;  */
 }
 tr:nth-child(even) {
   background-color: #dddddd;
@@ -330,5 +329,86 @@ fieldset {
   margin-left: 220px;
   margin-top: 510px;
 }
+
+
+/* alert message */
+#myAlert{
+  visibility: hidden;
+  position:fixed;
+  color: white;
+  border-radius:10px;
+  top:0;
+  right:0;
+  transform: translate(-15px,15px);
+  background: #d62828;
+  border-radius:10px;
+  overflow:hidden
+}
+.myAlert-text-icon{
+  align-items: stretch;
+  box-shadow: 0 1px 1px rgb(10 10 10 / 10%);
+  display: flex;
+  max-width:250px;
+  
+}
+.myAlert-message{
+  align-items: center;
+  display: flex;
+  flex-grow: 1;
+  font-weight: 700;
+  padding: 15px 25px;
+}
+.close{
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background: 0 0;
+    border: none;
+    color: currentColor;
+    font-family: inherit;
+    font-size: 1em;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+   
+}
+#myAlert.show {
+  visibility: visible; 
+}
+
+
+#myAlert.show{
+  animation: show 0.5s forwards;
+}
+
+@keyframes show{
+  0% {
+    transform: translate(-15px,15px) scale(0);
+  }
+  50% {
+    transform: translate(-15px,15px) scale(1.2);
+  }
+  70% {
+    transform: translate(-15px,15px) scale(0.9);
+  }
+  100% {
+    transform: translate(-15px,15px) scale(1);
+  }
+}
+
+#myAlertBar { 
+  height: 2px;
+  background-color: #ddd;
+  color: white;
+}
+#myAlertProgress {
+  background-color: #d62828;
+  width:100%
+}
+
 
 

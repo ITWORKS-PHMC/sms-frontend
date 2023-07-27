@@ -6,37 +6,26 @@ if ($conn === false) {
     die(print_r(sqlsrv_errors(), true));
 }
 
-function getData()
-{
-    $data = array();
-    $data[2] = $_POST['hidden-numbers'];
-    $data[3] = $_POST['message'];
-    return $data;
-}
-
 // This is for inserting unregistered numbers messages to sms_queue table 
-if (isset($_POST['submit-msg'])) {
-    $info = getData();
+if (isset($_POST['data'])) {
+    $data = $_POST['data'];
+    $message = $_POST['message'];
 
-    $num_arr = explode(";", rtrim($info[2], ";"));
+    $currentDateTime = date("Y-m-d H:i:s");
 
     $values = "";
-
-    for ($i = 0; $i < count($num_arr); $i++) {
-        $values .= "('0', '$num_arr[$i]', '$info[3]')" . ",";
+    for ($i = 0; $i < count($data); $i++){
+        $values .= "('{$data[$i]['id']}', '{$data[$i]['contact_num']}', '$message', '$currentDateTime', '$currentDateTime'),";
     }
 
     $values = rtrim($values, ',');
-
-
-    $insert = "INSERT INTO [sms_queue] ([contact_id], [mobile_no], [sms_message]) VALUES $values";
+    $insert = "INSERT INTO [sms_queue] ([contact_id], [mobile_no], [sms_message], [date_created],[date_resend]) VALUES $values";
 
     $stmt = sqlsrv_query($conn, $insert);
     if ($stmt === false) {
         die(print_r(sqlsrv_errors(), true));
     }
-    header("Location: sms.php");
-    die();
+    echo "Success";
 }
 
 ?>

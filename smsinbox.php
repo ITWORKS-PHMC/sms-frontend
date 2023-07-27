@@ -64,31 +64,32 @@ if ($conn === false) {
         <table action="" method="post">
             <form class="" action="" method="post">
                 <tr>
-                    <!-- <th> Contact ID </th> -->
                     <th> Mobile Number </th>
                     <th> Text Message </th>
-                    <!-- <th> Stat </th>
-                    <th> Date/Time Created </th>
-                    <th> Created By </th> -->
+                    <th> Stat </th>
+                    <!-- <th> Date/Time Created </th> -->
+                    <th> Created By </th>
                 </tr>
 
 
                 <?php
                 $tsql = "SELECT * from sms_received";
                 $stmt = sqlsrv_query($conn, $tsql);
+                $date = date_create("2013-03-15");
 
                 if ($stmt == false) {
                     echo 'ERROR';
                 }
 
                 while($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)){
+                    
                     echo "<tr>";
-                    // echo "<td>"; echo $obj['contact_id']; echo "</td>"; 
-                    echo "<td>"; echo $obj['mobile_no']; echo "</td>"; 
-                    echo "<td>"; echo $obj['sms_message']; echo "</td>"; 
-                    // echo "<td>"; echo $obj['stat']; echo "</td>"; 
-                    // echo "<td>"; echo $obj['date_created']; echo "</td>"; 
-                    // echo "<td>"; echo $obj['created_by']; echo "</td>"; 
+                    echo "<td>"; echo$obj['mobile_no']; echo "</td>"; 
+                    echo "<td>"; echo wordwrap($obj['sms_message'], 40, "<br>\n", true); echo "</td>"; 
+                    // echo "<td>"; echo date_format($obj['date_received'], "Y/m/d H:i:s"); echo "</td>"; 
+                    echo "<td>"; echo $obj['read_status']; echo "</td>"; 
+                    echo "<td>"; echo $obj['sms_status']; echo "</td>"; 
+                    echo "<td>"; echo $obj['error_log']; echo "</td>"; 
                     echo "</tr>";
                 }
                 sqlsrv_free_stmt($stmt);

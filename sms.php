@@ -61,18 +61,17 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
             <a href="smssent.php"><button type="button" class="sms button"> Sent Messages </button></a>
             <a href="smsunsent.php"><button type="button" class="sms button"> Unsent Messages </button></a>
             <a href="smscancelled.php"><button type="button" class="sms button"> Cancelled Messages </button></a>
-            <a href="smsbroadcastsent.php"><button type="button" class="sms button"> Broadcast Sent Messages</button></a>
+            <a href="smsbroadcastsent.php"><button type="button" class="sms button"> Broadcast Sent
+                    Messages</button></a>
             <a href="smsbroadcastunsent.php"><button type="button" class="sms button"> Broadcast Unsent Messages
                 </button></a>
         </div>
     </div>
 
-    <!-- <div class="vertical-line"></div> -->
-
     <div class="container new-message">
         <h1> Create New Messages </h1>
         <!-- <form onsubmit="return sendToQueue(event)"> -->
-        <form action="sendToQueue.php" method="post">
+        <form action="#" id="send-message" method="post">
             <div class="contact">
                 <div class="top">
                     <span class="country">+63</span>
@@ -87,24 +86,40 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 <textarea id="message" name="message" rows="5" placeholder="Type something here.." required
                     maxlength="140"></textarea>
                 <p id="result"></p>
-                <input type="submit" id="submit-msg" class="submit" name="submit-msg" placeholder="Send here" value="Send" required>
+                <input type="submit" id="submit-msg" class="submit" name="submit-msg" placeholder="Send here"
+                    onclick="showAlert()" value="Send">
             </div>
             <input type="hidden" id="hidden-numbers" name="hidden-numbers" required>
         </form>
 
+        <div id="myAlert">
+        <div class="myAlert-text-icon">
+            <div class="myAlert-message">
+            Message sending to queue
+        </div>
+        
+        <button class="close" onclick="hideAlert()">
+        <i class='bx bx-x'></i>
+        </button>
+        </div>
+        <div id="myAlertProgress">
+            <div id="myAlertBar"></div>
+        </div>
+        </div>
+
         <!-- for broadcast -->
         <!-- <div class="sms-broadcast">
-        <form action="" method="post">
-            <input type="checkbox" class="checkbox" id="checkbox" name="checkbox"> Broadcast Schedule: </input>
-            <input type="datetime-local" class="schedule" id="schedule" name="schedule"></input>
-            <input type="submit" class="broadcast-submit" value="Submit">
-            
-            <div class="broadcasttitle">
-                <label class="title">  Broadcast Title: </label>
-                <input type="text" class="titlebox" id="title" name="broadcast-msg"></input>
-            </div>
-        </form>
-    </div> -->
+            <form action="" method="post">
+                <input type="checkbox" class="checkbox" id="checkbox" name="checkbox"> Broadcast Schedule: </input>
+                <input type="datetime-local" class="schedule" id="schedule" name="schedule"></input>
+                <input type="submit" class="broadcast-submit" value="Submit">
+                
+                <div class="broadcasttitle">
+                    <label class="title">  Broadcast Title: </label>
+                    <input type="text" class="titlebox" id="title" name="broadcast-msg"></input>
+                </div>
+            </form>
+        </div> -->
 
         <!-- Recipient Table -->
         <div class="sms-recipient">
@@ -121,167 +136,186 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
         </div>
 
         <script>
-    // Retrieve the required elements
-    const recipientInput = document.getElementById("recipientInput");
-    const recipientTableBody = document.getElementById("recipientTableBody");
+            // Retrieve the required elements
+            const recipientInput = document.getElementById("recipientInput");
+            const recipientTableBody = document.getElementById("recipientTableBody");
 
-    // Store the recipients
-    let recipients = [];
+            const pageUrl = window.location.search.substring(1)
+            const urlVariables = pageUrl.split('&')
+            let recipients = [];
+            checkGetParameter();
 
-    // Function to generate a unique ID for each recipient
-    function generateUniqueId() {
-        return Math.random().toString(36).substr(2, 9);
-    }
+            // Store the recipients
+            function checkGetParameter() {
+                let contactNumbers = document.getElementById('hidden-numbers').value
 
-    // Function to create a new row in the recipient table
-    function createRecipientRow(recipient) {
-        const row = document.createElement("tr");
-        row.setAttribute("data-recipient-id", recipient.id);
+                for (let i = 0; i < urlVariables.length; i++) {
+                    let parameters = urlVariables[i].split('=');
 
-        // Recipient cell for Recipient Number <UNKNOWN USER>
-        const recipientCell2 = document.createElement("td");
-        recipientCell2.classList.add(0);
-        recipientCell2.textContent = "Unknown User";
-        row.appendChild(recipientCell2);
+                    if (parameters[0] === 'to' && parameters[1] !== undefined) {
+                        let decodedParameter = decodeURIComponent(parameters[1])
+                        let contact_details = decodedParameter.split(",");
 
-        // Recipient cell for Mobile Number 
-        const recipientCell = document.createElement("td");
-        recipientCell.classList.add("contactNum");
-        recipientCell.textContent = "+63" + recipient.name;
-        row.appendChild(recipientCell);
+                        contact_details.forEach(person => {
+                            // Concatenate numbers in hidden-numbers
+                            let contactNumber = person.split("~")[2];
+                            contactNumbers += contactNumber + ';'
+                            document.getElementById('hidden-numbers').value = contactNumbers
 
-        // Action cell
-        const actionCell = document.createElement("td");
-        const editBtn = document.createElement("button");
-        editBtn.textContent = "Edit";
-        editBtn.addEventListener("click", () => editRecipient(recipient.id));
-        actionCell.appendChild(editBtn);
-
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete";
-        deleteBtn.addEventListener("click", () => deleteRecipient(recipient.id));
-        actionCell.appendChild(deleteBtn);
-
-        row.appendChild(actionCell);
-
-        return row;
-    }
-
-    // Function to render the recipient table
-    function renderRecipientTable() {
-        recipientTableBody.innerHTML = "";
-        for (const recipient of recipients) {
-            const row = createRecipientRow(recipient);
-            recipientTableBody.appendChild(row);
-        }
-    }
-
-    // Function to add a recipient
-    function addRecipient() {
-        const recipientValue = recipientInput.value.trim();
-        let contactNumbers = document.getElementById('hidden-numbers').value
-
-        // Concatenate numbers in hidden-numbers
-        contactNumbers += '+63' + recipientValue + ';'
-        document.getElementById('hidden-numbers').value = contactNumbers
-
-        if (recipientValue !== "") {
-            const recipient = {
-                id: generateUniqueId(),
-                name: recipientValue
-            };
-
-            recipients.push(recipient);
-            recipientInput.value = "";
-            renderRecipientTable();
-        }
-    }
-
-    // Function to edit a recipient
-    function editRecipient(recipientId) {
-        const recipient = recipients.find(recipient => recipient.id === recipientId);
-
-        if (recipient) {
-            const newRecipientValue = prompt("Enter the new value for the recipient", recipient.name);
-
-            if (newRecipientValue && newRecipientValue.trim() !== "") {
-                recipient.name = newRecipientValue.trim();
+                            recipients.push(
+                                {
+                                    "id": person.split("~")[0],
+                                    "name": person.split("~")[1],
+                                    "contact_num": contactNumber
+                                })
+                        })
+                    }
+                }
                 renderRecipientTable();
             }
-        }
-    }
 
-    // Function to delete a recipient
-    function deleteRecipient(recipientId) {
-        recipients = recipients.filter(recipient => recipient.id !== recipientId);
-        renderRecipientTable();
-    }
+            // Function to create a new row in the recipient table
+            function createRecipientRow(recipient) {
+                const row = document.createElement("tr");
+                // row.setAttribute("data-recipient-id", recipient.id);
 
-    // Add click event listener to the submit button
-    submitBtn.addEventListener("click", function() {
-        const checkedRecipients = Array.from(document.querySelectorAll('input[name="recipients[]"]:checked'));
-        const recipientValues = checkedRecipients.map(recipient => recipient.value);
-  
-    console.log(recipientValues);
-    });
+                // Recipient cell for Recipient Number <UNKNOWN USER>
+                const recipientCell2 = document.createElement("td");
+                recipientCell2.classList.add(0);
+                recipientCell2.textContent = recipient.name;
+                row.appendChild(recipientCell2);
 
-    function sendToQueue(e) {
-        e.preventDefault();
+                // Recipient cell for Mobile Number 
+                const recipientCell = document.createElement("td");
+                recipientCell.classList.add("contactNum");
+                // recipientCell.textContent = "+63" + recipient.contact_num;
+                recipientCell.textContent = recipient.contact_num;
+                row.appendChild(recipientCell);
 
-        let contactNums = document.getElementsByClassName("contactNum")
-        let hiddenNumbers =""
-        
-        let contactNumsArray = [];
-        for (let i = 0; i < contactNums.length; i++) {
-            // console.log(contactNums[i].innerHTML)
-            contactNumsArray.push(contactNums[i].innerHTML)
-            hiddenNumbers += contactNums[i].innerHTML + ';'
-        }
-        hiddenNumbers.trimRight(';')
+                // Action cell
+                const actionCell = document.createElement("td");
+                const editBtn = document.createElement("button");
+                editBtn.textContent = "Edit";
+                editBtn.addEventListener("click", () => editRecipient(recipient.id));
+                actionCell.appendChild(editBtn);
 
-        console.log(hiddenNumbers)
-        document.getElementById('hidden-numbers').value = hiddenNumbers
+                const deleteBtn = document.createElement("button");
+                deleteBtn.setAttribute("id", recipient.id);
+                deleteBtn.textContent = "Delete";
+                deleteBtn.addEventListener("click", () => deleteRecipient(recipient.id));
+                actionCell.appendChild(deleteBtn);
+                row.appendChild(actionCell);
 
-        let dictionary = {
-            "contactNumbers": contactNumsArray,
-            "message": document.getElementById("message")
-        }
-    
-        // console.log(JSON.parse(dictionary))
-        console.log(contactNumsArray) //echo phone number
+                return row;
+            }
 
-        return true
-    }
+            // Function to render the recipient table
+            function renderRecipientTable() {
+                recipientTableBody.innerHTML = "";
+                for (const recipient of recipients) {
+                    const row = createRecipientRow(recipient);
+                    recipientTableBody.appendChild(row);
+                }
+            }
 
-    </script>
+            // Function to add a recipient
+            function addRecipient() {
+                const recipientValue = "+63" + recipientInput.value.trim();
+                let contactNumbers = document.getElementById('hidden-numbers').value
 
-        <script src="script.js">
+                // Concatenate numbers in hidden-numbers
+                contactNumbers += recipientValue + ';'
+                document.getElementById('hidden-numbers').value = contactNumbers
+
+                if (recipientValue !== "") {
+                    recipients.push({
+                        "id": 0 ,
+                        "name": 'Unknown', // TODO: If number is existing in contacts, name must be the contact's name
+                        "contact_num": recipientValue
+                    })
+
+                    recipientInput.value = "";
+                    renderRecipientTable();
+                }
+            }
+
+            // Function to edit a recipient
+            function editRecipient(recipientId) {
+                const recipient = recipients.find(recipient => recipient.id === recipientId);
+
+                if (recipient) {
+                    // const newRecipientValue = prompt("Enter the new value for the recipient", recipient.name); //name
+                    const newRecipientValue = prompt("Enter the new value for the recipient", recipient.contact_num); //contact number
+
+                    if (newRecipientValue && newRecipientValue.trim() !== "") {
+                        recipient.name = newRecipientValue.trim();
+                        renderRecipientTable();
+                    }
+                }
+            }
+
+            //Function to delete a recipient
+            function deleteRecipient(recipientId) {
+                recipients = recipients.filter(recipient => recipient.id !== recipientId);
+                renderRecipientTable();
+            }
+
+            //Function to send the data to queue
+            function sendToQueue(e) {
+                e.preventDefault();
+
+                let contactNums = document.getElementsByClassName("contactNum")
+                let hiddenNumbers = ""
+
+                let contactNumsArray = [];
+                for (let i = 0; i < contactNums.length; i++) {
+                    contactNumsArray.push(contactNums[i].innerHTML)
+                    hiddenNumbers += contactNums[i].innerHTML + ';'
+                }
+                hiddenNumbers.trimRight(';')
+
+                console.log(hiddenNumbers)
+                document.getElementById('hidden-numbers').value = hiddenNumbers
+
+                let dictionary = {
+                    "contactNumbers": contactNumsArray,
+                    "message": document.getElementById("message")
+                }
+                return true
+            }
+
             /* attach a submit handler to the form */
-            $("#sendMessage").submit(function (event) {
+            $("#send-message").submit(function (event) {
 
                 /* stop form from submitting normally */
                 event.preventDefault();
 
                 /* get the action attribute from the <form action=""> element */
-                var $form = $(this),
-                    url = $form.attr('action');
-
+                const url = 'sendToQueue.php'
+                
                 /* Send the data using post with element id name and name2*/
+                console.log(document.getElementById("message").value);
+             
                 var posting = $.post(url, {
-                    number: $('#number').val(),
-                    message: $('#message').val()
+                    data: recipients,
+                    message: document.getElementById("message").value
                 });
 
                 /* Alerts the results */
-                posting.done(function (data) {
-                    console.log("Success")
+                posting.done(function (response) {
+                    console.log(response);
+                    if (response === "Success") {
+                        console.log("Hello");
+                    }
+                    // console.log(data)
+                    // window.location.href = window.location;
                 });
                 posting.fail(function () {
                     console.log("Failed")
                 });
             });
         </script>
-
+        <script src="script.js"></script>
     </div>
 </body>
 
