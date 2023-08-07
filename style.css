@@ -1,169 +1,143 @@
-:root {
-  --secondary-color: #a6bb8d;
-}
-
-*,
-*end:before,
-*:after {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
 body {
+  margin: 0;
   background-color: #eff3f4;
-  /* overflow: hidden; */
-  /* height: 100vh;
-  position: relative; */
-  
 }
 
-.navtop {
-  display: inline-flex;
-  flex-direction: row;
-  background-color: #1b4332;
-  height: 60px;
-  width: 100%;
+/* LOGIN  */
+.login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; 
+  background-color: #eff3f4; 
   border: 0;
-  /* position: fixed; */
+  border-radius: 5px;
+  text-align: center; 
 }
-.navtop div {
-  display: inline-flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  width: 100%;
+ .login .signin {
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  justify-content: center;
+  flex-basis: 20%;
+  background-color: #eff3f4;
+  
+  border-radius: 5px;
+  height: 250px;
+}
+
+/* NAV BAR */
+.navigation {
+  position: sticky;
+  top: 0px;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #1b4332;
+}
+.navlist {
+  float: right;
+}
+.navlistleft {
+  float: left;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+.navlist a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+.navlist a:hover {
+  background-color: #111;
+}
+
+/* MENU BAR */
+.menu {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 25%;
+  background-color: #eff3f4;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+  border: 1.5px solid #b2b2b2;
+  border-radius: 5px;
+}
+.menulist a {
+  display: block;
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+.menulabel {
+  display: block;
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: underline;
+}
+/* .menulist a.active {
+  background-color: #04aa6d;
+  color: white;
+}
+.menulist a:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}  */
+
+.menulist a {
+  color: #202020;
+}
+.menulist a:hover {
+  background-color: #1b4332;
+  color: #eff3f4;
+  transition: background-color 0.2s;
+}
+
+/* CONTACTS TAB */
+.tablink {
+  display: inline-block;
+  height: 10vh;
+  margin: 0;
+  padding: 14px 16px;
+  background-color: #555;
+  outline: none;
+  cursor: pointer;
+  border: 1.5px solid #b2b2b2;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom: none;
+}
+.tablink:hover {
+  color: white;
+  background-color: #1b4332;
+}
+.tabcontent {
+  display: none;
   height: 100%;
 }
-.navtop div h1{
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-  
+.tabcontent h1 {
+  margin: 0%;
+  padding: 14px 2px;
 }
-.navtop div a {
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-around;
-}
-.navtop div h1 {
-  flex: 1;
-  font-size: 24px;
-  padding: 0;
-  margin: 0;
-  color: #eff3f4;
-  font-weight: normal;
-}
-.navtop div a {
-  display: inline-flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  padding: 0 30px;
-  text-decoration: none;
-  color: #eff3f4;
-  font-weight: bold;
-}
-.navtop div a i {
-  padding: 2px 8px 0 0;
-}
-.navtop div a:hover {
-  color: #3aca8e;
-}
-
-.menu {
-  display: inline-flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  justify-content: space-around;
-  gap: 2rem; 
-  width: 30%;
-  height: 100vh;
-  float: left;
-  border: 1.5px solid #b2b2b2;
-  border-radius: 5px; 
-}
-.menu .menubuttons {
-  display: inline-flex;
-  flex-direction: column;
-  gap: 10px;
-  text-align: center;  
-}
-.menu .menubuttons h1 {
-  color: #1b4332;
-}
-.menu .menubuttons .sms {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
+#Contact, 
+#About {
   background-color: #eff3f4;
-  color:#1b4332;
-  border: 2px solid #1b4332;
-  border-radius: 5px;
-  height: 50px;
-  width: 300px;
-}
-.menu .menubuttons .sms:hover {
-  display: inline-flex;
-  flex-direction: column;
-  background-color: #1b4332;
-  color: #eff3f4;
-  transition: background-color 0.2s;
-}
-.menu.contacts-button{
-  flex-grow: 1;
-}
-.menu.contacts .select-button {
-  padding: 10px;
-  color: #202020;
-  border: 1.5px solid #b2b2b2;
-  border-radius: 5px;
-  cursor: pointer;
-}
-.menu.contacts .add-button {
-  padding: 10px;
-  color: #202020;
-  border: 1.5px solid #b2b2b2;
-  border-radius: 5px;
-  cursor: pointer;
-}
-.menu.contacts .add-button:hover, 
-.menu.contacts .select-button:hover {
-  background-color: #1b4332;
-  color: #eff3f4;
-  transition: background-color 0.2s;
 }
 
 
-
-.container{
-  display: inline-flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  justify-content: center;
-  gap: 2rem; 
-  float: right;
-  width: 70%;
+/* SMS CONTENT */
+.container {
+  margin-left: 25%;
+  padding: 1px 16px;
   height: 100vh;
-  border: 1.5px solid #b2b2b2;
-  border-radius: 5px;
-  /* overflow: scroll; */
-}
-.container h1{
-  color:#1b4332;
-  text-align: center;
-}
-
-/* SMS  */
-textarea {
-  display: block;
-  width: 100%;
-  height: 35%;
-  resize: none;
-  padding: 20px;
-  color: #202020;
-  border: 1.5px solid #b2b2b2;
-  border-radius: 5px;
-  outline: none;
 }
 .container.new-message .contact {
   display: inline-flex;
@@ -180,21 +154,19 @@ textarea {
 .container.new-message .contact .top {
   display: flex;
   width: 100%;
-}  
+}
 .container.new-message .contact .top span {
   width: fit-content;
-} 
-/* ito yung may pa border */
+}
 .container.new-message .contact .top span,
-.container.new-message .contact .top input { 
+.container.new-message .contact .top input {
   padding: 10px;
   color: #202020;
   border: 1.5px solid #b2b2b2;
   border-radius: 5px;
   outline: none;
 }
-
-.contacts-button{
+.contacts-button {
   flex-grow: 1;
 }
 .container.new-message .contact .top .add-button {
@@ -219,87 +191,28 @@ textarea {
   outline: none;
   cursor: pointer;
   text-decoration: none;
-} 
+}
 .container.new-message .contact a:hover {
   background-color: #1b4332;
   color: #eff3f4;
   transition: background-color 0.2s;
-} 
-.container.new-message .sms-message{
-    /* display: inline-flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 0.5rem;
-    background-color: pink; */
 }
 
-
-.container.new-message .sms-broadcast .schedule{
-  display: inline-flex;
-  justify-content: flex-start;
-  padding: 10px;
+textarea {
+  display: block;
+  width: 80%;
+  height: 35%;
+  resize: none;
+  padding: 20px;
   color: #202020;
   border: 1.5px solid #b2b2b2;
   border-radius: 5px;
-  gap: 5rem;
+  outline: none;
 }
-.container.new-message .sms-broadcast .submit{
-  display: inline-flex;
-  padding: 10px;
-  color: #202020;
-  border: 1.5px solid #b2b2b2;
-  border-radius: 5px;
-  gap: 5rem;
-}
-.container.new-message .sms-broadcast .submit:hover {
-  background-color: #1b4332;
-  color: #eff3f4;
-  transition: background-color 0.2s;
-} 
-.container.new-message .broadcasttitle .titlebox{
-  display: inline-flex;
-  padding: 10px;
-  color: #202020;
-  border: 1.5px solid #b2b2b2;
-  border-radius: 5px;
-  gap: 5rem;
-} 
-.container.new-message .sms-message .submit{
-  display: inline-flex;
-  padding: 10px;
-  color: #202020;
-  border: 1.5px solid #b2b2b2;
-  border-radius: 5px;
-  gap: 5rem;
-}
-.container.new-message .sms-message .submit:hover {
-  background-color: #1b4332;
-  color: #eff3f4;
-  transition: background-color 0.2s;
-} 
-.container.new-message .sms-recipient{
-  display: inline-flex;
-  padding: 10px;
-  color: #202020;
-  border: 1.5px solid #b2b2b2;
-  border-radius: 5px;
-  gap: 5rem;
-}
-.container.new-message .sms-recipient.button{
-  /* display: inline-flex;
-  padding: 10px;
-  color: #202020;
-  border: 1.5px solid #b2b2b2;
-  border-radius: 5px;
-  gap: 5rem; */
-  /* background-color: pink; */
-}
-
-
 
 table {
   border-collapse: collapse;
-  width: 100%;
+  width: 80%;
 }
 td,
 th {
@@ -330,85 +243,78 @@ fieldset {
   margin-top: 510px;
 }
 
-
-/* alert message */
-#myAlert{
+/* ALERT MESSAGE */
+#myAlert {
   visibility: hidden;
-  position:fixed;
+  position: fixed;
   color: white;
-  border-radius:10px;
-  top:0;
-  right:0;
-  transform: translate(-15px,15px);
-  background: #d62828;
-  border-radius:10px;
-  overflow:hidden
+  border-radius: 10px;
+  top: 0;
+  right: 0;
+  transform: translate(-15px, 15px);
+  background: #28d645;
+  overflow: hidden;
 }
-.myAlert-text-icon{
+.myAlert-text-icon {
   align-items: stretch;
   box-shadow: 0 1px 1px rgb(10 10 10 / 10%);
   display: flex;
-  max-width:250px;
-  
+  max-width: 250px;
 }
-.myAlert-message{
+.myAlert-message {
   align-items: center;
   display: flex;
   flex-grow: 1;
   font-weight: 700;
   padding: 15px 25px;
 }
-.close{
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    appearance: none;
-    background: 0 0;
-    border: none;
-    color: currentColor;
-    font-family: inherit;
-    font-size: 1em;
-    margin: 0;
-    padding: 0;
-    align-items: center;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    padding: 0.75rem 1rem;
-   
+.close {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background: 0 0;
+  border: none;
+  color: currentColor;
+  font-family: inherit;
+  font-size: 1em;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  padding: 0.75rem 1rem;
 }
 #myAlert.show {
-  visibility: visible; 
+  visibility: visible;
 }
 
-
-#myAlert.show{
+#myAlert.show {
   animation: show 0.5s forwards;
 }
 
-@keyframes show{
+@keyframes show {
   0% {
-    transform: translate(-15px,15px) scale(0);
+    transform: translate(-15px, 15px) scale(0);
   }
   50% {
-    transform: translate(-15px,15px) scale(1.2);
+    transform: translate(-15px, 15px) scale(1.2);
   }
   70% {
-    transform: translate(-15px,15px) scale(0.9);
+    transform: translate(-15px, 15px) scale(0.9);
   }
   100% {
-    transform: translate(-15px,15px) scale(1);
+    transform: translate(-15px, 15px) scale(1);
   }
 }
 
-#myAlertBar { 
+#myAlertBar {
   height: 2px;
   background-color: #ddd;
   color: white;
 }
 #myAlertProgress {
-  background-color: #d62828;
-  width:100%
+  background-color: #28d645;
 }
-
 
 

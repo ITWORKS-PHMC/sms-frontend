@@ -6,7 +6,7 @@ if ($conn === false) {
     die(print_r(sqlsrv_errors(), true));
 }
 
-// This is for inserting unregistered numbers messages to sms_queue table 
+// This is for inserting numbers messages to sms_queue table 
 if (isset($_POST['data'])) {
     $data = $_POST['data'];
     $message = $_POST['message'];
@@ -14,7 +14,7 @@ if (isset($_POST['data'])) {
     $currentDateTime = date("Y-m-d H:i:s");
 
     $values = "";
-    for ($i = 0; $i < count($data); $i++){
+    for ($i = 0; $i < count($data); $i++) {
         $values .= "('{$data[$i]['id']}', '{$data[$i]['contact_num']}', '$message', '$currentDateTime', '$currentDateTime'),";
     }
 

@@ -19,17 +19,18 @@ Description: Frontend SMS  -->
 
 <body>
     <div class="login">
-        <form action="authenticate.php" method="post">
-            <h2> Perpetual Help Medical Center - Las Piñas Hospital </h2>
+        <h2> Perpetual Help Medical Center - Las Piñas Hospital </h2>
+        <div class="signin">
+            <form action="authenticate.php" method="post">
+                <label for="username"> Username: </label>
+                <input type="text" id="username" name="username" required><br>
 
-            <div class="signin">
-                <input type="login" class="username" name="username" placeholder="Username" id="username" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required><br>
 
-                <input type="password" class="password" name="password" placeholder="Password" id="password" required>
-
-                <input type="submit" class="login-submit" value="Login">
-            </div>
-        </form>
+                <input type="submit" value="Login">
+            </form> 
+        </div>
     </div>
 </body>
 

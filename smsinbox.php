@@ -34,30 +34,26 @@ if ($conn === false) {
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="loggedin">
-    <nav class="navtop">
-        <div>
-            <h1>PHMC</h1>
-            <a href="home.php"><i class="fas fa-solid fa-house"></i>HOME</a>
-            <a href="sms.php"><i class="fas fa-solid fa-message"></i>SMS</a>
-            <a href="contacts.php"><i class="fa-solid fa-address-book"></i>CONTACTS</a>
-            <a href="logout.php"><i class="fas fa-sign-out-alt"></i>LOGOUT</a>
-        </div>
-    </nav>
+<body>
+    <ul class="navigation">
+        <li class="navlistleft">PHMC SMS</li>
+        <li class="navlist"><a href="logout.php">LOGOUT</a></li>
+        <li class="navlist"><a href="contacts.php">CONTACTS</a></li>
+        <li class="navlist"><a href="sms.php">SMS</a></li>
+        <li class="navlist"><a class="active" href="home.php">HOME</a></li>
+    </ul>
 
-    <div class="menu">
-        <div class="menubuttons">
-            <h1> Main Menu </h1>
-            <a href="sms.php"><button type="button" class="sms button"> Create New Message </button></a>
-            <a href="smsqueued.php"><button type="button" class="sms button"> Queue Messages </button></a>
-            <a href="smsinbox.php"><button type="button" class="sms button"> Inbox </button></a>
-            <a href="smssent.php"><button type="button" class="sms button"> Sent Messages </button></a>
-            <a href="smsunsent.php"><button type="button" class="sms button"> Unsent Messages </button></a>
-            <a href="smscancelled.php"><button type="button" class="sms button"> Cancelled Messages </button></a>
-            <a href="smsbroadcastsent.php"><button type="button" class="sms button"> Broadcast Sent Messages </button></a>
-            <a href="smsbroadcastunsent.php"><button type="button" class="sms button"> Broadcast Unsent Messages </button></a>
-        </div>
-    </div>
+    <ul class="menu">
+        <li class="menulabel"> MENU BUTTON </li>
+        <li class="menulist"><a class="active" href="sms.php">Create New Message</a></li>
+        <li class="menulist"><a href="smsqueued.php">Queue Messages</a></li>
+        <li class="menulist"><a href="smsinbox.php">Inbox</a></li>
+        <li class="menulist"><a href="smssent.php">Sent Messages</a></li>
+        <li class="menulist"><a href="smsunsent.php">Unsent Messages</a></li>
+        <li class="menulist"><a href="smscancelled.php">Cancelled Messages </a></li>
+        <li class="menulist"><a href="smsbroadcastsent.php">Broadcast Sent Messages</a></li>
+        <li class="menulist"><a href="smsbroadcastunsent.php">Broadcast Unsent Messages</a></li>
+    </ul>
 
     <div class="container inbox">
         <h1> Inbox </h1>
@@ -85,7 +81,7 @@ if ($conn === false) {
                     
                     echo "<tr>";
                     echo "<td>"; echo$obj['mobile_no']; echo "</td>"; 
-                    echo "<td>"; echo wordwrap($obj['sms_message'], 40, "<br>\n", true); echo "</td>"; 
+                    echo "<td>"; echo wordwrap($obj['sms_message'], 50, "<br>\n", true); echo "</td>"; 
                     // echo "<td>"; echo date_format($obj['date_received'], "Y/m/d H:i:s"); echo "</td>"; 
                     echo "<td>"; echo $obj['read_status']; echo "</td>"; 
                     echo "<td>"; echo $obj['sms_status']; echo "</td>"; 

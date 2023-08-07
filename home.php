@@ -20,20 +20,19 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="loggedin">
-    <nav class="navtop">
-        <div>
-            <h1>PHMC</h1>
-            <a href="home.php"><i class="fas fa-solid fa-house"></i>HOME</a>
-            <a href="sms.php"><i class="fas fa-solid fa-message"></i>SMS</a>
-            <a href="contacts.php"><i class="fa-solid fa-address-book"></i>CONTACTS</a>
-            <a href="logout.php"><i class="fas fa-sign-out-alt"></i>LOGOUT</a>
-        </div>
-    </nav>
-
-    <div class="content">
-        <h2>Home Page</h2>
-        <p>Welcome back, <?= $_SESSION['name'] ?>!</p>
+<body>
+    <ul class="navigation">
+        <li class="navlistleft">PHMC SMS</li>
+        <li class="navlist"><a href="logout.php">LOGOUT</a></li>
+        <li class="navlist"><a href="contacts.php">CONTACTS</a></li>
+        <li class="navlist"><a href="sms.php">SMS</a></li>
+        <li class="navlist"><a class="active" href="home.php">HOME</a></li>
+    </ul>
+    
+    <div class="Home">
+        <h1>Perpetual Help Medical Center - Las Piñas City </h1>
+        <!-- <p>Welcome back, <?= $_SESSION['name'] ?>!</p> -->
+        <p> Welcome!</p>
     </div>
 </body>
 

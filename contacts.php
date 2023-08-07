@@ -29,64 +29,101 @@ if ($conn === false) {
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="loggedin">
-    <nav class="navtop">
-        <div>
-            <h1>PHMC</h1>
-            <a href="home.php"><i class="fas fa-solid fa-house"></i>HOME</a>
-            <a href="sms.php"><i class="fas fa-solid fa-message"></i>SMS</a>
-            <a href="contacts.php"><i class="fa-solid fa-address-book"></i>CONTACTS</a>
-            <a href="logout.php"><i class="fas fa-sign-out-alt"></i>LOGOUT</a>
-        </div>
-    </nav>
+<body>
+    <ul class="navigation">
+        <li class="navlistleft">PHMC SMS</li>
+        <li class="navlist"><a href="logout.php">LOGOUT</a></li>
+        <li class="navlist"><a href="contacts.php">CONTACTS</a></li>
+        <li class="navlist"><a href="sms.php">SMS</a></li>
+        <li class="navlist"><a class="active" href="home.php">HOME</a></li>
+    </ul>
 
-    <div class="menu contacts" id="selectedContacts">
-        <button type="button" class="select-button" onclick="getSelectedContacts()">Get Selected Contacts</button>
-        <button type="button" class="add-button" onClick="addRecipient()">Add to Recipient</button>
+    <ul class="menu contacts" id="selectedContacts">
+        <li class="menulist"><button type="button" class="select-button" onclick="getSelectedContacts()">Get Selected Contacts</button></li>
+        <li class="menulist"><button type="button" class="add-button" onClick="addRecipient()">Add to Recipient</button></li>
         
         <h3>Selected Contacts</h3>
         <ul id="selectedContactsList"></ul>
-    </div>
+    </ul>
+
 
     <div class="container contacts">
+    <button class="tablink" onclick="openPage('Contact', this, '#eff3f4')"  id="defaultOpen">Contacts</button>
+    <button class="tablink" onclick="openPage('About', this, '#eff3f4')"> Caller Group </button>
+        
+        <div id="Contact" class="tabcontent">
         <h1> Contacts </h1>
-        <table>
-            <form class="" action="" method="post">
-                <tr>
-                    <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all" onclick="checkAll(this)" ></td>
-                    <td> Contact ID </td>
-                    <td> Employee Number </td>
-                    <td> First Name </td>
-                    <td> Middle Name </td>
-                    <td> Last Name </td>
-                    <td> Phone Number </td>
-                </tr>
+            <table>
+                <form class="" action="" method="post">
+                    <tr>
+                        <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all" onclick="checkAll(this)" ></td>
+                        <td> Contact ID </td>
+                        <td> Employee Number </td>
+                        <td> Full Name </td>
+                        <td> Phone Number </td>
+                    </tr>
 
-                <?php
-                    $tsql = "SELECT * from contacts";
-                    $stmt = sqlsrv_query($conn, $tsql);
+                    <?php
+                        $tsql = "SELECT * from contacts";
+                        $stmt = sqlsrv_query($conn, $tsql);
 
-                    if ($stmt == false) {
-                        echo 'ERROR';
-                    }
+                        if ($stmt == false) {
+                            echo 'ERROR';
+                        }
 
-                    while($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)){
-                        $contact = "{$obj['contact_id']}~{$obj['contact_fname']} {$obj['contact_lname']}~{$obj['mobile_no']}";
-                        echo "<tr>";
-                        echo "<td>"; echo "<input type='checkbox' name='selectedContacts' value='$contact'>"; echo "</td>";
-                        echo "<td>"; echo $obj['contact_id']; echo "</td>"; 
-                        echo "<td>"; echo $obj['employee_no']; echo "</td>"; 
-                        echo "<td>"; echo $obj['contact_fname']; echo "</td>"; 
-                        echo "<td>"; echo $obj['contact_mname']; echo "</td>"; 
-                        echo "<td>"; echo $obj['contact_lname']; echo "</td>"; 
-                        echo "<td>"; echo $obj['mobile_no']; echo "</td>"; 
-                        echo "</tr>";
-                    }
-                    sqlsrv_free_stmt($stmt);
-                    sqlsrv_close($conn);
-                ?>
-            </form>
-        </table>
+                        while($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)){
+                            $contact = "{$obj['contact_id']}~{$obj['contact_fname']} {$obj['contact_lname']}~{$obj['mobile_no']}";
+                            echo "<tr>";
+                            echo "<td>"; echo "<input type='checkbox' name='selectedContacts' value='$contact'>"; echo "</td>";
+                            echo "<td>"; echo $obj['contact_id']; echo "</td>"; 
+                            echo "<td>"; echo $obj['employee_no']; echo "</td>"; 
+                            echo "<td>"; echo $obj['contact_lname'].', '.$obj['contact_fname'].' '.$obj['contact_mname']; echo "</td>"; 
+                            echo "<td>"; echo $obj['mobile_no']; echo "</td>"; 
+                            echo "</tr>";
+                        }
+                        sqlsrv_free_stmt($stmt);
+                        // sqlsrv_close($conn);
+                    ?>
+                </form>
+            </table>
+        </div>
+
+        <div id="About" class="tabcontent">
+        <h1> Caller Group </h1>
+            <table>
+                <form class="" action="" method="post">
+                    <tr>
+                        <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all" onclick="checkAll(this)" ></td>
+                        <td> Group Name </td>
+                        <td> Employee Number </td>
+                        <td> Full Name </td>
+                        <td> Phone Number </td>
+                    </tr>
+
+                    <?php
+                        $tsql_caller = "SELECT * from vw_caller_group_members";
+                        $stmt_caller = sqlsrv_query($conn, $tsql_caller);
+
+                        if ($stmt_caller == false) {
+                            echo 'ERROR';
+                        }
+
+                        while($obj = sqlsrv_fetch_array($stmt_caller, SQLSRV_FETCH_ASSOC)){
+                            // $contact = "{$obj['contact_id']}~{$obj['contact_fname']} {$obj['contact_lname']}~{$obj['mobile_no']}";
+                            echo "<tr>";
+                            echo "<td>"; echo "<input type='checkbox' name='selectedCaller' value=''>"; echo "</td>";
+                            echo "<td>"; echo $obj['caller_group_name']; echo "</td>"; 
+                            echo "<td>"; echo $obj['employee_no']; echo "</td>"; 
+                            echo "<td>"; echo $obj['contact_lname'].', '.$obj['contact_fname'].' '.$obj['contact_mname']; echo "</td>"; 
+                            echo "<td>"; echo $obj['mobile_no']; echo "</td>"; 
+                            echo "</tr>";
+                        }
+                        sqlsrv_free_stmt($stmt_caller);
+                        // sqlsrv_close($conn);
+                    ?>
+                </form>
+            </table>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
@@ -132,4 +169,23 @@ if ($conn === false) {
         contact_string = contact_string.replace(/,+$/, '');
         window.location.href = `http://localhost/sms-frontend/sms.php?to=${contact_string}`;
     }
+
+    function openPage(pageName,elmnt,color) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].style.backgroundColor = "";
+        }
+        document.getElementById(pageName).style.display = "block";
+        elmnt.style.backgroundColor = color;
+    }
+
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+
+
 </script>

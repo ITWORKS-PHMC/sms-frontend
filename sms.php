@@ -14,7 +14,6 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html>
 
@@ -28,6 +27,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
         crossorigin="anonymous" referrerpolicy="no-referrer">
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
 
     <!-- jquery -->
@@ -41,36 +41,29 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="loggedin">
-    <nav class="navtop">
-        <div>
-            <h1>PHMC</h1>
-            <a href="home.php"><i class="fas fa-solid fa-house"></i>HOME</a>
-            <a href="sms.php"><i class="fas fa-solid fa-message"></i>SMS</a>
-            <a href="contacts.php"><i class="fa-solid fa-address-book"></i>CONTACTS</a>
-            <a href="logout.php"><i class="fas fa-sign-out-alt"></i>LOGOUT</a>
-        </div>
-    </nav>
+<body>
+    <ul class="navigation">
+        <li class="navlistleft">PHMC SMS</li>
+        <li class="navlist"><a href="logout.php">LOGOUT</a></li>
+        <li class="navlist"><a href="contacts.php">CONTACTS</a></li>
+        <li class="navlist"><a href="sms.php">SMS</a></li>
+        <li class="navlist"><a class="active" href="home.php">HOME</a></li>
+    </ul>
 
-    <div class="menu">
-        <div class="menubuttons">
-            <h1> Main Menu </h1>
-            <a href="sms.php"><button type="button" class="sms button"> Create New Message </button></a>
-            <a href="smsqueued.php"><button type="button" class="sms button"> Queue Messages </button></a>
-            <a href="smsinbox.php"><button type="button" class="sms button"> Inbox </button></a>
-            <a href="smssent.php"><button type="button" class="sms button"> Sent Messages </button></a>
-            <a href="smsunsent.php"><button type="button" class="sms button"> Unsent Messages </button></a>
-            <a href="smscancelled.php"><button type="button" class="sms button"> Cancelled Messages </button></a>
-            <a href="smsbroadcastsent.php"><button type="button" class="sms button"> Broadcast Sent
-                    Messages</button></a>
-            <a href="smsbroadcastunsent.php"><button type="button" class="sms button"> Broadcast Unsent Messages
-                </button></a>
-        </div>
-    </div>
+    <ul class="menu">
+        <li class="menulabel"> MENU BUTTON </li>
+        <li class="menulist"><a class="active" href="sms.php">Create New Message</a></li>
+        <li class="menulist"><a href="smsqueued.php">Queue Messages</a></li>
+        <li class="menulist"><a href="smsinbox.php">Inbox</a></li>
+        <li class="menulist"><a href="smssent.php">Sent Messages</a></li>
+        <li class="menulist"><a href="smsunsent.php">Unsent Messages</a></li>
+        <li class="menulist"><a href="smscancelled.php">Cancelled Messages </a></li>
+        <li class="menulist"><a href="smsbroadcastsent.php">Broadcast Sent Messages</a></li>
+        <li class="menulist"><a href="smsbroadcastunsent.php">Broadcast Unsent Messages</a></li>
+    </ul>
 
     <div class="container new-message">
         <h1> Create New Messages </h1>
-        <!-- <form onsubmit="return sendToQueue(event)"> -->
         <form action="#" id="send-message" method="post">
             <div class="contact">
                 <div class="top">
@@ -84,42 +77,43 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 
             <div class="sms-message">
                 <textarea id="message" name="message" rows="5" placeholder="Type something here.." required
-                    maxlength="140"></textarea>
-                <p id="result"></p>
-                <input type="submit" id="submit-msg" class="submit" name="submit-msg" placeholder="Send here"
+                    oninput="countCharactersAndPages()" maxlength="500"></textarea>
+                    <p>Character count: <span id="charCount">0</span>/500</p>
+                    <p>Page count: <span id="pageCount">0</span>/5</p>
+                    <div id="pageContainer"></div>
+                
+                    <input type="submit" id="submit-msg" class="submit" name="submit-msg" placeholder="Send here"
                     onclick="showAlert()" value="Send">
             </div>
             <input type="hidden" id="hidden-numbers" name="hidden-numbers" required>
         </form>
 
         <div id="myAlert">
-        <div class="myAlert-text-icon">
-            <div class="myAlert-message">
-            Message sending to queue
+            <div class="myAlert-text-icon">
+                <div class="myAlert-message"> Message is in Queue </div>
+                <button class="close" onclick="hideAlert()">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
         </div>
-        
-        <button class="close" onclick="hideAlert()">
-        <i class='bx bx-x'></i>
-        </button>
-        </div>
+
         <div id="myAlertProgress">
-            <div id="myAlertBar"></div>
-        </div>
+            <div id="myAlertBar"> </div>
         </div>
 
         <!-- for broadcast -->
         <!-- <div class="sms-broadcast">
-            <form action="" method="post">
-                <input type="checkbox" class="checkbox" id="checkbox" name="checkbox"> Broadcast Schedule: </input>
-                <input type="datetime-local" class="schedule" id="schedule" name="schedule"></input>
-                <input type="submit" class="broadcast-submit" value="Submit">
-                
-                <div class="broadcasttitle">
-                    <label class="title">  Broadcast Title: </label>
-                    <input type="text" class="titlebox" id="title" name="broadcast-msg"></input>
-                </div>
-            </form>
-        </div> -->
+      <form action="" method="post">
+        <input type="checkbox" class="checkbox" id="checkbox" name="checkbox"> Broadcast Schedule: </input>
+        <input type="datetime-local" class="schedule" id="schedule" name="schedule"></input>
+        <input type="submit" class="broadcast-submit" value="Submit">
+
+        <div class="broadcasttitle">
+          <label class="title"> Broadcast Title: </label>
+          <input type="text" class="titlebox" id="title" name="broadcast-msg"></input>
+        </div>
+      </form>
+    </div> -->
 
         <!-- Recipient Table -->
         <div class="sms-recipient">
@@ -128,7 +122,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                     <tr>
                         <th>Recipient Name</th>
                         <th>Mobile Number</th>
-                        <th>Edit/Delete</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody id="recipientTableBody"></tbody>
@@ -163,11 +157,11 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                             document.getElementById('hidden-numbers').value = contactNumbers
 
                             recipients.push(
-                                {
-                                    "id": person.split("~")[0],
-                                    "name": person.split("~")[1],
-                                    "contact_num": contactNumber
-                                })
+                            {
+                                "id": person.split("~")[0],
+                                "name": person.split("~")[1],
+                                "contact_num": contactNumber
+                            })
                         })
                     }
                 }
@@ -194,10 +188,10 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 
                 // Action cell
                 const actionCell = document.createElement("td");
-                const editBtn = document.createElement("button");
-                editBtn.textContent = "Edit";
-                editBtn.addEventListener("click", () => editRecipient(recipient.id));
-                actionCell.appendChild(editBtn);
+                // const editBtn = document.createElement("button");
+                // editBtn.textContent = "Edit";
+                // editBtn.addEventListener("click", () => editRecipient(recipient.id));
+                // actionCell.appendChild(editBtn);
 
                 const deleteBtn = document.createElement("button");
                 deleteBtn.setAttribute("id", recipient.id);
@@ -229,28 +223,12 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 
                 if (recipientValue !== "") {
                     recipients.push({
-                        "id": 0 ,
+                        "id": 0,
                         "name": 'Unknown', // TODO: If number is existing in contacts, name must be the contact's name
                         "contact_num": recipientValue
                     })
-
                     recipientInput.value = "";
                     renderRecipientTable();
-                }
-            }
-
-            // Function to edit a recipient
-            function editRecipient(recipientId) {
-                const recipient = recipients.find(recipient => recipient.id === recipientId);
-
-                if (recipient) {
-                    // const newRecipientValue = prompt("Enter the new value for the recipient", recipient.name); //name
-                    const newRecipientValue = prompt("Enter the new value for the recipient", recipient.contact_num); //contact number
-
-                    if (newRecipientValue && newRecipientValue.trim() !== "") {
-                        recipient.name = newRecipientValue.trim();
-                        renderRecipientTable();
-                    }
                 }
             }
 
@@ -259,6 +237,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 recipients = recipients.filter(recipient => recipient.id !== recipientId);
                 renderRecipientTable();
             }
+        
 
             //Function to send the data to queue
             function sendToQueue(e) {
@@ -286,16 +265,15 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 
             /* attach a submit handler to the form */
             $("#send-message").submit(function (event) {
-
                 /* stop form from submitting normally */
                 event.preventDefault();
 
                 /* get the action attribute from the <form action=""> element */
                 const url = 'sendToQueue.php'
-                
+
                 /* Send the data using post with element id name and name2*/
                 console.log(document.getElementById("message").value);
-             
+
                 var posting = $.post(url, {
                     data: recipients,
                     message: document.getElementById("message").value
@@ -317,6 +295,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
         </script>
         <script src="script.js"></script>
     </div>
+
 </body>
 
 </html>
