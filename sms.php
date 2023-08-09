@@ -103,17 +103,17 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 
         <!-- for broadcast -->
         <!-- <div class="sms-broadcast">
-      <form action="" method="post">
-        <input type="checkbox" class="checkbox" id="checkbox" name="checkbox"> Broadcast Schedule: </input>
-        <input type="datetime-local" class="schedule" id="schedule" name="schedule"></input>
-        <input type="submit" class="broadcast-submit" value="Submit">
+        <form action="" method="post">
+            <input type="checkbox" class="checkbox" id="checkbox" name="checkbox"> Broadcast Schedule: </input>
+            <input type="datetime-local" class="schedule" id="schedule" name="schedule"></input>
+            <input type="submit" class="broadcast-submit" value="Submit">
 
-        <div class="broadcasttitle">
-          <label class="title"> Broadcast Title: </label>
-          <input type="text" class="titlebox" id="title" name="broadcast-msg"></input>
-        </div>
-      </form>
-    </div> -->
+            <div class="broadcasttitle">
+            <label class="title"> Broadcast Title: </label>
+            <input type="text" class="titlebox" id="title" name="broadcast-msg"></input>
+            </div>
+        </form>
+        </div> -->
 
         <!-- Recipient Table -->
         <div class="sms-recipient">
