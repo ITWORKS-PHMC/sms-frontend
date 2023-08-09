@@ -71,18 +71,17 @@ if ($conn === false) {
                             echo 'ERROR';
                         }
 
-                        while($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)){
+                        while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                             $contact = "{$obj['contact_id']}~{$obj['contact_fname']} {$obj['contact_lname']}~{$obj['mobile_no']}";
-                            echo "<tr>";
-                            echo "<td>"; echo "<input type='checkbox' name='selectedContacts' value='$contact'>"; echo "</td>";
-                            echo "<td>"; echo $obj['contact_id']; echo "</td>"; 
-                            echo "<td>"; echo $obj['employee_no']; echo "</td>"; 
-                            echo "<td>"; echo $obj['contact_lname'].', '.$obj['contact_fname'].' '.$obj['contact_mname']; echo "</td>"; 
-                            echo "<td>"; echo $obj['mobile_no']; echo "</td>"; 
-                            echo "</tr>";
+                                echo "<tr>";
+                                echo "<td>"; echo "<input type='checkbox' name='selectedContacts' value='$contact'>"; echo "</td>";
+                                echo "<td>"; echo $obj['contact_id']; echo "</td>"; 
+                                echo "<td>"; echo $obj['employee_no']; echo "</td>"; 
+                                echo "<td>"; echo $obj['contact_lname'].', '.$obj['contact_fname'].' '.$obj['contact_mname']; echo "</td>"; 
+                                echo "<td>"; echo $obj['mobile_no']; echo "</td>"; 
+                                echo "</tr>";
                         }
                         sqlsrv_free_stmt($stmt);
-                        // sqlsrv_close($conn);
                     ?>
                 </form>
             </table>
@@ -186,6 +185,4 @@ if ($conn === false) {
 
     // Get the element with id="defaultOpen" and click on it
     document.getElementById("defaultOpen").click();
-
-
 </script>
