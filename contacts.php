@@ -73,6 +73,7 @@ if ($conn === false) {
 
                         while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                             $contact = "{$obj['contact_id']}~{$obj['contact_fname']} {$obj['contact_lname']}~{$obj['mobile_no']}";
+                            if ($obj['active'] == 1) {
                                 echo "<tr>";
                                 echo "<td>"; echo "<input type='checkbox' name='selectedContacts' value='$contact'>"; echo "</td>";
                                 echo "<td>"; echo $obj['contact_id']; echo "</td>"; 
@@ -80,6 +81,7 @@ if ($conn === false) {
                                 echo "<td>"; echo $obj['contact_lname'].', '.$obj['contact_fname'].' '.$obj['contact_mname']; echo "</td>"; 
                                 echo "<td>"; echo $obj['mobile_no']; echo "</td>"; 
                                 echo "</tr>";
+                            }
                         }
                         sqlsrv_free_stmt($stmt);
                     ?>
