@@ -76,14 +76,29 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
             </div>
 
             <div class="sms-message">
-                <textarea id="message" name="message" rows="5" placeholder="Type something here.." required
-                    oninput="countCharactersAndPages()" maxlength="500"></textarea>
-                    <p>Character count: <span id="charCount">0</span>/500</p>
-                    <p>Page count: <span id="pageCount">0</span>/5</p>
-                    <div id="pageContainer"></div>
-                
-                    <input type="submit" id="submit-msg" class="submit" name="submit-msg" placeholder="Send here"
-                    onclick="showAlert()" value="Send">
+                <textarea 
+                    id="message" 
+                    name="message" 
+                    rows="5" 
+                    placeholder="Type something here.." 
+                    onInput="countCharactersAndPages()"
+                    required
+                ></textarea>
+                <p>
+                    Character count: 
+                    <span id="charCount"></span>
+                    /
+                    <span id="charLimit"></span>
+                </p>
+                <p>
+                    Page count: 
+                    <span id="pageCount"></span>
+                    /
+                    <span id="pageCountLimit"></span>
+                </p>
+            
+                <input type="submit" id="submit-msg" class="submit" name="submit-msg" placeholder="Send here"
+                onclick="showAlert()" value="Send">
             </div>
             <input type="hidden" id="hidden-numbers" name="hidden-numbers" required>
         </form>

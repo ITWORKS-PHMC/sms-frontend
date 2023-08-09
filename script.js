@@ -1,5 +1,13 @@
+const wordLimit = 560;
+const wordPerPageLimit = 140;
+const pageLimit = 4;
 let myText = document.getElementById("message");
 let result = document.getElementById("result");
+
+myText.maxLength = wordLimit;
+document.getElementById("charLimit").textContent = wordLimit;
+document.getElementById("pageCountLimit").textContent = pageLimit;
+
 // LOGIN & AUTHENTICATION
 //Show Password
 function showPassword() {
@@ -44,6 +52,13 @@ function move() {
     }
 }
 
+//Page and characters count
+function countCharactersAndPages() {
+    const text = document.getElementById("message").value;
+    document.getElementById("charCount").textContent = text.length;
+    document.getElementById("pageCount").textContent = Math.ceil(text.length / wordPerPageLimit);
+}
+
 // CONTACTS
 //select all items in the checkbox 
 function checkAll(myCheckbox){
@@ -60,57 +75,8 @@ function checkAll(myCheckbox){
     }
 }
 
-// //count characters
-// result.textContent = 0 + "/" + limit;
-// let x = []
-
-// myText.addEventListener("input",function(){
-//     var textLength = myText.value.length;
-//     result.textContent = textLength + "/" + limit;
-//     if(textLength > limit){
-        
-//         myText.style.borderColor = "#ff2851";
-//         result.style.color = "#ff2851";
-//     }
-//     else{
-//         myText.style.borderColor = "#b2b2b2";
-//         result.style.color = "#737373";
-//     }
-// });
-
-function countCharactersAndPages() {
-    const textArea = document.getElementById("message");
-    const text = textArea.value;
-    const limit = 140;
-  
-    // Update character count
-    const charCountElement = document.getElementById("charCount");
-    charCountElement.textContent = text.length;
-  
-    // Remove any existing pages
-    const pageContainer = document.getElementById("pageContainer");
-    pageContainer.innerHTML = "";
-  
-    // Split the text into pages
-    const numPages = Math.ceil(text.length / limit);
-    for (let i = 0; i < numPages; i++) {
-      const start = i * limit;
-      const pageText = text.slice(start, start + limit);
-      const pageDiv = document.createElement("div");
-      pageDiv.textContent = pageText;
-      pageContainer.appendChild(pageDiv);
-    }
-  
-    // Update page count
-    const pageCountElement = document.getElementById("pageCount");
-    pageCountElement.textContent = numPages;
-  }
-  
-  // Initial character and page count
-  countCharactersAndPages();
-  
-
-//count pages 
+// Initial character and page count
+countCharactersAndPages();
 
 // // Function to check if the recipient table is empty and enable/disable the send button accordingly
 // function checkRecipientTable() {
