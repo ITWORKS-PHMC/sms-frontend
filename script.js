@@ -1,3 +1,5 @@
+let myText = document.getElementById("message");
+let result = document.getElementById("result");
 // LOGIN & AUTHENTICATION
 //Show Password
 function showPassword() {
@@ -25,6 +27,7 @@ function hideAlert(){
 }
 
 function move() {
+    let i = 0;  
     if (i == 0) {
         var elem = document.getElementById("myAlertBar");
         var width = 1;
@@ -44,6 +47,7 @@ function move() {
 // CONTACTS
 //select all items in the checkbox 
 function checkAll(myCheckbox){
+    let checkboxes = document.querySelectorAll("input[type='checkbox']");
     if(myCheckbox.checked == true){
         checkboxes.forEach(function(checkbox){
             checkbox.checked = true;
