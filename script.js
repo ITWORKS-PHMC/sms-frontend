@@ -9,7 +9,8 @@ function showPassword() {
     }
 }
 
-//alert messages
+// SMS
+// Alert Messages
 function showAlert(){
     var myAlert = document.getElementById("myAlert");
     move();
@@ -40,6 +41,7 @@ function move() {
     }
 }
 
+// CONTACTS
 //select all items in the checkbox 
 function checkAll(myCheckbox){
     if(myCheckbox.checked == true){
