@@ -1,8 +1,13 @@
-var checkboxes = document.querySelectorAll("input[type='checkbox']");
-var myText = document.getElementById("message");
-var result = document.getElementById("result");
-var limit = 500;
-var i = 0;
+// LOGIN & AUTHENTICATION
+//Show Password
+function showPassword() {
+    let x = document.getElementById("password");
+    if (x.type === "password") {
+      x.type = "text";
+    } else {
+      x.type = "password";
+    }
+}
 
 //alert messages
 function showAlert(){
