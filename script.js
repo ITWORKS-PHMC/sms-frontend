@@ -41,13 +41,13 @@ function move() {
         var width = 1;
         var interval = setInterval(frame, 30);
         function frame() {
-        if (width >= 100) {
-            clearInterval(id);
-            interval = 0;
-        } else {
-            width++;
-            elem.style.width = width + "vw";
-        }
+            if (width >= 100) {
+                clearInterval();
+                interval = 0;
+            } else {
+                width++;
+                elem.style.width = width + "vw";
+            }
         }
     }
 }
