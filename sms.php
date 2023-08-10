@@ -238,7 +238,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 
                 if (recipientValue !== "") {
                     recipients.push({
-                        "id": 0,
+                        "id": Math.random() * -1,
                         "name": 'Unknown', // TODO: If number is existing in contacts, name must be the contact's name
                         "contact_num": recipientValue
                     })

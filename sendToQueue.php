@@ -9,13 +9,18 @@ if ($conn === false) {
 // This is for inserting numbers messages to sms_queue table 
 if (isset($_POST['data'])) {
     $data = $_POST['data'];
-    $message = $_POST['message'];
+    $messages = str_split($_POST['message'], 140);
+    $messages_count = count($messages);
 
     $currentDateTime = date("Y-m-d H:i:s");
 
     $values = "";
     for ($i = 0; $i < count($data); $i++) {
-        $values .= "('{$data[$i]['id']}', '{$data[$i]['contact_num']}', '$message', '$currentDateTime', '$currentDateTime'),";
+        $contactId = $data[$i]['id'] > 0 ? $data[$i]['id'] : 0;
+        for ($j = 0; $j < $messages_count; $j++) {
+            $cur = $j + 1;
+            $values .= "('{$contactId}', '{$data[$i]['contact_num']}', '$messages[$j] Part $cur of $messages_count', '$currentDateTime', '$currentDateTime'),";
+        }
     }
 
     $values = rtrim($values, ',');
