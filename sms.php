@@ -65,20 +65,35 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
     <div class="container new-message">
         <h1> Create New Messages </h1>
         <form action="#" id="send-message" method="post">
+            
             <div class="contact">
                 <div class="top">
-                    <span class="country">+63</span>
-                    <input type="number" id="recipientInput" name="number"
-                        onKeyPress="if(this.value.length==10) return false;" placeholder="Input number here..">
-                    <button type="button" class="add-button" onClick="addRecipient()">Add to Recipient</button>
+                    <span 
+                        class="country">
+                        +63
+                    </span>
+                    <input 
+                        type="number" 
+                        id="recipientInput" 
+                        name="number"
+                        onKeyPress="if(this.value.length==10) return false;" 
+                        placeholder="Input number here.."
+                    >
+                    <button 
+                        type="button" 
+                        class="add-button" 
+                        onClick="addRecipient()">
+                        Add to Recipient
+                    </button>
                 </div>
-                <a href="contacts.php" class="contacts-button">Contacts</a>
+                    <a href="contacts.php" class="contacts-button">Contacts</a>
             </div>
 
             <div class="sms-message">
                 <textarea 
                     id="message" 
-                    name="message" 
+                    name="message"
+                    class="message" 
                     rows="5" 
                     placeholder="Type something here.." 
                     onInput="countCharactersAndPages()"
@@ -97,12 +112,25 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                     <span id="pageCountLimit"></span>
                 </p>
             
-                <input type="submit" id="submit-msg" class="submit" name="submit-msg" placeholder="Send here"
-                onclick="showAlert()" value="Send">
+                <input 
+                    type="submit" 
+                    id="submit-msg" 
+                    class="submit" 
+                    name="submit-msg" 
+                    placeholder="Send here"
+                    onclick="showAlert()" 
+                    value="Send"
+                >
+                <input 
+                    type="hidden" 
+                    id="hidden-numbers" 
+                    name="hidden-numbers" 
+                    required
+                >
             </div>
-            <input type="hidden" id="hidden-numbers" name="hidden-numbers" required>
         </form>
 
+        <!-- for alert -->
         <div id="myAlert">
             <div class="myAlert-text-icon">
                 <div class="myAlert-message"> Message is in Queue </div>
@@ -132,14 +160,12 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 
         <!-- Recipient Table -->
         <div class="sms-recipient">
-            <table id="recipientTable">
-                <thead>
+            <table id="recipientTable" class="recipient-table">
                     <tr>
                         <th>Recipient Name</th>
                         <th>Mobile Number</th>
                         <th>Delete</th>
                     </tr>
-                </thead>
                 <tbody id="recipientTableBody"></tbody>
             </table>
         </div>
@@ -312,5 +338,4 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
     </div>
 
 </body>
-
 </html>

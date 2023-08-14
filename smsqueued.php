@@ -53,55 +53,54 @@ if ($conn === false) {
 
     <div class="container queue">
         <h1> Queue Messages </h1>
-        <table action="" method="post">
-            <form class="" action="" method="post">
-                <tr>
-                    <th> SMS ID </th>
-                    <th> Contact ID </th>
-                    <th> Mobile Number </th>
-                    <th> Text Message </th>
-                    <!-- <th> Stat </th>
-                    <th> Date/Time Created </th>
-                    <th> Created By </th> -->
-                </tr>
+            <div class="sms-recipient">
+                <table id="recipientTable" class="recipient-table">
+                <form class="" action="" method="post">
+                    <tr>
+                        <th> SMS ID </th>
+                        <th> Contact ID </th>
+                        <th> Mobile Number </th>
+                        <th> Text Message </th>
+                        <!-- <th> Stat </th>
+                        <th> Date/Time Created </th>
+                        <th> Created By </th> -->
+                    </tr>
+                    <?php
+                    $tsql = "SELECT * from sms_queue";
+                    $stmt = sqlsrv_query($conn, $tsql);
 
+                    if ($stmt == false) {
+                        echo 'ERROR';
+                    }
 
-                <?php
-                $tsql = "SELECT * from sms_queue";
-                $stmt = sqlsrv_query($conn, $tsql);
+                    while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                        echo "<tr>";
+                        echo "<td>";
+                        echo $obj['sms_id'];
+                        echo "</td>";
 
-                if ($stmt == false) {
-                    echo 'ERROR';
-                }
-
-                while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                    echo "<tr>";
-                    echo "<td>";
-                    echo $obj['sms_id'];
-                    echo "</td>";
-
-                    echo "<td>";
-                    echo $obj['contact_id'];
-                    echo "</td>";
-                    
-                    echo "<td>";
-                    echo $obj['mobile_no'];
-                    echo "</td>";
-                    
-                    echo "<td>";
-                    echo $obj['sms_message'];
-                    echo "</td>";
-                    // echo "<td>"; echo $obj['stat']; echo "</td>"; 
-                    // echo "<td>"; echo $obj['date_created']; echo "</td>"; 
-                    // echo "<td>"; echo $obj['created_by']; echo "</td>"; 
-                    echo "</tr>";
-                }
-                sqlsrv_free_stmt($stmt);
-                sqlsrv_close($conn);
-                ?>
-
-            </form>
-        </table>
+                        echo "<td>";
+                        echo $obj['contact_id'];
+                        echo "</td>";
+                        
+                        echo "<td>";
+                        echo $obj['mobile_no'];
+                        echo "</td>";
+                        
+                        echo "<td>";
+                        echo wordwrap($obj['sms_message'], 50, "<br>\n", true);
+                        echo "</td>";
+                        // echo "<td>"; echo $obj['stat']; echo "</td>"; 
+                        // echo "<td>"; echo $obj['date_created']; echo "</td>"; 
+                        // echo "<td>"; echo $obj['created_by']; echo "</td>"; 
+                        echo "</tr>";
+                    }
+                    sqlsrv_free_stmt($stmt);
+                    sqlsrv_close($conn);
+                    ?>
+                </form>
+            </table>
+        </div>
     </div>
 
 </body>

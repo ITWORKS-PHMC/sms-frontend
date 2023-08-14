@@ -33,7 +33,6 @@ if ($conn === false) {
    
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
     <ul class="navigation">
         <li class="navlistleft">PHMC SMS</li>
@@ -78,14 +77,12 @@ if ($conn === false) {
                 }
 
                 while($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)){
-                    
                     echo "<tr>";
                     echo "<td>"; echo$obj['mobile_no']; echo "</td>"; 
-                    echo "<td>"; echo wordwrap($obj['sms_message'], 50, "<br>\n", true); echo "</td>"; 
-                    // echo "<td>"; echo date_format($obj['date_received'], "Y/m/d H:i:s"); echo "</td>"; 
+                    echo "<td>"; echo wordwrap($obj['sms_message'], 50, "<br>\n", true); echo "</td>";
                     echo "<td>"; echo $obj['read_status']; echo "</td>"; 
+                    // echo "<td>"; echo date_format($obj['date_received'], "Y/m/d H:i:s"); echo "</td>"; 
                     echo "<td>"; echo $obj['sms_status']; echo "</td>"; 
-                    echo "<td>"; echo $obj['error_log']; echo "</td>"; 
                     echo "</tr>";
                 }
                 sqlsrv_free_stmt($stmt);
@@ -97,5 +94,4 @@ if ($conn === false) {
     </div>
 
 </body>
-
 </html>

@@ -49,20 +49,20 @@
 
     <div class="container unsent">
         <h1> Unsent Messages </h1>
-        <table action="" method="post">
-            <tr>
-                <th> Date/Time of Error </th>
-                <th> Option </th>
-            </tr>
-
-            <tr>
-                <th> 5/9/2023 11:41:50 AM </th>
-                <th> <a href="smsunsent.php"><button type="button" class="sms button"> View </button></a> </th>
-            </tr>
-
-        </table>
+        <div class="sms-recipient">
+            <table id="recipientTable" class="recipient-table">
+                    <tr>
+                        <th> Date/Time of Error </th>
+                        <th> Option </th>
+                    </tr>
+                    <tr>
+                        <th> 5/9/2023 11:41:50 AM </th>
+                        <th> <a href="smsunsent.php"><button type="button" class="sms button"> View </button></a> </th>
+                    </tr>
+                <tbody id="recipientTableBody"></tbody>
+            </table>
+        </div>
     </div>
 
 </body>
-
 </html>

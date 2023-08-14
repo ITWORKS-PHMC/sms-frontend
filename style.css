@@ -8,20 +8,19 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center; 
-  background-color: #eff3f4; 
+  align-items: center;
+  background-color: #eff3f4;
   border: 0;
   border-radius: 5px;
-  text-align: center; 
+  text-align: center;
 }
- .login .signin {
+.login .signin {
   display: flex;
   gap: 20px;
   flex-direction: column;
   justify-content: center;
   flex-basis: 20%;
   background-color: #eff3f4;
-  
   border-radius: 5px;
   height: 250px;
 }
@@ -127,11 +126,10 @@ body {
   margin: 0%;
   padding: 14px 2px;
 }
-#Contact, 
+#Contact,
 #About {
   background-color: #eff3f4;
 }
-
 
 /* SMS CONTENT */
 .container {
@@ -191,26 +189,70 @@ body {
   outline: none;
   cursor: pointer;
   text-decoration: none;
+  gap: 0.5rem;
 }
 .container.new-message .contact a:hover {
   background-color: #1b4332;
   color: #eff3f4;
   transition: background-color 0.2s;
 }
-
-textarea {
-  display: block;
-  width: 80%;
-  height: 35%;
+.container.new-message .sms-message { 
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.container.new-message .sms-message .message {
+  display: inline-flex;
+  width: 60vw;
+  margin-top: 0.5rem;
+  padding: 10px;
+  color: #202020;
+  cursor: pointer;
+  outline: none;
   resize: none;
-  padding: 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  border: 1.5px solid #b2b2b2;
+}
+.container.new-message .sms-message .submit {
+  display: inline-flex;
+  width: fit-content;
+  padding: 10px;
   color: #202020;
   border: 1.5px solid #b2b2b2;
   border-radius: 5px;
   outline: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+.container.new-message .sms-message .submit:hover {
+  background-color: #1b4332;
+  color: #eff3f4;
+  transition: background-color 0.2s;
 }
 
+/* RECIPIENT TABLE */
 table {
+  width: 60vw;
+  margin-top: 0.5rem;
+  border-radius: 5px;
+  border: 1.5px solid #b2b2b2;
+}
+td,
+th {
+  
+  text-align: left;
+  padding: 3px;
+  border-radius: 5px;
+  border: 1.5px solid #b2b2b2;
+}
+tr:nth-child(all) {
+  background-color: #dddddd;
+}
+
+#recipientTable tr:hover {background-color: #ddd;}
+
+/* table {
   border-collapse: collapse;
   width: 80%;
 }
@@ -219,29 +261,19 @@ th {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 3px;
-  /* word-wrap: break-word; */
-  /* background-color: pink;  */
 }
 tr:nth-child(even) {
   background-color: #dddddd;
-}
+} */
 
-.goback {
-  width: 20%;
-  resize: none;
-  padding: 10px;
-  color: #202020;
-  border: 1.5px solid #b2b2b2;
-  border-radius: 5px;
-  outline: none;
-  cursor: pointer;
-}
+
 
 fieldset {
   width: 70%;
   margin-left: 220px;
   margin-top: 510px;
 }
+
 
 /* ALERT MESSAGE */
 #myAlert {
@@ -312,9 +344,8 @@ fieldset {
   height: 2px;
   background-color: #ddd;
   color: white;
+  margin-top: 0.5rem;
 }
 #myAlertProgress {
   background-color: #28d645;
 }
-
-
