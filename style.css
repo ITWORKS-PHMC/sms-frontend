@@ -1,3 +1,8 @@
+@font-face {
+  font-family: lcdmono2;
+  src: url(font/lcdmono2.ttf) format('truetype');
+}
+
 body {
   margin: 0;
   background-color: #eff3f4;
@@ -24,6 +29,7 @@ body {
   border-radius: 5px;
   height: 250px;
 }
+
 
 /* NAV BAR */
 .navigation {
@@ -57,6 +63,17 @@ body {
   background-color: #111;
 }
 
+/* HOME PAGE */
+.Home .title{
+  text-align: center;
+}
+.Home .datetime{
+  text-align: center;
+  font-family: lcdmono2;
+}
+
+
+
 /* MENU BAR */
 .menu {
   list-style-type: none;
@@ -68,7 +85,7 @@ body {
   height: 100%;
   overflow: auto;
   border: 1.5px solid #b2b2b2;
-  border-radius: 5px;
+  /* border-radius: 5px; */
 }
 .menulist a {
   display: block;
