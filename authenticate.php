@@ -77,7 +77,7 @@
                 ldap_close($ldap);
                 ?>
                 
-                <input type="submit" value="Login">
+                <input type="submit" class="submit" value="Login">
             </form>
         </div>
     </div>

@@ -4,7 +4,6 @@ Date: May 8, 2023
 Description: Frontend SMS  -->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <title>Login</title>
@@ -21,11 +20,12 @@ Description: Frontend SMS  -->
         <h2> Perpetual Help Medical Center - Las Piñas Hospital </h2>
         <div class="signin">
             <form action="authenticate.php" method="post">
-                <input type="login" id="username" name="username" placeholder="Username" required> <br>
-                <input type="password" id="password" name="password" placeholder="Password" required> <br>
-                <input type="checkbox" onclick="showPassword()">Show Password<br>
+                <input type="login" id="username" name="username" placeholder="Username" required>
+                <input type="password" id="password" name="password" placeholder="Password" required> 
                 
-                <input type="submit" value="Login">
+                <input type="checkbox" id="checkbox" onclick="showPassword()">Show Password
+                
+                <input type="submit" class="submit" value="Login">
             </form>
         </div>
     </div>

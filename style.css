@@ -5,31 +5,57 @@
 
 body {
   margin: 0;
+  padding: 0;
   background-color: #eff3f4;
 }
 
 /* LOGIN  */
 .login {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #eff3f4;
-  border: 0;
-  border-radius: 5px;
+  height: 520px;
+  width: 400px;
+  background-color: rgba(255,255,255,0.13);
+  position: absolute;
+  transform: translate(-50%,-50%);
+  top: 50%;
+  left: 50%;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(8,7,16,0.6);
+  padding: 50px 35px;
+}
+.login h2{
+  font-weight: 500;
+  line-height: 42px;
   text-align: center;
 }
-.login .signin {
-  display: flex;
-  gap: 20px;
-  flex-direction: column;
-  justify-content: center;
-  flex-basis: 20%;
-  background-color: #eff3f4;
+#username, 
+#password{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1.5px solid #b2b2b2;
   border-radius: 5px;
-  height: 250px;
+  box-sizing: border-box;
+  
 }
-
+.login .submit {
+  display: flex;
+  width: fit-content;
+  padding: 10px;
+  margin-top: 20px;
+  margin-left: 170px;
+  color: #202020;
+  border: 1.5px solid #b2b2b2;
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+.login .submit:hover {
+  background-color: #1b4332;
+  color: #eff3f4;
+  transition: background-color 0.2s;
+}
 
 /* NAV BAR */
 .navigation {
