@@ -59,13 +59,15 @@ body {
 
 /* NAV BAR */
 .navigation {
-  position: sticky;
-  top: 0px;
+  width: 100%;
+  top: 0;
   list-style-type: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #1b4332;
+  background-color: #1b4332;  
+  z-index: 100;
+  position: sticky;
 }
 .navlist {
   float: right;
@@ -87,18 +89,7 @@ body {
 }
 .navlist a:hover {
   background-color: #111;
-}
-
-/* HOME PAGE */
-.Home .title{
-  text-align: center;
-}
-.Home .datetime{
-  text-align: center;
-  font-family: lcdmono2;
-}
-
-
+} 
 
 /* MENU BAR */
 .menu {
@@ -142,6 +133,18 @@ body {
   color: #eff3f4;
   transition: background-color 0.2s;
 }
+
+
+/* HOME PAGE */
+.container.home .title{
+  margin-top: 0.5%;
+  text-align: center;
+}
+.container.home .datetime{
+  text-align: center;
+  font-family: lcdmono2;
+}
+
 
 /* CONTACTS TAB */
 .tablink {

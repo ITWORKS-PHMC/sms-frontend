@@ -27,25 +27,8 @@
 </head>
 
 <body>
-    <ul class="navigation">
-        <li class="navlistleft">PHMC SMS</li>
-        <li class="navlist"><a href="logout.php">LOGOUT</a></li>
-        <li class="navlist"><a href="contacts.php">CONTACTS</a></li>
-        <li class="navlist"><a href="sms.php">SMS</a></li>
-        <li class="navlist"><a class="active" href="home.php">HOME</a></li>
-    </ul>
-
-    <ul class="menu">
-        <li class="menulabel"> MENU BUTTON </li>
-        <li class="menulist"><a class="active" href="sms.php">Create New Message</a></li>
-        <li class="menulist"><a href="smsqueued.php">Queue Messages</a></li>
-        <li class="menulist"><a href="smsinbox.php">Inbox</a></li>
-        <li class="menulist"><a href="smssent.php">Sent Messages</a></li>
-        <li class="menulist"><a href="smsunsent.php">Unsent Messages</a></li>
-        <li class="menulist"><a href="smscancelled.php">Cancelled Messages </a></li>
-        <li class="menulist"><a href="smsbroadcastsent.php">Broadcast Sent Messages</a></li>
-        <li class="menulist"><a href="smsbroadcastunsent.php">Broadcast Unsent Messages</a></li>
-    </ul>
+    <?php include("./nav/navbar.php"); ?>
+    <?php include("./menu/menu.php"); ?>
 
     <div class="container broadcast-sent">
         <h1> Broadcast Sent Messages </h1>
