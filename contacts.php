@@ -49,11 +49,11 @@ if ($conn === false) {
 
     <div class="container contacts">
     <button class="tablink" onclick="openPage('Contact', this, '#eff3f4')"  id="defaultOpen">Contacts</button>
-    <button class="tablink" onclick="openPage('About', this, '#eff3f4')"> Caller Group </button>
+    <button class="tablink" onclick="openPage('CallerGroup', this, '#eff3f4')"> Caller Group </button>
         
         <div id="Contact" class="tabcontent">
         <h1> Contacts </h1>
-            <table>
+            <table id="recipientTable" class="recipient-table">
                 <form class="" action="" method="post">
                     <tr>
                         <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all" onclick="checkAll(this)" ></td>
@@ -89,35 +89,33 @@ if ($conn === false) {
             </table>
         </div>
 
-        <div id="About" class="tabcontent">
+        <div id="CallerGroup" class="tabcontent">
         <h1> Caller Group </h1>
-            <table>
+            <table id="recipientTable" class="recipient-table">
                 <form class="" action="" method="post">
                     <tr>
                         <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all" onclick="checkAll(this)" ></td>
-                        <td> Group Name </td>
-                        <td> Employee Number </td>
-                        <td> Full Name </td>
-                        <td> Phone Number </td>
+                        <td> Caller Group Code </td>
+                        <td> Caller Group Name </td>
                     </tr>
 
                     <?php
-                        $tsql_caller = "SELECT * from vw_caller_group_members";
+                        $tsql_caller = "SELECT * from caller_group";
                         $stmt_caller = sqlsrv_query($conn, $tsql_caller);
 
                         if ($stmt_caller == false) {
                             echo 'ERROR';
                         }
 
-                        while($obj = sqlsrv_fetch_array($stmt_caller, SQLSRV_FETCH_ASSOC)){
+                        while($obj_caller = sqlsrv_fetch_array($stmt_caller, SQLSRV_FETCH_ASSOC)){
                             // $contact = "{$obj['contact_id']}~{$obj['contact_fname']} {$obj['contact_lname']}~{$obj['mobile_no']}";
-                            echo "<tr>";
-                            echo "<td>"; echo "<input type='checkbox' name='selectedCaller' value=''>"; echo "</td>";
-                            echo "<td>"; echo $obj['caller_group_name']; echo "</td>"; 
-                            echo "<td>"; echo $obj['employee_no']; echo "</td>"; 
-                            echo "<td>"; echo $obj['contact_lname'].', '.$obj['contact_fname'].' '.$obj['contact_mname']; echo "</td>"; 
-                            echo "<td>"; echo $obj['mobile_no']; echo "</td>"; 
-                            echo "</tr>";
+                            if ($obj_caller['active'] == 1){
+                                echo "<tr>";
+                                echo "<td>"; echo "<input type='checkbox' name='selectedCaller' value=''>"; echo "</td>";
+                                echo "<td>"; echo $obj_caller['caller_group_code']; echo "</td>"; 
+                                echo "<td>"; echo $obj_caller['caller_group_name']; echo "</td>";
+                                echo "</tr>";
+                            }
                         }
                         sqlsrv_free_stmt($stmt_caller);
                         // sqlsrv_close($conn);
