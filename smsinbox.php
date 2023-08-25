@@ -1,10 +1,10 @@
 <?php
-// //If not loggedIn cannot passthrough
 // session_start();
-// if (!isset($_SESSION['loggedin'])) {
-//     header('Location: login.php');
-//     exit;
+// if (!isset($_SESSION['username'])) {
+//     header("Location: login.php"); // Redirect to the login page if not login 
+//     exit();
 // }
+
 
 //database connection 
 include("./database/connection.php");
@@ -39,22 +39,19 @@ if ($conn === false) {
 
     <div class="container inbox">
         <h1> Inbox </h1>
-        <table action="" method="post">
+        <table id="recipientTable" class="recipient-table">
             <form class="" action="" method="post">
                 <tr>
                     <th> Mobile Number </th>
                     <th> Text Message </th>
                     <th> Stat </th>
-                    <!-- <th> Date/Time Created </th> -->
+                    <th> Date/Time Created </th>
                     <th> Created By </th>
                 </tr>
-
-
+                
                 <?php
                 $tsql = "SELECT * from sms_received";
                 $stmt = sqlsrv_query($conn, $tsql);
-                $date = date_create("2013-03-15");
-
                 if ($stmt == false) {
                     echo 'ERROR';
                 }
@@ -62,9 +59,9 @@ if ($conn === false) {
                 while($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)){
                     echo "<tr>";
                     echo "<td>"; echo$obj['mobile_no']; echo "</td>"; 
-                    echo "<td>"; echo wordwrap($obj['sms_message'], 50, "<br>\n", true); echo "</td>";
+                    echo "<td>"; echo wordwrap($obj['sms_message'], 35, "<br>\n", true); echo "</td>";
                     echo "<td>"; echo $obj['read_status']; echo "</td>"; 
-                    // echo "<td>"; echo date_format($obj['date_received'], "Y/m/d H:i:s"); echo "</td>"; 
+                    echo "<td>"; echo $obj['date_received']->format('Y-m-d H:i:s'); echo "</td>"; 
                     echo "<td>"; echo $obj['sms_status']; echo "</td>"; 
                     echo "</tr>";
                 }
@@ -75,6 +72,5 @@ if ($conn === false) {
             </form>
         </table>
     </div>
-
 </body>
 </html>
