@@ -27,7 +27,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
         crossorigin="anonymous" referrerpolicy="no-referrer">
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
 
     <!-- jquery -->
@@ -48,68 +48,56 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
     <div class="container new-message">
         <h1> Create New Messages </h1>
         <form action="#" id="send-message" method="post">
-            
+
             <div class="contact">
                 <div class="top">
-                    <span 
-                        class="country">
+                    <span class="country">
                         +63
                     </span>
+                    <!-- <input type="number" id="recipientInput" name="number"
+                        onKeyPress="if(this.value.length==10) return false;" placeholder="Input number here..">
+                    <button type="button" class="add-button" onClick="addRecipient()">Add to Recipient</button> -->
+
                     <input 
                         type="number" 
                         id="recipientInput" 
                         name="number"
-                        onKeyPress="if(this.value.length==10) return false;" 
+                        onKeyPress="if(this.value.length==10) return false;"
+                        oninput="validateInput()"
                         placeholder="Input number here.."
                     >
+
                     <button 
                         type="button" 
-                        class="add-button" 
-                        onClick="addRecipient()">
-                        Add to Recipient
+                        class="add-button"
+                        id="submitButton" 
+                        disabled
+                        onClick="addRecipient()">Add to Recipient
                     </button>
+                
                 </div>
-                    <a href="contacts.php" class="contacts-button">Contacts</a>
+                <a href="contacts.php" class="contacts-button">Contacts</a>
             </div>
 
             <div class="sms-message">
-                <textarea 
-                    id="message" 
-                    name="message"
-                    class="message" 
-                    rows="5" 
-                    placeholder="Type something here.." 
-                    onInput="countCharactersAndPages()"
-                    required
-                ></textarea>
+                <textarea id="message" name="message" class="message" rows="5" placeholder="Type something here.."
+                    onInput="countCharactersAndPages()" required></textarea>
                 <p>
-                    Character count: 
+                    Character count:
                     <span id="charCount"></span>
                     /
                     <span id="charLimit"></span>
                 </p>
                 <p>
-                    Page count: 
+                    Page count:
                     <span id="pageCount"></span>
                     /
                     <span id="pageCountLimit"></span>
                 </p>
-            
-                <input 
-                    type="submit" 
-                    id="submit-msg" 
-                    class="submit" 
-                    name="submit-msg" 
-                    placeholder="Send here"
-                    onclick="showAlert()" 
-                    value="Send"
-                >
-                <input 
-                    type="hidden" 
-                    id="hidden-numbers" 
-                    name="hidden-numbers" 
-                    required
-                >
+
+                <input type="submit" id="submit-msg" class="submit" name="submit-msg" placeholder="Send here"
+                    onclick="showAlert()" value="Send">
+                <input type="hidden" id="hidden-numbers" name="hidden-numbers" required>
             </div>
         </form>
 
@@ -144,11 +132,11 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
         <!-- Recipient Table -->
         <div class="sms-recipient">
             <table id="recipientTable" class="recipient-table">
-                    <tr>
-                        <th>Recipient Name</th>
-                        <th>Mobile Number</th>
-                        <th>Delete</th>
-                    </tr>
+                <tr>
+                    <th>Recipient Name</th>
+                    <th>Mobile Number</th>
+                    <th>Delete</th>
+                </tr>
                 <tbody id="recipientTableBody"></tbody>
             </table>
         </div>
@@ -181,17 +169,17 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                             document.getElementById('hidden-numbers').value = contactNumbers
 
                             recipients.push(
-                            {
-                                "id": person.split("~")[0],
-                                "name": person.split("~")[1],
-                                "contact_num": contactNumber
-                            })
+                                {
+                                    "id": person.split("~")[0],
+                                    "name": person.split("~")[1],
+                                    "contact_num": contactNumber
+                                })
                         })
                     }
                 }
                 renderRecipientTable();
             }
-
+        
             // Function to create a new row in the recipient table
             function createRecipientRow(recipient) {
                 const row = document.createElement("tr");
@@ -261,7 +249,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 recipients = recipients.filter(recipient => recipient.id !== recipientId);
                 renderRecipientTable();
             }
-        
+
 
             //Function to send the data to queue
             function sendToQueue(e) {
@@ -321,4 +309,5 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
     </div>
 
 </body>
+
 </html>
