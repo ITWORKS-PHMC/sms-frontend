@@ -249,6 +249,13 @@ body {
   color: #eff3f4;
   transition: background-color 0.2s;
 }
+.container.new-message .contact .top .add-button:disabled,
+.container.new-message .contact .top .add-button[disabled] {
+  border: 1.5px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}
 .container.new-message .contact a {
   display: flex;
   width: fit-content;

@@ -54,10 +54,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                     <span class="country">
                         +63
                     </span>
-                    <!-- <input type="number" id="recipientInput" name="number"
-                        onKeyPress="if(this.value.length==10) return false;" placeholder="Input number here..">
-                    <button type="button" class="add-button" onClick="addRecipient()">Add to Recipient</button> -->
-
+                   
                     <input 
                         type="number" 
                         id="recipientInput" 
