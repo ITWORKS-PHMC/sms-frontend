@@ -91,6 +91,42 @@ function checkAll(myCheckbox){
     }
 }
 
+// INBOX
+//Pop up message
+function showPopup(button) {
+  const row = button.parentNode.parentNode;
+
+  const cells = row.getElementsByTagName("td");
+  const content = [];
+  for (let i = 0; i < cells.length - 1; i++) {
+    content.push(cells[i].textContent);
+  }
+
+//   const popupContent = content.join(", ");
+  const sender = content[0];
+  const message = content[1];
+  const status = content[2];
+  const receiveDate = content[3];
+
+  const popup = document.getElementById("popup");
+
+  const contentSender = document.getElementById("sender");
+  const contentMessage = document.getElementById("message");
+  const contentStatus = document.getElementById("readStatus");
+  const contentDate = document.getElementById("date");
+
+  contentSender.textContent = "Sender: " + sender;
+  contentMessage.textContent = "Message: " + message;
+  contentStatus.textContent = "Read Status: " + status;
+  contentDate.textContent = "Date: " + receiveDate;
+  popup.style.display = "block";
+}
+
+function closePopup() {
+  const popup = document.getElementById("popup");
+  popup.style.display = "none";
+}
+
 // Initial character and page count
 countCharactersAndPages();
 
