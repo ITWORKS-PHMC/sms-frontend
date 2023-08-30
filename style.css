@@ -132,6 +132,19 @@ body {
   color: #eff3f4;
   transition: background-color 0.2s;
 }
+.menu .circle {
+  width: 25px;
+  height: 25px;
+  margin-top: -8%;
+  margin-left: 90%;
+  border-radius: 50%;
+  background-color: #28d645;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+} 
 
 /* HOME PAGE */
 .container.home .title {
@@ -186,19 +199,7 @@ body {
   cursor: pointer;
   text-decoration: none;
 }
-.menu .circle {
-  width: 25px;
-  height: 25px;
-  margin-top: -8%;
-  margin-left: 90%;
-  border-radius: 50%;
-  background-color: #28d645;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-} 
+
 
 /* SMS CONTENT */
 .container {
