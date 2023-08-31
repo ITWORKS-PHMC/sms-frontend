@@ -307,6 +307,13 @@ body {
   color: #eff3f4;
   transition: background-color 0.2s;
 }
+.container.new-message .sms-message .submit:disabled,
+.container.new-message .sms-message .submit[disabled] {
+  border: 1.5px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}
 
 /* RECIPIENT TABLE */
 table {
