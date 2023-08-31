@@ -67,13 +67,10 @@ function validateInput() {
 
   // Remove non-numeric characters
   const numericInput = inputElement.value.replace(/[^0-9]/g, "");
-
   // Update the input value with numeric characters only
   inputElement.value = numericInput;
 
-  // document.getElementById("submitButton").value = "";
-
-  if (numericInput.length === 10) {
+  if(numericInput !== "" && numericInput.length === 10){
     buttonElement.disabled = false;
   } else {
     buttonElement.disabled = true;
@@ -106,7 +103,6 @@ function showPopup(button) {
     content.push(cells[i].textContent);
   }
 
-//   const popupContent = content.join(", ");
   const sender = content[0];
   const message = content[1];
   const status = content[2];
@@ -133,6 +129,7 @@ function closePopup() {
 
 // Initial character and page count
 countCharactersAndPages();
+
 
 // // Function to check if the recipient table is empty and enable/disable the send button accordingly
 // function checkRecipientTable() {
