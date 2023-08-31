@@ -1,9 +1,10 @@
 <?php
 session_start();
-// if (!isset($_SESSION['loggedin'])) {
-//     header('Location: login.php');
-//     exit;
-// }
+if (!isset($_SESSION['username'])) {
+    // Redirect to the login page if not login 
+    header("Location: login.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -46,7 +47,7 @@ session_start();
 
         updateDateTime();
         setInterval(updateDateTime, 1000);
-    </script>
+    </script> 
 </body>
 
 </html>
