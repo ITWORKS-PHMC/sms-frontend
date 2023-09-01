@@ -89,9 +89,10 @@ if ($conn === false) {
             </table>
         </div>
 
+
         <div id="CallerGroup" class="tabcontent">
         <h1> Caller Group </h1>
-            <table id="recipientTable" class="recipient-table">
+            <table id="recipientTable" class="recipient-table" ondblclick="showMembers()">
                 <form class="" action="" method="post">
                     <tr>
                         <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all" onclick="checkAll(this)" ></td>
@@ -122,6 +123,44 @@ if ($conn === false) {
                     ?>
                 </form>
             </table>
+            
+            <div id="CallerMembers" style="display:none;">
+                <table id="secondTable">
+                <form class="" action="" method="post">
+                    <tr>
+                        <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all" onclick="checkAll(this)" ></td>
+                        <td> Caller Group Code </td>
+                        <td> Caller Group Name </td>
+                        <td> Full Name </td>
+                        <td> Mobile Number </td>
+                    </tr>
+
+                    <?php
+                        $tsql_caller = "SELECT * from vw_caller_group_members";
+                        $stmt_caller = sqlsrv_query($conn, $tsql_caller);
+
+                        if ($stmt_caller == false) {
+                            echo 'ERROR';
+                        }
+
+                        while($obj_caller = sqlsrv_fetch_array($stmt_caller, SQLSRV_FETCH_ASSOC)){
+                            // $contact = "{$obj['contact_id']}~{$obj['contact_fname']} {$obj['contact_lname']}~{$obj['mobile_no']}";
+                            // if ($obj_caller['active'] == 1){
+                                echo "<tr>";
+                                echo "<td>"; echo "<input type='checkbox' name='selectedCaller' value=''>"; echo "</td>";
+                                echo "<td>"; echo $obj_caller['caller_group_code']; echo "</td>"; 
+                                echo "<td>"; echo $obj_caller['caller_group_name']; echo "</td>";
+                                echo "<td>"; echo $obj_caller['contact_lname'].', '.$obj_caller['contact_fname'].' '.$obj_caller['contact_mname']; echo "</td>"; 
+                                echo "<td>"; echo $obj_caller['mobile_no']; echo "</td>"; 
+                                echo "</tr>";
+                            // }
+                        }
+                        sqlsrv_free_stmt($stmt_caller);
+                        // sqlsrv_close($conn);
+                    ?>
+                </form>
+                </table>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
@@ -130,6 +169,15 @@ if ($conn === false) {
 </html>
 
 <script>
+    function showMembers() {
+            var callerMembersTable = document.getElementById('CallerMembers');
+            if (callerMembersTable.style.display === 'none') {
+                callerMembersTable.style.display = 'block';
+            } else {
+                callerMembersTable.style.display = 'none';
+            }
+        }
+
     function getSelectedContacts() {
         var checkboxes = document.getElementsByName('selectedContacts');
         var selectedContacts = [];
