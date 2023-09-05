@@ -19,6 +19,8 @@ if ($conn === false) {
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=500, initial-scale=1" />
     <title>SMS Inbox</title>
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 
@@ -48,7 +50,7 @@ if ($conn === false) {
                     <th> Mobile Number </th>
                     <th> Text Message </th>
                     <th> Read Status </th>
-                    <th> Date/Time Created </th>
+                    <th> Date/Time Received </th>
                     <th> View </th>
                 </tr>
             </thead>
@@ -56,74 +58,55 @@ if ($conn === false) {
             <tbody id="recipientTableBody"></tbody>
 
             <?php
-            $tsql = "SELECT * from sms_received";
+            $tsql = "SELECT * FROM sms_received ORDER BY date_received DESC;";
             $stmt = sqlsrv_query($conn, $tsql);
             if ($stmt == false) {
                 echo 'ERROR';
             }
 
             while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                echo "<tr>";
-                echo "<td>";
-                echo $obj['mobile_no'];
-                echo "</td>";
+                // sms_received_id
+                $class = "";
+                if ($obj['read_status'] == 0) {
+                    $class .= "highlight";
+                }
 
-                echo "<td>";
-                echo wordwrap($obj['sms_message'], 35, "<br>\n", true);
-                echo "</td>";
-                
+                echo "<tr class='$class' id='msg-{$obj['sms_received_id']}'>";
+                echo "<td>{$obj['mobile_no']}</td>";
                 //TODO
-                //message should be 10 char length 
-                //to see the content click view to pop up the full content 
-                
+                // message should be 10 char length 
+                // to see the content click view to pop up the full content 
                 // echo "<td>";
                 // echo substr($obj['sms_message'], 0, 10);
                 // echo "</td>";
+                echo "<td>" . wordwrap($obj['sms_message'], 35, "<br>\n", true) . "</td>";
+                echo "<td class='read_status'>{$obj['read_status']}</td>";
 
-                echo "<td>";
-                echo $obj['read_status'];
-                echo "</td>";
+                echo "<td>{$obj['date_received']->format('Y-m-d H:i:s')}</td>";
+                echo "<td><button onclick='showPopup({$obj['sms_received_id']})' class='viewButton'>View</button></td>";
 
-                echo "<td>";
-                echo $obj['date_received']->format('Y-m-d H:i:s');
-                echo "</td>";
-
-                echo '<td> <button onclick="showPopup(this)" class="viewButton"> View </button> </td>';
                 echo "</tr>";
             }
             sqlsrv_free_stmt($stmt);
-            // sqlsrv_close($conn);
             ?>
         </table>
 
 
         <div class="popup" id="popup">
-            <button 
-                onclick="closePopup()"
-                class="closeButton"> 
-                Close 
+            <button onclick="closePopup()" class="closeButton">
+                Close
             </button>
 
-            <div 
-                id="sender"> 
-            </div>
-            <div 
-                id="message"> 
-            </div>
-            <div 
-                id="readStatus"> 
-            </div>
-            <div 
-                id="date"> 
-            </div>
+            <div id="sender"></div>
+            <div id="message"></div>
+            <div id="readStatus"></div>
+            <div id="date"></div>
 
-            <a href="sms.php"> 
-                <button 
-                    type="button" 
-                    class="replyButton"> 
-                    Reply 
-                </button> 
-            </a> 
+            <a href="sms.php">
+                <button type="button" class="replyButton">
+                    Reply
+                </button>
+            </a>
         </div>
     </div>
 

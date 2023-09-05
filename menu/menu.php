@@ -38,7 +38,7 @@
             <li class="menulist"><a href="smsqueued.php">Queue Messages</a></li>
             
             <li class="menulist"><a href="smsinbox.php">Inbox 
-                 <div class="circle"> <?php echo $unreadCount; ?> </div>  
+                <div class="inbox-counter" id="counterInbox"> <?php echo $unreadCount; ?> </div>  
             </a></li>
           
             <li class="menulist"><a href="smssent.php">Sent Messages</a></li>
