@@ -55,8 +55,16 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                         +63
                     </span>
                    
-                    <input 
+                    <!-- <input 
                         type="number" 
+                        id="recipientInput" 
+                        name="number"
+                        onKeyPress="if(this.value.length==10) return false;"
+                        oninput="validateInput()"
+                        placeholder="Input number here.."
+                    > -->
+                    <input 
+                        type="text" 
                         id="recipientInput" 
                         name="number"
                         onKeyPress="if(this.value.length==10) return false;"
@@ -66,10 +74,10 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 
                     <button 
                         type="button" 
-                        class="add-button"
                         id="submitButton" 
-                        disabled
-                        onClick="addRecipient()">Add to Recipient
+                        class="add-button"
+                        onClick="addRecipient()"
+                        disabled>Add to Recipient
                     </button>
                 
                 </div>
@@ -92,8 +100,16 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                     <span id="pageCountLimit"></span>
                 </p>
 
-                <input type="submit" id="submit-msg" class="submit" name="submit-msg" placeholder="Send here"
-                    onclick="showAlert()" value="Send">
+                <input 
+                    type="submit" 
+                    id="submit-msg" 
+                    class="submit" 
+                    name="submit-msg" 
+                    placeholder="Send here"
+                    onclick="showAlert()" 
+                    value="Send"
+                >
+
                 <input type="hidden" id="hidden-numbers" name="hidden-numbers" required>
             </div>
         </form>
@@ -139,6 +155,10 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
         </div>
 
         <script>
+            function showAlert(message) {
+                alert(message);
+            }
+
             // Retrieve the required elements
             const recipientInput = document.getElementById("recipientInput");
             const recipientTableBody = document.getElementById("recipientTableBody");
@@ -166,11 +186,11 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                             document.getElementById('hidden-numbers').value = contactNumbers
 
                             recipients.push(
-                                {
-                                    "id": person.split("~")[0],
-                                    "name": person.split("~")[1],
-                                    "contact_num": contactNumber
-                                })
+                            {
+                                "id": person.split("~")[0],
+                                "name": person.split("~")[1],
+                                "contact_num": contactNumber
+                            })
                         })
                     }
                 }
@@ -236,6 +256,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                         "name": 'Unknown', // TODO: If number is existing in contacts, name must be the contact's name
                         "contact_num": recipientValue
                     })
+                    //recipient input clearing after inputing unknown number
                     recipientInput.value = "";
                     renderRecipientTable();
                 }
@@ -292,7 +313,8 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 posting.done(function (response) {
                     console.log(response);
                     if (response === "Success") {
-                        console.log("Hello");
+                        console.log("Hello"); //dito na dapat nag lalagay ng alert result 
+                        // showAlert("Message sent to queue.");
                     }
                     // console.log(data)
                     // window.location.href = window.location;
@@ -300,7 +322,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 posting.fail(function () {
                     console.log("Failed")
                 });
-            });
+            }); 
         </script>
         <script src="script.js"></script>
     </div>
