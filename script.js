@@ -56,7 +56,8 @@ function move() {
 function countCharactersAndPages() {
   const text = document.getElementById("message").value;
   document.getElementById("charCount").textContent = text.length;
-  document.getElementById("pageCount").textContent = Math.ceil(text.length / wordPerPageLimit
+  document.getElementById("pageCount").textContent = Math.ceil(
+    text.length / wordPerPageLimit
   );
 }
 
@@ -70,7 +71,7 @@ function validateInput() {
   // Update the input value with numeric characters only
   inputElement.value = numericInput;
 
-  if(numericInput !== "" && numericInput.length === 10){
+  if (numericInput !== "" && numericInput.length === 10) {
     buttonElement.disabled = false;
   } else {
     buttonElement.disabled = true;
@@ -95,19 +96,15 @@ function checkAll(myCheckbox) {
 // INBOX
 //Pop up message
 function showPopup(id) {
-  // const cells = row.getElementsByTagName("td");
+  document.getElementById("replyButton").value = id;
   const row = document.getElementById(`msg-${id}`);
   console.log(row);
   const cells = document.querySelectorAll(`#msg-${id} > td`);
-  const content = [];
-  for (let i = 0; i < cells.length - 1; i++) {
-    content.push(cells[i].textContent);
-  }
 
-  const sender = content[0];
-  const message = content[1];
-  const status = content[2];
-  const receiveDate = content[3];
+  const sender = cells[0].textContent;
+  const message = cells[1].textContent;
+  const status = cells[2].textContent;
+  const receiveDate = cells[3].textContent;
 
   const popup = document.getElementById("popup");
 
@@ -121,27 +118,25 @@ function showPopup(id) {
   contentStatus.textContent = "Read Status: " + status;
   contentDate.textContent = "Date: " + receiveDate;
 
-  /* Send the data using post with element id name and name2*/
-  console.log(document.getElementById("message").value); // UNDEFINED
-  console.log(Number(document.getElementById('counterInbox').textContent) - 1);
-
+  /* Send the data using post with element id name and name */
   if (status == 0) {
-    let update = $.post('smsInboxUpdate.php', {
+    let update = $.post("smsInboxUpdate.php", {
       id: id,
     });
-  
+
     /* Alerts the results */
     update.done(function (response) {
       console.log("RESPONSE", response);
       if (response === "Record updated successfully") {
-        row.classList.remove('highlight');
+        row.classList.remove("highlight");
         document.querySelector(`#msg-${id} > .read_status`).textContent = 1;
-        document.getElementById('counterInbox').textContent = Number(document.getElementById('counterInbox').textContent) - 1;
-        popup.style.display = "flex"
+        document.getElementById("counterInbox").textContent =
+          Number(document.getElementById("counterInbox").textContent) - 1;
+        popup.style.display = "flex";
       }
     });
     update.fail(function () {
-      console.log("Failed")
+      console.log("Failed");
     });
   }
 
@@ -156,9 +151,9 @@ function closePopup() {
 // Initial character and page count
 countCharactersAndPages();
 
-// // Function to check if the recipient table is empty and enable/disable the send button accordingly
+// Function to check if the recipient table is empty and enable/disable the send button accordingly
 // function checkRecipientTable() {
-//     // const table = document.getElementById('');
+// const table = document.getElementById('');
 //     const sendButton = document.getElementById('submit-msg');
 //     if (table.rows.length > 0) {
 //         sendButton.disabled = false;

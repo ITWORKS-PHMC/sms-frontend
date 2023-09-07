@@ -38,7 +38,9 @@ if ($conn === false) {
     <link rel="stylesheet" href="style.css">
 </head>
 
+
 <body>
+    
     <?php include("./nav/navbar.php"); ?>
     <?php include("./menu/menu.php"); ?>
 
@@ -102,15 +104,26 @@ if ($conn === false) {
             <div id="readStatus"></div>
             <div id="date"></div>
 
-            <a href="sms.php">
-                <button type="button" class="replyButton">
-                    Reply
-                </button>
-            </a>
+            <button type="button" class="replyButton" id="replyButton" onclick="addRecipient(this)">
+                Reply
+            </button>
         </div>
     </div>
-
+    
     <script src="script.js"></script>
-</body>
+    <script>
+        function addRecipient(element) {
+            const cells = document.querySelectorAll(`#msg-${element.value} > td`);
 
+            const contact_num = cells[0].textContent;
+            const message = cells[1].textContent;
+            const status = cells[2].textContent;
+            const receiveDate = cells[3].textContent;
+
+            let contact_string = `0~? ?~${contact_num}`
+
+            window.location.href = `http://localhost/sms-frontend/sms.php?to=${contact_string}`;
+        } 
+    </script>
+</body>
 </html>
