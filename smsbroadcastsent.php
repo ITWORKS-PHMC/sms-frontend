@@ -32,19 +32,43 @@
 
     <div class="container broadcast-sent">
         <h1> Broadcast Sent Messages </h1>
-        <div class="sms-recipient">
-            <table id="recipientTable" class="recipient-table">
-                    <tr>
-                        <th> Date/Time of Error </th>
-                        <th> Option </th>
-                    </tr>
-                    <tr>
-                        <th> 5/9/2023 11:41:50 AM </th>
-                        <th> <a href="smsbroadcastsent.php"><button type="button" class="sms button"> View </button></a> </th>
-                    </tr>
-                <tbody id="recipientTableBody"></tbody>
-            </table>
-        </div>
+        <table id="recipientTable" class="recipient-table">
+            <thead>
+                <tr>
+                    <th> ID </th>
+                    <th> Contact ID </th>
+                    <th> Mobile Number </th>
+                    <th> Text Message </th>
+                    <th> View </th>
+                </tr>
+            </thead>
+
+            <tbody id="recipientTableBody"></tbody>
+
+            <?php
+            // $tsql = "SELECT * FROM sms_unsent ORDER BY date_received DESC;";
+            $tsql = "SELECT * FROM sms_cancelled;";
+            $stmt = sqlsrv_query($conn, $tsql);
+            if ($stmt == false) {
+                echo 'ERROR';
+            }
+
+            while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                // echo "<tr class='$class' id='msg-{$obj['sms_received_id']}'>";
+                echo "<td>{$obj['sms_id']}</td>";
+                echo "<td>{$obj['contact_id']}</td>";
+                echo "<td>{$obj['mobile_no']}</td>";
+                echo "<td>" . wordwrap($obj['sms_message'], 35, "<br>\n", true) . "</td>";
+                // echo "<td class='read_status'>{$obj['read_status']}</td>";
+
+                // echo "<td>{$obj['date_received']->format('Y-m-d H:i:s')}</td>";
+                echo "<td><button onclick='showPopup()' class='viewButton'>View</button></td>";
+
+                echo "</tr>";
+            }
+            sqlsrv_free_stmt($stmt);
+            ?>
+        </table>
     </div>
 
 </body>
