@@ -21,36 +21,36 @@ function showPassword() {
 
 // SMS
 //Alert Messages
-function showAlert() {
-  var myAlert = document.getElementById("myAlert");
-  move();
+// function showAlert() {
+//   var myAlert = document.getElementById("myAlert");
+//   move();
 
-  myAlert.className = "show";
+//   myAlert.className = "show";
 
-  setTimeout(function () {
-    hideAlert();
-  }, 5000);
-}
-function hideAlert() {
-  myAlert.className = myAlert.className.replace("show", "");
-}
-function move() {
-  let i = 0;
-  if (i == 0) {
-    var elem = document.getElementById("myAlertBar");
-    var width = 1;
-    var interval = setInterval(frame, 30);
-    function frame() {
-      if (width >= 100) {
-        clearInterval();
-        interval = 0;
-      } else {
-        width++;
-        elem.style.width = width + "vw";
-      }
-    }
-  }
-}
+//   setTimeout(function () {
+//     hideAlert();
+//   }, 5000);
+// }
+// function hideAlert() {
+//   myAlert.className = myAlert.className.replace("show", "");
+// }
+// function move() {
+//   let i = 0;
+//   if (i == 0) {
+//     var elem = document.getElementById("myAlertBar");
+//     var width = 1;
+//     var interval = setInterval(frame, 30);
+//     function frame() {
+//       if (width >= 100) {
+//         clearInterval();
+//         interval = 0;
+//       } else {
+//         width++;
+//         elem.style.width = width + "vw";
+//       }
+//     }
+//   }
+// }
 
 //Page and characters count
 function countCharactersAndPages() {
@@ -135,6 +135,7 @@ function showPopup(id) {
         popup.style.display = "flex";
       }
     });
+    
     update.fail(function () {
       console.log("Failed");
     });

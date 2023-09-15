@@ -54,7 +54,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                     <span class="country">
                         +63
                     </span>
-                   
+
                     <!-- <input 
                         type="number" 
                         id="recipientInput" 
@@ -63,23 +63,14 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                         oninput="validateInput()"
                         placeholder="Input number here.."
                     > -->
-                    <input 
-                        type="text" 
-                        id="recipientInput" 
-                        name="number"
-                        onKeyPress="if(this.value.length==10) return false;"
-                        oninput="validateInput()"
-                        placeholder="Input number here.."
-                    >
+                    <input type="text" id="recipientInput" name="number"
+                        onKeyPress="if(this.value.length==10) return false;" oninput="validateInput()"
+                        placeholder="Input number here..">
 
-                    <button 
-                        type="button" 
-                        id="submitButton" 
-                        class="add-button"
-                        onClick="addRecipient()"
-                        disabled>Add to Recipient
+                    <button id="submitButton" type="button" class="add-button" onClick="addRecipient()" disabled>Add to
+                        Recipient
                     </button>
-                
+
                 </div>
                 <a href="contacts.php" class="contacts-button">Contacts</a>
             </div>
@@ -100,22 +91,15 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                     <span id="pageCountLimit"></span>
                 </p>
 
-                <input 
-                    type="submit" 
-                    id="submit-msg" 
-                    class="submit" 
-                    name="submit-msg" 
-                    placeholder="Send here"
-                    onclick="showAlert()" 
-                    value="Send"
-                >
-
+                <input id="submit-msg" type="submit" class="submit" name="submit-msg" placeholder="Send here"
+                    value="Send">
+                <!-- onclick="showAlert()"  -->
                 <input type="hidden" id="hidden-numbers" name="hidden-numbers" required>
             </div>
         </form>
 
         <!-- for alert -->
-        <div id="myAlert">
+        <!-- <div id="myAlert">
             <div class="myAlert-text-icon">
                 <div class="myAlert-message"> Message is in Queue </div>
                 <button class="close" onclick="hideAlert()">
@@ -126,7 +110,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 
         <div id="myAlertProgress">
             <div id="myAlertBar"> </div>
-        </div>
+        </div> -->
 
         <!-- for broadcast -->
         <!-- <div class="sms-broadcast">
@@ -155,10 +139,6 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
         </div>
 
         <script>
-            function showAlert(message) {
-                alert(message);
-            }
-
             // Retrieve the required elements
             const recipientInput = document.getElementById("recipientInput");
             const recipientTableBody = document.getElementById("recipientTableBody");
@@ -196,7 +176,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 }
                 renderRecipientTable();
             }
-        
+
             // Function to create a new row in the recipient table
             function createRecipientRow(recipient) {
                 const row = document.createElement("tr");
@@ -301,7 +281,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 /* get the action attribute from the <form action=""> element */
                 const url = 'sendToQueue.php'
 
-                /* Send the data using post with element id name and name2*/
+                /* Send the data using post with element id name and name2 */
                 console.log(document.getElementById("message").value);
 
                 var posting = $.post(url, {
@@ -313,6 +293,8 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 posting.done(function (response) {
                     console.log(response);
                     if (response === "Success") {
+                        alert("Message Sent to Queue!");
+                        // Clear the URL by redirecting to the same page without query parameters
                         window.location.href = window.location.href.split('?')[0];
                     }
                     // console.log(data)
@@ -320,6 +302,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 });
                 posting.fail(function () {
                     console.log("Failed")
+                    alert("Failed to send!");
                 });
             }); 
         </script>
