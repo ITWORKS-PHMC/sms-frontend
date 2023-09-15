@@ -40,7 +40,7 @@ if ($conn === false) {
 
 
 <body>
-    
+
     <?php include("./nav/navbar.php"); ?>
     <?php include("./menu/menu.php"); ?>
 
@@ -67,7 +67,6 @@ if ($conn === false) {
             }
 
             while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                // sms_received_id
                 $class = "";
                 if ($obj['read_status'] == 0) {
                     $class .= "highlight";
@@ -83,7 +82,6 @@ if ($conn === false) {
                 // echo "</td>";
                 echo "<td>" . wordwrap($obj['sms_message'], 35, "<br>\n", true) . "</td>";
                 echo "<td class='read_status'>{$obj['read_status']}</td>";
-
                 echo "<td>{$obj['date_received']->format('Y-m-d H:i:s')}</td>";
                 echo "<td><button onclick='showPopup({$obj['sms_received_id']})' class='viewButton'>View</button></td>";
 
@@ -109,7 +107,7 @@ if ($conn === false) {
             </button>
         </div>
     </div>
-    
+
     <script src="script.js"></script>
     <script>
         function addRecipient(element) {
@@ -120,10 +118,11 @@ if ($conn === false) {
             const status = cells[2].textContent;
             const receiveDate = cells[3].textContent;
 
-            let contact_string = `0~? ?~${contact_num}`
-
+            // let contact_string = `0~? ?~${contact_num}`
+            let contact_string = `0~${contact_num}~${contact_num}`
             window.location.href = `http://localhost/sms-frontend/sms.php?to=${contact_string}`;
         } 
     </script>
 </body>
+
 </html>
