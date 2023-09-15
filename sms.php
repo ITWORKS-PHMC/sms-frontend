@@ -313,8 +313,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 posting.done(function (response) {
                     console.log(response);
                     if (response === "Success") {
-                        console.log("Hello"); //dito na dapat nag lalagay ng alert result 
-                        // showAlert("Message sent to queue.");
+                        window.location.href = window.location.href.split('?')[0];
                     }
                     // console.log(data)
                     // window.location.href = window.location;
