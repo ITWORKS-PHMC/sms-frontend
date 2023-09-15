@@ -24,7 +24,8 @@ if ($conn === false) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
 
     <!-- bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -39,24 +40,27 @@ if ($conn === false) {
     </ul>
 
     <ul class="menu contacts" id="selectedContacts">
-        <li class="menulist"><button type="button" class="select-button" onclick="getSelectedContacts()">Get Selected Contacts</button></li>
-        <li class="menulist"><button type="button" class="add-button" onClick="addRecipient()">Add to Recipient</button></li>
-        
+        <li class="menulist"><button type="button" class="select-button" onclick="getSelectedContacts()">View Selected
+                Contacts</button></li>
+        <li class="menulist"><button type="button" class="add-button" onClick="addRecipient()">Add to Recipient</button>
+        </li>
+
         <h3>Selected Contacts</h3>
         <ul id="selectedContactsList"></ul>
     </ul>
 
 
     <div class="container contacts">
-    <button class="tablink" onclick="openPage('Contact', this, '#eff3f4')"  id="defaultOpen">Contacts</button>
-    <button class="tablink" onclick="openPage('CallerGroup', this, '#eff3f4')"> Caller Group </button>
-        
+        <button class="tablink" onclick="openPage('Contact', this, '#eff3f4')" id="defaultOpen">Contacts</button>
+        <button class="tablink" onclick="openPage('CallerGroup', this, '#eff3f4')"> Caller Group </button>
+
         <div id="Contact" class="tabcontent">
-        <h1> Contacts </h1>
+            <h1> Contacts </h1>
             <table id="recipientTable" class="recipient-table">
                 <form class="" action="" method="post">
                     <tr>
-                        <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all" onclick="checkAll(this)" ></td>
+                        <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all"
+                                onclick="checkAll(this)"></td>
                         <td> Contact ID </td>
                         <td> Employee Number </td>
                         <td> Full Name </td>
@@ -64,26 +68,26 @@ if ($conn === false) {
                     </tr>
 
                     <?php
-                        $tsql = "SELECT * from contacts";
-                        $stmt = sqlsrv_query($conn, $tsql);
+                    $tsql = "SELECT * from contacts";
+                    $stmt = sqlsrv_query($conn, $tsql);
 
-                        if ($stmt == false) {
-                            echo 'ERROR';
-                        }
+                    if ($stmt == false) {
+                        echo 'ERROR';
+                    }
 
-                        while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                            $contact = "{$obj['contact_id']}~{$obj['contact_fname']} {$obj['contact_lname']}~{$obj['mobile_no']}";
-                            if ($obj['active'] == 1) {
-                                echo "<tr>";
-                                echo "<td>"; echo "<input type='checkbox' name='selectedContacts' value='$contact'>"; echo "</td>";
-                                echo "<td>"; echo $obj['contact_id']; echo "</td>"; 
-                                echo "<td>"; echo $obj['employee_no']; echo "</td>"; 
-                                echo "<td>"; echo $obj['contact_lname'].', '.$obj['contact_fname'].' '.$obj['contact_mname']; echo "</td>"; 
-                                echo "<td>"; echo $obj['mobile_no']; echo "</td>"; 
-                                echo "</tr>";
-                            }
+                    while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                        $contact = "{$obj['contact_id']}~{$obj['contact_fname']} {$obj['contact_lname']}~{$obj['mobile_no']}";
+                        if ($obj['active'] == 1) {
+                            echo "<tr>";
+                            echo "<td> <input type='checkbox' name='selectedContacts' value='$contact'> </td>";
+                            echo "<td> {$obj['contact_id']} </td>";
+                            echo "<td> {$obj['employee_no']} </td>";
+                            echo "<td>{$obj['contact_lname']} {$obj['contact_fname']} {$obj['contact_mname']}</td>";
+                            echo "<td> {$obj['mobile_no']} </td>";
+                            echo "</tr>";
                         }
-                        sqlsrv_free_stmt($stmt);
+                    }
+                    sqlsrv_free_stmt($stmt);
                     ?>
                 </form>
             </table>
@@ -91,146 +95,151 @@ if ($conn === false) {
 
 
         <div id="CallerGroup" class="tabcontent">
-        <h1> Caller Group </h1>
-            <table id="recipientTable" class="recipient-table" ondblclick="showMembers()">
-                <form class="" action="" method="post">
-                    <tr>
-                        <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all" onclick="checkAll(this)" ></td>
-                        <td> Caller Group Code </td>
-                        <td> Caller Group Name </td>
-                    </tr>
-
-                    <?php
-                        $tsql_caller = "SELECT * from caller_group";
-                        $stmt_caller = sqlsrv_query($conn, $tsql_caller);
-
-                        if ($stmt_caller == false) {
+            <h1> Caller Group </h1>
+            <p> *Double click the Caller Group Code Cell to view the members </p>
+            <form>
+                <table class="recipient-table">
+                    <thead>
+                        <tr>
+                            <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all"
+                                    onclick="checkAll(this)"></td>
+                            <td> Caller Group Code </td>
+                            <td> Caller Group Name </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $tsql = "SELECT * FROM caller_group;";
+                        $stmt = sqlsrv_query($conn, $tsql);
+                        if ($stmt == false) {
                             echo 'ERROR';
                         }
 
-                        while($obj_caller = sqlsrv_fetch_array($stmt_caller, SQLSRV_FETCH_ASSOC)){
-                            // $contact = "{$obj['contact_id']}~{$obj['contact_fname']} {$obj['contact_lname']}~{$obj['mobile_no']}";
-                            if ($obj_caller['active'] == 1){
-                                echo "<tr>";
-                                echo "<td>"; echo "<input type='checkbox' name='selectedCaller' value=''>"; echo "</td>";
-                                echo "<td>"; echo $obj_caller['caller_group_code']; echo "</td>"; 
-                                echo "<td>"; echo $obj_caller['caller_group_name']; echo "</td>";
-                                echo "</tr>";
-                            }
+                        while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                            echo "<tr>";
+                            echo "<td> <input type='checkbox' name='selectedCaller' value=''> </td>";
+                            // echo "<td class='dbl-click' ondblclick='getCallerGroupCode(this)'>" . $obj['caller_group_code'] . "</td>";
+                            echo "<td class='dbl-click' ondblclick='showMembers(this)'>" . $obj['caller_group_code'] . "</td>";
+                            echo "<td> {$obj['caller_group_name']} </td>";
+                            echo "</tr>";
                         }
-                        sqlsrv_free_stmt($stmt_caller);
-                        // sqlsrv_close($conn);
-                    ?>
-                </form>
-            </table>
-            
-            <div id="CallerMembers" style="display:none;">
-                <table id="secondTable">
-                <form class="" action="" method="post">
-                    <tr>
-                        <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all" onclick="checkAll(this)" ></td>
-                        <td> Caller Group Code </td>
-                        <td> Caller Group Name </td>
-                        <td> Full Name </td>
-                        <td> Mobile Number </td>
-                    </tr>
-
-                    <?php
-                        $tsql_caller = "SELECT * from vw_caller_group_members";
-                        $stmt_caller = sqlsrv_query($conn, $tsql_caller);
-
-                        if ($stmt_caller == false) {
-                            echo 'ERROR';
-                        }
-
-                        while($obj_caller = sqlsrv_fetch_array($stmt_caller, SQLSRV_FETCH_ASSOC)){
-                            // $contact = "{$obj['contact_id']}~{$obj['contact_fname']} {$obj['contact_lname']}~{$obj['mobile_no']}";
-                            // if ($obj_caller['active'] == 1){
-                                echo "<tr>";
-                                echo "<td>"; echo "<input type='checkbox' name='selectedCaller' value=''>"; echo "</td>";
-                                echo "<td>"; echo $obj_caller['caller_group_code']; echo "</td>"; 
-                                echo "<td>"; echo $obj_caller['caller_group_name']; echo "</td>";
-                                echo "<td>"; echo $obj_caller['contact_lname'].', '.$obj_caller['contact_fname'].' '.$obj_caller['contact_mname']; echo "</td>"; 
-                                echo "<td>"; echo $obj_caller['mobile_no']; echo "</td>"; 
-                                echo "</tr>";
-                            // }
-                        }
-                        sqlsrv_free_stmt($stmt_caller);
-                        // sqlsrv_close($conn);
-                    ?>
-                </form>
+                        sqlsrv_free_stmt($stmt);
+                        ?>
+                    </tbody>
                 </table>
-            </div>
+
+                <table id="callerGroupMembersTable" style="display: none;" class="recipient-table">
+                    <thead>
+                        <tr>
+                            <td> Caller Member Code </td>
+                            <td> Caller Member Name </td>
+                            <td> Full Name </td>
+                            <td> Mobile Number </td>
+                        </tr>
+                    </thead>
+                    <tbody id="callerGroupMembers">
+                    </tbody>
+                </table>
+            </form>
         </div>
     </div>
     <script src="script.js"></script>
+    <script>
+        function showMembers(element) {
+            let callerGroupCode = element.innerHTML;
+            console.log(callerGroupCode);
+            document.getElementById("callerGroupMembersTable").style.display = "none";
+
+            let xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    let membersData = JSON.parse(xhr.responseText);
+                   
+                    if (membersData.length > 0) {
+                        let membersTable = document.getElementById("callerGroupMembersTable");
+                        let membersBody = document.getElementById("callerGroupMembers");
+                        membersBody.innerHTML = "";
+
+                        membersData.forEach(function (member) {
+                            let row = membersBody.insertRow();
+                            console.log(row);
+                            let CallerCode = row.insertCell(0);
+                            let CallerName = row.insertCell(1);
+                            let FullName = row.insertCell(2);
+                            let MobileNumber = row.insertCell(3);
+
+                            CallerCode.innerHTML = member.caller_group_code;
+                            CallerName.innerHTML = member.caller_group_name;
+                            FullName.innerHTML = member.full_name;
+                            MobileNumber.innerHTML = member.mobile_no;
+                        });
+
+                        membersTable.style.display = "block";
+                    }
+                }
+            };
+
+            xhr.open("POST", "contactsMembers.php?caller_group_code=" + callerGroupCode, true);
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhr.send("caller_group_code=" + callerGroupCode);
+        }
+
+        function getSelectedContacts() {
+            var checkboxes = document.getElementsByName('selectedContacts');
+            var selectedContacts = [];
+
+            // Loop through checkboxes to find the selected ones
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    selectedContacts.push(checkboxes[i].value);
+                }
+            }
+
+            // Display selected contacts in a list
+            displaySelectedContacts(selectedContacts);
+        }
+
+        function displaySelectedContacts(selectedContacts) {
+            var selectedContactsList = document.getElementById('selectedContactsList');
+
+            // Clear existing contacts
+            selectedContactsList.innerHTML = '';
+
+            // Display selected contacts in the list
+            selectedContacts.forEach(function (contact) {
+                var listItem = document.createElement('li');
+                listItem.textContent = contact;
+                selectedContactsList.appendChild(listItem);
+            });
+        }
+
+        function addRecipient() {
+            let contact_string = "";
+            $("input:checkbox[name=selectedContacts]:checked").each(function () {
+                contact_string += $(this).val() + ","
+            });
+
+            contact_string = contact_string.replace(/,+$/, '');
+            window.location.href = `http://localhost/sms-frontend/sms.php?to=${contact_string}`;
+        }
+
+        function openPage(pageName, elmnt, color) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].style.backgroundColor = "";
+            }
+            document.getElementById(pageName).style.display = "block";
+            elmnt.style.backgroundColor = color;
+        }
+
+        // Get the element with id="defaultOpen" and click on it
+        document.getElementById("defaultOpen").click();
+    </script>
 </body>
 
 </html>
-
-<script>
-    function showMembers() {
-            var callerMembersTable = document.getElementById('CallerMembers');
-            if (callerMembersTable.style.display === 'none') {
-                callerMembersTable.style.display = 'block';
-            } else {
-                callerMembersTable.style.display = 'none';
-            }
-        }
-
-    function getSelectedContacts() {
-        var checkboxes = document.getElementsByName('selectedContacts');
-        var selectedContacts = [];
-
-        // Loop through checkboxes to find the selected ones
-        for (var i = 0; i < checkboxes.length; i++) {
-            if (checkboxes[i].checked) {
-                selectedContacts.push(checkboxes[i].value);
-            }
-        }
-
-        // Display selected contacts in a list
-        displaySelectedContacts(selectedContacts);
-    }
-
-    function displaySelectedContacts(selectedContacts) {
-        var selectedContactsList = document.getElementById('selectedContactsList');
-
-        // Clear existing contacts
-        selectedContactsList.innerHTML = '';
-
-        // Display selected contacts in the list
-        selectedContacts.forEach(function (contact) {
-            var listItem = document.createElement('li');
-            listItem.textContent = contact;
-            selectedContactsList.appendChild(listItem);
-        });
-    }
-     
-    function addRecipient() {
-        let contact_string = "";
-        $("input:checkbox[name=selectedContacts]:checked").each(function(){
-            contact_string += $(this).val() + ","
-        });
-
-        contact_string = contact_string.replace(/,+$/, '');
-        window.location.href = `http://localhost/sms-frontend/sms.php?to=${contact_string}`;
-    }
-
-    function openPage(pageName,elmnt,color) {
-        var i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-        }
-        tablinks = document.getElementsByClassName("tablink");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].style.backgroundColor = "";
-        }
-        document.getElementById(pageName).style.display = "block";
-        elmnt.style.backgroundColor = color;
-    }
-
-    // Get the element with id="defaultOpen" and click on it
-    document.getElementById("defaultOpen").click();
-</script>
