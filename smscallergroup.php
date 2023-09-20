@@ -1,3 +1,14 @@
+<?php
+session_start();
+$username = $_SESSION['username'];
+$selectedCallerCode = $_SESSION['selectedCallerCode'];
+
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php"); // Redirect to the login page if not login 
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -11,7 +22,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer">
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
 
     <!-- jquery -->
@@ -31,13 +42,39 @@
 
     <div class="container colorgroup">
         <h1> Changing of Caller Group </h1>
-        <form action="sms.php" method="post">
-            <span> Caller Group Code: </span>
-            <select>
+        <p>Selected Caller Code: <?php echo $selectedCallerCode; ?></p>
+        
+        <form action="callergroupSelection.php" method="post">
+            <span> Want to change caller code? Choose here: </span>
+            <select id="callercode" name="callercode">
+                <?php
+                //database connection 
+                include("./database/connection.php");
+                $conn = sqlsrv_connect($serverName, $connectionInfo);
+                if ($conn === false) {
+                    die(print_r(sqlsrv_errors(), true));
+                }
 
+                $sql = "SELECT [caller_group_code] FROM vw_caller_group_members WHERE [username] = ?";
+                $params = array($username);
+                $query = sqlsrv_prepare($conn, $sql, $params);
+
+                if (!sqlsrv_execute($query)) {
+                    die(print_r(sqlsrv_errors(), true));
+                }
+
+                $callerGroupCode = "";
+                while ($obj = sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC)) {
+                    echo "<option value='" . $obj['caller_group_code'] . "'>" . $obj['caller_group_code'] . "</option>";
+                }
+
+                sqlsrv_close($conn);
+                ?>
             </select>
-            <input type="submit" value="Proceed">
+
+            <button type="submit" class="submit">Change</button>
         </form>
     </div>
 </body>
+
 </html>
