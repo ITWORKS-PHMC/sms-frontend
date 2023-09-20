@@ -40,9 +40,11 @@ if ($conn === false) {
     </ul>
 
     <ul class="menu contacts" id="selectedContacts">
-        <li class="menulist"><button type="button" class="select-button" onclick="getSelectedContacts()">View Selected
-                Contacts</button></li>
-        <li class="menulist"><button type="button" class="add-button" onClick="addRecipient()">Add to Recipient</button>
+        <li class="menulist">
+            <button type="button" class="select-button" onclick="getSelectedContacts()">View Selected Contacts</button>
+        </li>
+        <li class="menulist">
+            <button type="button" class="add-button" onClick="addRecipient()">Add to Recipient</button>
         </li>
 
         <h3>Selected Contacts</h3>
@@ -93,56 +95,59 @@ if ($conn === false) {
             </table>
         </div>
 
-
         <div id="CallerGroup" class="tabcontent">
             <h1> Caller Group </h1>
             <p> *Double click the Caller Group Code Cell to view the members </p>
             <form>
-                <table class="recipient-table">
-                    <thead>
-                        <tr>
-                            <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all"
-                                    onclick="checkAll(this)"></td>
-                            <td> Caller Group Code </td>
-                            <td> Caller Group Name </td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $tsql = "SELECT * FROM caller_group;";
-                        $stmt = sqlsrv_query($conn, $tsql);
-                        if ($stmt == false) {
-                            echo 'ERROR';
-                        }
+                <div class="table-containers">
+                    <table class="recipient-table">
+                        <thead>
+                            <tr>
+                                <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all"
+                                        onclick="checkAll(this)"></td>
+                                <td> Caller Group Code </td>
+                                <td> Caller Group Name </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $tsql = "SELECT * FROM caller_group;";
+                            $stmt = sqlsrv_query($conn, $tsql);
+                            if ($stmt == false) {
+                                echo 'ERROR';
+                            }
 
-                        while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                            echo "<tr>";
-                            echo "<td> <input type='checkbox' name='selectedCaller' value=''> </td>";
-                            // echo "<td class='dbl-click' ondblclick='getCallerGroupCode(this)'>" . $obj['caller_group_code'] . "</td>";
-                            echo "<td class='dbl-click' ondblclick='showMembers(this)'>" . $obj['caller_group_code'] . "</td>";
-                            echo "<td> {$obj['caller_group_name']} </td>";
-                            echo "</tr>";
-                        }
-                        sqlsrv_free_stmt($stmt);
-                        ?>
-                    </tbody>
-                </table>
+                            while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                echo "<tr>";
+                                echo "<td> <input type='checkbox' name='selectedCaller' value=''> </td>";
+                                // echo "<td class='dbl-click' ondblclick='getCallerGroupCode(this)'>" . $obj['caller_group_code'] . "</td>";
+                                echo "<td class='dbl-click' ondblclick='showMembers(this)'>" . $obj['caller_group_code'] . "</td>";
+                                echo "<td> {$obj['caller_group_name']} </td>";
+                                echo "</tr>";
+                            }
+                            sqlsrv_free_stmt($stmt);
+                            ?>
+                        </tbody>
+                    </table>
 
-                <table id="callerGroupMembersTable" style="display: none;" class="recipient-table">
-                    <thead>
-                        <tr>
-                            <td> Caller Member Code </td>
-                            <td> Caller Member Name </td>
-                            <td> Full Name </td>
-                            <td> Mobile Number </td>
-                        </tr>
-                    </thead>
-                    <tbody id="callerGroupMembers">
-                    </tbody>
-                </table>
+                    <!-- <table id="callerGroupMembersTable" style="display: none;" class="recipient-table"> -->
+                    <table id="callerGroupMembersTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <td> Caller Member Code </td>
+                                <td> Caller Member Name </td>
+                                <td> Full Name </td>
+                                <td> Mobile Number </td>
+                            </tr>
+                        </thead>
+                        <tbody id="callerGroupMembers">
+                        </tbody>
+                    </table>
+                </div>
             </form>
         </div>
     </div>
+
     <script src="script.js"></script>
     <script>
         function showMembers(element) {
@@ -154,7 +159,7 @@ if ($conn === false) {
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     let membersData = JSON.parse(xhr.responseText);
-                   
+
                     if (membersData.length > 0) {
                         let membersTable = document.getElementById("callerGroupMembersTable");
                         let membersBody = document.getElementById("callerGroupMembers");

@@ -318,6 +318,7 @@ body {
 table {
   width: 60vw;
   margin-top: 0.5rem;
+  margin-right: 10px; 
   border-radius: 5px;
   border: 1.5px solid #b2b2b2;
 }
@@ -336,29 +337,13 @@ tr:nth-child(all) {
   background-color: #ddd;
 }
 
+.table-containers {
+  display: flex;
+}
+
+/* For unread messages */
 .highlight {
-  /* Change this to the desired highlight color */
   background-color: #28d645;
-}
-
-/* table {
-  border-collapse: collapse;
-  width: 80%;
-}
-td,
-th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 3px;
-}
-tr:nth-child(even) {
-  background-color: #dddddd;
-} */
-
-fieldset {
-  width: 70%;
-  margin-left: 220px;
-  margin-top: 510px;
 }
 
 /* ALERT MESSAGE */
