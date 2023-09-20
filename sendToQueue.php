@@ -1,6 +1,7 @@
 <?php
 session_start();
 $username = $_SESSION['username'];
+$selectedCallerCode = $_SESSION['selectedCallerCode'];
 
 //Database Connection 
 include("./database/connection.php");
@@ -46,7 +47,7 @@ if (isset($_POST['data'])) {
             $cur = $j + 1;
             if (is_array($result)) {
                 // $values .= "('{$contactId}', '{$contact_num}', '$messages[$j] Part $cur of $messages_count', '$currentDateTime', '$currentDateTime'),";
-                $values .= "('{$contactId}', '{$contact_num}', '$messages[$j]...<ITD>', '$currentDateTime', '$user', '$currentDateTime'),";
+                $values .= "('{$contactId}', '{$contact_num}', '$messages[$j]...<$selectedCallerCode>', '$currentDateTime', '$user', '$currentDateTime'),";
             }
         }
     }

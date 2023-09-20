@@ -1,5 +1,7 @@
 <?php
 session_start();
+$selectedCallerCode = $_SESSION['selectedCallerCode'];
+
 if (!isset($_SESSION['username'])) {
     // Redirect to the login page if not login 
     header("Location: login.php");
@@ -31,6 +33,7 @@ if (!isset($_SESSION['username'])) {
     <div class="container home">
         <h3 class="title" id="title"> Perpetual Help Medical Center - Las Piñas City </h3>
         <p class="datetime" id="datetime"></p> <br>
+        <p>Selected Caller Code: <?php echo $selectedCallerCode; ?></p>
     </div>
 
     <script>
@@ -44,9 +47,9 @@ if (!isset($_SESSION['username'])) {
 
             datetimeElement.textContent = formattedDateTime;
         }
-
         updateDateTime();
         setInterval(updateDateTime, 1000);
+        
     </script> 
 </body>
 
