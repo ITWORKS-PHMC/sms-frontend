@@ -1,12 +1,13 @@
 <!-- Programmer: Chasey Larrisse V. Elizarde
 Project: SMS 
-Date: May 8, 2023
 Description: Frontend SMS  -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="sms icon" type="x-icon" href="img\logo.JPG">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
