@@ -1,4 +1,4 @@
-<?php 
+<?php
     //database connection 
     include("./database/connection.php");
 
@@ -6,7 +6,7 @@
     if ($conn === false) {
         die(print_r(sqlsrv_errors(), true));
     }
-    
+
     $tsql = "SELECT COUNT(*) AS sms_received_id FROM sms_received WHERE read_status = 0";
     $stmt_count = sqlsrv_query($conn, $tsql);
 
@@ -26,28 +26,37 @@
 
 <!DOCTYPE html>
 <html>
-<head>    
+
+<head>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <nav>
-        <ul class="menu">
-            <li class="menulabel"> MENU BUTTON </li>
-            <li class="menulist"><a class="active" href="sms.php">Create New Message</a></li>
-            <li class="menulist"><a href="smsqueued.php">Queue Messages</a></li>
-            
-            <li class="menulist"><a href="smsinbox.php">Inbox 
-                <div class="inbox-counter" id="counterInbox"> <?php echo $unreadCount; ?> </div>  
-            </a></li>
-          
-            <li class="menulist"><a href="smssent.php">Sent Messages</a></li>
-            <li class="menulist"><a href="smsunsent.php">Unsent Messages</a></li>
-            <li class="menulist"><a href="smscancelled.php">Cancelled Messages </a></li>
-            <li class="menulist"><a href="smsbroadcastsent.php">Broadcast Sent Messages</a></li>
-            <li class="menulist"><a href="smsbroadcastunsent.php">Broadcast Unsent Messages</a></li>
-            <li class="menulist"><a href="smscallergroup.php">Change Caller Group</a></li>
-        </ul>
-    </nav>
+<aside class="sidebar">
+    <ul>
+        <p class="logo">LOGO </p>
+        <hr>
+        <li> MENU BUTTON </li>
+        <hr>
+        <li><a class="active" href="sms.php">Create New Message</a></li>
+        <li><a href="smsqueued.php">Queue Messages</a></li>
+
+        <li><a href="smsinbox.php">Inbox
+                <div class="inbox-counter" id="counterInbox">
+                    <?php echo $unreadCount; ?>
+                </div>
+            </a></li> 
+
+        <li><a href="smssent.php">Sent Messages</a></li>
+        <li><a href="smsunsent.php">Unsent Messages</a></li>
+        <li><a href="smscancelled.php">Cancelled Messages </a></li>
+        <li><a href="smsbroadcastsent.php">Broadcast Sent Messages</a></li>
+        <li><a href="smsbroadcastunsent.php">Broadcast Unsent Messages</a></li>
+        <hr>
+        <li>CHANGE GROUP</li>
+        <hr>
+        <li><a href="smscallergroup.php">Caller Group</a></li>
+    </ul>
+</aside>
 </body>
-</html> 
+</html>

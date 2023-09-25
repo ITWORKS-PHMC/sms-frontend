@@ -72,20 +72,11 @@ header {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #1b4332;
   z-index: 100;
   position: sticky;
 }
 .navlist {
   float: right;
-}
-.navlistleft {
-  float: left;
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
 }
 .navlist a {
   display: block;
@@ -99,48 +90,39 @@ header {
 }
 
 /* MENU BAR */
-.menu {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  width: 25%;
-  background-color: #eff3f4;
-  position: fixed;
+.sidebar {
   height: 100%;
-  overflow: auto;
-  border: 1.5px solid #b2b2b2;
-  /* border-radius: 5px; */
+  width: 220px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #eff3f4;
+  border-right: 1px solid #b2b2b2;
 }
-.menulist a {
+.sidebar .menulabel {
+  color: #1b4332;
+}
+.sidebar ul {
   display: block;
+  padding: 0;
   color: #000;
-  padding: 8px 16px;
+}
+.sidebar ul li {
+  display: block;
+  padding: 10px;
+}
+.sidebar ul li a {
+  display: block;
+  padding: 4px;
   text-decoration: none;
-}
-.menulabel {
-  display: block;
   color: #000;
-  padding: 8px 16px;
-  text-decoration: underline;
 }
-/* .menulist a.active {
-  background-color: #04aa6d;
-  color: white;
-}
-.menulist a:hover:not(.active) {
-  background-color: #555;
-  color: white;
-}  */
-
-.menulist a {
-  color: #202020;
-}
-.menulist a:hover {
+.sidebar ul li a:hover {
   background-color: #1b4332;
   color: #eff3f4;
   transition: background-color 0.2s;
 }
-.menu .menulist .inbox-counter {
+.sidebar .menulist .inbox-counter {
   width: 25px;
   height: 25px;
   margin-top: -8%;
@@ -152,7 +134,7 @@ header {
   align-items: center;
   justify-content: center;
   font-size: 16px;
-}
+} 
 
 /* HOME PAGE */
 .container.home .title {
