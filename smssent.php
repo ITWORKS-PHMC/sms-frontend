@@ -23,32 +23,28 @@ if ($conn === false) {
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
 
-    <!-- bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <?php include("./nav/navbar.php"); ?>
-    <?php include("./menu/menu.php"); ?>    
 
-    <div class="container sent">
-        <h1> Sent Messages </h1>
-        
-        <div class="sms-recipient">
-            <table id="recipientTable" class="recipient-table">
-                <form class="" action="" method="post">
-                    <tr>
-                        <!-- <th> Contact ID </th> -->
-                        <th> Mobile Number </th>
-                        <th> Text Message </th>
-                        <!-- <th> Stat </th>
-                        <th> Date/Time Created </th>
-                        <th> Created By </th> -->
-                    </tr>
-                    <?php
+    <div class="content">
+        <?php include("./menu/menu.php"); ?>
+        <div class="container sent">
+            <h1> Sent Messages </h1>
+            <div class="sms-recipient">
+                <table id="recipientTable" class="recipient-table">
+                    <form class="" action="" method="post">
+                        <tr>
+                            <!-- <th> Contact ID </th> -->
+                            <th> Mobile Number </th>
+                            <th> Text Message </th>
+                            <!-- <th> Stat </th>
+                            <th> Date/Time Created </th>
+                            <th> Created By </th> -->
+                        </tr>
+                        <?php
                         $tsql = "SELECT * from sms_sent";
                         $stmt = sqlsrv_query($conn, $tsql);
 
@@ -59,8 +55,12 @@ if ($conn === false) {
                         while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                             echo "<tr>";
                             // echo "<td>"; echo $obj['contact_id']; echo "</td>"; 
-                            echo "<td>"; echo $obj['mobile_no']; echo "</td>";
-                            echo "<td>"; echo wordwrap($obj['sms_message'], 50, "<br>\n", true); echo "</td>"; 
+                            echo "<td>";
+                            echo $obj['mobile_no'];
+                            echo "</td>";
+                            echo "<td>";
+                            echo wordwrap($obj['sms_message'], 50, "<br>\n", true);
+                            echo "</td>";
                             // echo "<td>"; echo $obj['stat']; echo "</td>"; 
                             // echo "<td>"; echo $obj['date_created']; echo "</td>"; 
                             // echo "<td>"; echo $obj['created_by']; echo "</td>"; 
@@ -68,10 +68,13 @@ if ($conn === false) {
                         }
                         sqlsrv_free_stmt($stmt);
                         sqlsrv_close($conn);
-                    ?>
-                </form>
-            </table>
+                        ?>
+                    </form>
+                </table>
+            </div>
         </div>
     </div>
+
 </body>
+
 </html>

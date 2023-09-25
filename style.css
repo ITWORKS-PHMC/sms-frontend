@@ -191,11 +191,13 @@ header {
 }
 
 /* SMS CONTENT */
-.container {
-  margin-left: 25%;
-  padding: 1px 16px;
-  height: 100vh;
+.content {
+  margin-left: 240px;
 }
+.container {
+  padding-top: 50px;
+}
+
 .container.new-message .contact {
   display: inline-flex;
   flex-direction: column;

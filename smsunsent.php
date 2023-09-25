@@ -31,65 +31,58 @@ if ($conn === false) {
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
 
-    <!-- bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <?php include("./nav/navbar.php"); ?>
-    <?php include("./menu/menu.php"); ?>
+    <div class="content">
+        <?php include("./menu/menu.php"); ?>
+        <div class="container unsent">
+            <h1> Unsent Messages </h1>
+            <table id="recipientTable" class="recipient-table">
+                <thead>
+                    <tr>
+                        <th> Mobile Number </th>
+                        <th> Text Message </th>
+                        <th> View </th>
+                    </tr>
+                </thead>
 
-    <div class="container unsent">
-        <h1> Unsent Messages </h1>
-        <table id="recipientTable" class="recipient-table">
-            <thead>
-                <tr>
-                    <th> Mobile Number </th>
-                    <th> Text Message </th>
-                    <th> View </th>
-                </tr>
-            </thead>
+                <tbody id="recipientTableBody">
+                    <?php
+                    $tsql = "SELECT * FROM sms_unsent;";
+                    $stmt = sqlsrv_query($conn, $tsql);
+                    if ($stmt == false) {
+                        echo 'ERROR';
+                    }
 
-            <tbody id="recipientTableBody">
-                <?php
-                $tsql = "SELECT * FROM sms_unsent;";
-                $stmt = sqlsrv_query($conn, $tsql);
-                if ($stmt == false) {
-                    echo 'ERROR';
-                }
+                    while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                        echo "<tr id='msg-{$obj['sms_id']}'>";
 
-                while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                    echo "<tr id='msg-{$obj['sms_id']}'>";
+                        echo "<td>{$obj['mobile_no']}</td>";
+                        echo "<td>" . wordwrap($obj['sms_message'], 35, "<br>\n", true) . "</td>";
+                        // echo "<td>{$obj['date_received']->format('Y-m-d H:i:s')}</td>";
+                        echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
 
-                    echo "<td>{$obj['mobile_no']}</td>";
-                    echo "<td>" . wordwrap($obj['sms_message'], 35, "<br>\n", true) . "</td>";
-                    // echo "<td>{$obj['date_received']->format('Y-m-d H:i:s')}</td>";
-                    echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
+                        echo "</tr>";
+                    }
+                    sqlsrv_free_stmt($stmt);
+                    ?>
+                </tbody>
+            </table>
+            <div class="popup" id="popup">
+                <button onclick="closePopup()" class="closeButton">
+                    Close
+                </button>
 
-                    echo "</tr>";
-                }
-                sqlsrv_free_stmt($stmt);
-                ?>
-            </tbody>
-
-
-        </table>
-
-
-        <div class="popup" id="popup">
-            <button onclick="closePopup()" class="closeButton">
-                Close
-            </button>
-
-            <div id="sender"></div>
-            <div id="message"></div>
-
-            <button type="button" class="replyButton" id="replyButton" onclick="addRecipient(this)">
-                Reply
-            </button>
+                <div id="sender"></div>
+                <div id="message"></div>
+                
+                <button type="button" class="replyButton" id="replyButton" onclick="addRecipient(this)">
+                    Reply
+                </button>
+            </div>
         </div>
     </div>
     <script>
@@ -113,7 +106,6 @@ if ($conn === false) {
 
             popup.style.display = "flex";
         }
-
 
         // /* Send the data using post with element id name and name */
         // if (status == 0) {
@@ -142,7 +134,6 @@ if ($conn === false) {
             const popup = document.getElementById("popup");
             popup.style.display = "none";
         }
-
     </script>
 </body>
 

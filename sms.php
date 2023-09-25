@@ -34,108 +34,99 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
 
-    <!-- bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <?php include("./nav/navbar.php"); ?>
-    <?php include("./menu/menu.php"); ?>
+    <div class="content">
 
-    <div class="container new-message">
-        <h1> Create New Messages </h1>
-        <form action="#" id="send-message" method="post">
+        <?php include("./menu/menu.php"); ?>
 
-            <div class="contact">
-                <div class="top">
-                    <span class="country">
-                        +63
-                    </span>
+        <div class="container new-message">
+            <h1> Create New Messages </h1>
+            <form action="#" id="send-message" method="post">
 
-                    <!-- <input 
-                        type="number" 
-                        id="recipientInput" 
-                        name="number"
-                        onKeyPress="if(this.value.length==10) return false;"
-                        oninput="validateInput()"
-                        placeholder="Input number here.."
-                    > -->
-                    <input type="text" id="recipientInput" name="number"
-                        onKeyPress="if(this.value.length==10) return false;" oninput="validateInput()"
-                        placeholder="Input number here..">
+                <div class="contact">
+                    <div class="top">
+                        <span class="country">
+                            +63
+                        </span>
 
-                    <button id="submitButton" type="button" class="add-button" onClick="addRecipient()" disabled>Add to
-                        Recipient
-                    </button>
+                        <input type="text" id="recipientInput" name="number"
+                            onKeyPress="if(this.value.length==10) return false;" oninput="validateInput()"
+                            placeholder="Input number here..">
 
+                        <button id="submitButton" type="button" class="add-button" onClick="addRecipient()" disabled>Add to
+                            Recipient
+                        </button>
+
+                    </div>
+                    <a href="contacts.php" class="contacts-button">Contacts</a>
                 </div>
-                <a href="contacts.php" class="contacts-button">Contacts</a>
+
+                <div class="sms-message">
+                    <textarea id="message" name="message" class="message" rows="5" placeholder="Type something here.."
+                        onInput="countCharactersAndPages()" required></textarea>
+                    <p>
+                        Character count:
+                        <span id="charCount"></span>
+                        /
+                        <span id="charLimit"></span>
+                    </p>
+                    <p>
+                        Page count:
+                        <span id="pageCount"></span>
+                        /
+                        <span id="pageCountLimit"></span>
+                    </p>
+
+                    <input id="submit-msg" type="submit" class="submit" name="submit-msg" placeholder="Send here"
+                        value="Send">
+                    <!-- onclick="showAlert()"  -->
+                    <input type="hidden" id="hidden-numbers" name="hidden-numbers" required>
+                </div>
+            </form>
+
+            <!-- for alert -->
+            <!-- <div id="myAlert">
+                <div class="myAlert-text-icon">
+                    <div class="myAlert-message"> Message is in Queue </div>
+                    <button class="close" onclick="hideAlert()">
+                        <i class='bx bx-x'></i>
+                    </button>
+                </div>
             </div>
 
-            <div class="sms-message">
-                <textarea id="message" name="message" class="message" rows="5" placeholder="Type something here.."
-                    onInput="countCharactersAndPages()" required></textarea>
-                <p>
-                    Character count:
-                    <span id="charCount"></span>
-                    /
-                    <span id="charLimit"></span>
-                </p>
-                <p>
-                    Page count:
-                    <span id="pageCount"></span>
-                    /
-                    <span id="pageCountLimit"></span>
-                </p>
+            <div id="myAlertProgress">
+                <div id="myAlertBar"> </div>
+            </div> -->
 
-                <input id="submit-msg" type="submit" class="submit" name="submit-msg" placeholder="Send here"
-                    value="Send">
-                <!-- onclick="showAlert()"  -->
-                <input type="hidden" id="hidden-numbers" name="hidden-numbers" required>
+            <!-- for broadcast -->
+            <!-- <div class="sms-broadcast">
+            <form action="" method="post">
+                <input type="checkbox" class="checkbox" id="checkbox" name="checkbox"> Broadcast Schedule: </input>
+                <input type="datetime-local" class="schedule" id="schedule" name="schedule"></input>
+                <input type="submit" class="broadcast-submit" value="Submit">
+
+                <div class="broadcasttitle">
+                <label class="title"> Broadcast Title: </label>
+                <input type="text" class="titlebox" id="title" name="broadcast-msg"></input>
+                </div>
+            </form>
+            </div> -->
+
+            <!-- Recipient Table -->
+            <div class="sms-recipient">
+                <table id="recipientTable" class="recipient-table">
+                    <tr>
+                        <th>Recipient Name</th>
+                        <th>Mobile Number</th>
+                        <th>Delete</th>
+                    </tr>
+                    <tbody id="recipientTableBody"></tbody>
+                </table>
             </div>
-        </form>
-
-        <!-- for alert -->
-        <!-- <div id="myAlert">
-            <div class="myAlert-text-icon">
-                <div class="myAlert-message"> Message is in Queue </div>
-                <button class="close" onclick="hideAlert()">
-                    <i class='bx bx-x'></i>
-                </button>
-            </div>
-        </div>
-
-        <div id="myAlertProgress">
-            <div id="myAlertBar"> </div>
-        </div> -->
-
-        <!-- for broadcast -->
-        <!-- <div class="sms-broadcast">
-        <form action="" method="post">
-            <input type="checkbox" class="checkbox" id="checkbox" name="checkbox"> Broadcast Schedule: </input>
-            <input type="datetime-local" class="schedule" id="schedule" name="schedule"></input>
-            <input type="submit" class="broadcast-submit" value="Submit">
-
-            <div class="broadcasttitle">
-            <label class="title"> Broadcast Title: </label>
-            <input type="text" class="titlebox" id="title" name="broadcast-msg"></input>
-            </div>
-        </form>
-        </div> -->
-
-        <!-- Recipient Table -->
-        <div class="sms-recipient">
-            <table id="recipientTable" class="recipient-table">
-                <tr>
-                    <th>Recipient Name</th>
-                    <th>Mobile Number</th>
-                    <th>Delete</th>
-                </tr>
-                <tbody id="recipientTableBody"></tbody>
-            </table>
         </div>
 
         <script>
@@ -166,11 +157,11 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                             document.getElementById('hidden-numbers').value = contactNumbers
 
                             recipients.push(
-                            {
-                                "id": person.split("~")[0],
-                                "name": person.split("~")[1],
-                                "contact_num": contactNumber
-                            })
+                                {
+                                    "id": person.split("~")[0],
+                                    "name": person.split("~")[1],
+                                    "contact_num": contactNumber
+                                })
                         })
                     }
                 }

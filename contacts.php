@@ -23,129 +23,124 @@ if ($conn === false) {
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
 
-    <!-- bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <ul class="navigation">
-        <li class="navlistleft">PHMC SMS</li>
-        <li class="navlist"><a href="logout.php">LOGOUT</a></li>
-        <li class="navlist"><a href="contacts.php">CONTACTS</a></li>
-        <li class="navlist"><a href="sms.php">SMS</a></li>
-        <li class="navlist"><a class="active" href="home.php">HOME</a></li>
-    </ul>
+    <?php include("./nav/navbar.php"); ?>
 
-    <ul class="menu contacts" id="selectedContacts">
-        <li class="menulist">
-            <button type="button" class="select-button" onclick="getSelectedContacts()">View Selected Contacts</button>
-        </li>
-        <li class="menulist">
-            <button type="button" class="add-button" onClick="addRecipient()">Add to Recipient</button>
-        </li>
+    <div class="content">
+        <aside class="sidebar">
+            <ul id="selectedContacts">
+                <li>
+                    <button type="button" class="select-button" onclick="getSelectedContacts()">View Selected
+                        Contacts</button>
+                </li>
+                <li>
+                    <button type="button" class="add-button" onClick="addRecipient()">Add to Recipient</button>
+                </li>
 
-        <h3>Selected Contacts</h3>
-        <ul id="selectedContactsList"></ul>
-    </ul>
+                <h3>Selected Contacts</h3>
+                <ul id="selectedContactsList"></ul>
+            </ul>
+        </aside>
 
+        <div class="container contacts">
+            <button class="tablink" onclick="openPage('Contact', this, '#eff3f4')" id="defaultOpen">Contacts</button>
+            <button class="tablink" onclick="openPage('CallerGroup', this, '#eff3f4')"> Caller Group </button>
 
-    <div class="container contacts">
-        <button class="tablink" onclick="openPage('Contact', this, '#eff3f4')" id="defaultOpen">Contacts</button>
-        <button class="tablink" onclick="openPage('CallerGroup', this, '#eff3f4')"> Caller Group </button>
+            <div id="Contact" class="tabcontent">
+                <h1> Contacts </h1>
+                <table id="recipientTable" class="recipient-table">
+                    <form class="" action="" method="post">
+                        <tr>
+                            <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all"
+                                    onclick="checkAll(this)"></td>
+                            <td> Contact ID </td>
+                            <td> Employee Number </td>
+                            <td> Full Name </td>
+                            <td> Phone Number </td>
+                        </tr>
 
-        <div id="Contact" class="tabcontent">
-            <h1> Contacts </h1>
-            <table id="recipientTable" class="recipient-table">
-                <form class="" action="" method="post">
-                    <tr>
-                        <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all"
-                                onclick="checkAll(this)"></td>
-                        <td> Contact ID </td>
-                        <td> Employee Number </td>
-                        <td> Full Name </td>
-                        <td> Phone Number </td>
-                    </tr>
+                        <?php
+                        $tsql = "SELECT * from contacts";
+                        $stmt = sqlsrv_query($conn, $tsql);
 
-                    <?php
-                    $tsql = "SELECT * from contacts";
-                    $stmt = sqlsrv_query($conn, $tsql);
-
-                    if ($stmt == false) {
-                        echo 'ERROR';
-                    }
-
-                    while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                        $contact = "{$obj['contact_id']}~{$obj['contact_fname']} {$obj['contact_lname']}~{$obj['mobile_no']}";
-                        if ($obj['active'] == 1) {
-                            echo "<tr>";
-                            echo "<td> <input type='checkbox' name='selectedContacts' value='$contact'> </td>";
-                            echo "<td> {$obj['contact_id']} </td>";
-                            echo "<td> {$obj['employee_no']} </td>";
-                            echo "<td>{$obj['contact_lname']} {$obj['contact_fname']} {$obj['contact_mname']}</td>";
-                            echo "<td> {$obj['mobile_no']} </td>";
-                            echo "</tr>";
+                        if ($stmt == false) {
+                            echo 'ERROR';
                         }
-                    }
-                    sqlsrv_free_stmt($stmt);
-                    ?>
-                </form>
-            </table>
-        </div>
 
-        <div id="CallerGroup" class="tabcontent">
-            <h1> Caller Group </h1>
-            <p> *Double click the Caller Group Code Cell to view the members </p>
-            <form>
-                <div class="table-containers">
-                    <table class="recipient-table">
-                        <thead>
-                            <tr>
-                                <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all"
-                                        onclick="checkAll(this)"></td>
-                                <td> Caller Group Code </td>
-                                <td> Caller Group Name </td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            $tsql = "SELECT * FROM caller_group;";
-                            $stmt = sqlsrv_query($conn, $tsql);
-                            if ($stmt == false) {
-                                echo 'ERROR';
-                            }
-
-                            while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                        while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                            $contact = "{$obj['contact_id']}~{$obj['contact_fname']} {$obj['contact_lname']}~{$obj['mobile_no']}";
+                            if ($obj['active'] == 1) {
                                 echo "<tr>";
-                                echo "<td> <input type='checkbox' name='selectedCaller' value=''> </td>";
-                                // echo "<td class='dbl-click' ondblclick='getCallerGroupCode(this)'>" . $obj['caller_group_code'] . "</td>";
-                                echo "<td class='dbl-click' ondblclick='showMembers(this)'>" . $obj['caller_group_code'] . "</td>";
-                                echo "<td> {$obj['caller_group_name']} </td>";
+                                echo "<td> <input type='checkbox' name='selectedContacts' value='$contact'> </td>";
+                                echo "<td> {$obj['contact_id']} </td>";
+                                echo "<td> {$obj['employee_no']} </td>";
+                                echo "<td>{$obj['contact_lname']} {$obj['contact_fname']} {$obj['contact_mname']}</td>";
+                                echo "<td> {$obj['mobile_no']} </td>";
                                 echo "</tr>";
                             }
-                            sqlsrv_free_stmt($stmt);
-                            ?>
-                        </tbody>
-                    </table>
+                        }
+                        sqlsrv_free_stmt($stmt);
+                        ?>
+                    </form>
+                </table>
+            </div>
 
-                    <!-- <table id="callerGroupMembersTable" style="display: none;" class="recipient-table"> -->
-                    <table id="callerGroupMembersTable" style="display: none;">
-                        <thead>
-                            <tr>
-                                <td> Caller Member Code </td>
-                                <td> Caller Member Name </td>
-                                <td> Full Name </td>
-                                <td> Mobile Number </td>
-                            </tr>
-                        </thead>
-                        <tbody id="callerGroupMembers">
-                        </tbody>
-                    </table>
-                </div>
-            </form>
+            <div id="CallerGroup" class="tabcontent">
+                <h1> Caller Group </h1>
+                <p> *Double click the Caller Group Code Cell to view the members </p>
+                <form>
+                    <div class="table-containers">
+                        <table class="recipient-table">
+                            <thead>
+                                <tr>
+                                    <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all"
+                                            onclick="checkAll(this)"></td>
+                                    <td> Caller Group Code </td>
+                                    <td> Caller Group Name </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $tsql = "SELECT * FROM caller_group;";
+                                $stmt = sqlsrv_query($conn, $tsql);
+                                if ($stmt == false) {
+                                    echo 'ERROR';
+                                }
+
+                                while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                    echo "<tr>";
+                                    echo "<td> <input type='checkbox' name='selectedCaller' value=''> </td>";
+                                    // echo "<td class='dbl-click' ondblclick='getCallerGroupCode(this)'>" . $obj['caller_group_code'] . "</td>";
+                                    echo "<td class='dbl-click' ondblclick='showMembers(this)'>" . $obj['caller_group_code'] . "</td>";
+                                    echo "<td> {$obj['caller_group_name']} </td>";
+                                    echo "</tr>";
+                                }
+                                sqlsrv_free_stmt($stmt);
+                                ?>
+                            </tbody>
+                        </table>
+
+                        <!-- <table id="callerGroupMembersTable" style="display: none;" class="recipient-table"> -->
+                        <table id="callerGroupMembersTable" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <td> Caller Member Code </td>
+                                    <td> Caller Member Name </td>
+                                    <td> Full Name </td>
+                                    <td> Mobile Number </td>
+                                </tr>
+                            </thead>
+                            <tbody id="callerGroupMembers">
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
         </div>
+
     </div>
 
     <script src="script.js"></script>
