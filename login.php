@@ -6,8 +6,8 @@ Description: Frontend SMS  -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
-    <link rel="sms icon" type="x-icon" href="img\logo.JPG">
+    <title>SMS</title>
+    <link rel="sms icon" type="x-icon" href="img\logo.png">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"

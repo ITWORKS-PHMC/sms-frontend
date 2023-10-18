@@ -19,7 +19,8 @@ if ($conn === false) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=500, initial-scale=1" />
-    <title>SMS Inbox</title>
+    <title>SMS</title>
+    <link rel="sms icon" type="x-icon" href="img\logo.png">
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
@@ -113,6 +114,7 @@ if ($conn === false) {
             // let contact_string = `0~? ?~${contact_num}`
             let contact_string = `0~${contact_num}~${contact_num}`
             window.location.href = `http://localhost/sms-frontend/sms.php?to=${contact_string}`;
+            // window.location.href = `http://uphmc-sms01.uphmc.com.ph/sms-frontend/sms.php?to=${contact_string}`; //server phmc-sms01
         } 
     </script>
 </body>

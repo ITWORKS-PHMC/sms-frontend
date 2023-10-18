@@ -29,7 +29,7 @@ if (isset($_POST['data'])) {
 
             if (!preg_match($pattern, $firstFiveDigits, $matches)) {
                 //* Number will not add in insert string query
-                // TODO
+                // TODO alert where the prefix that is not in the list will not send
                 // $error = "Prefix number does not exist in the database.";
                 echo "Incorrect Prefix. Invalid Number";
                 echo '<script>alert("No match found!");</script>';
@@ -47,13 +47,14 @@ if (isset($_POST['data'])) {
             $cur = $j + 1;
             if (is_array($result)) {
                 // $values .= "('{$contactId}', '{$contact_num}', '$messages[$j] Part $cur of $messages_count', '$currentDateTime', '$currentDateTime'),";
+                //TODO pag galing sa resend hindi mababago yung datecreated and createdby yung dateresend lang and modifiedby lang  
                 $values .= "('{$contactId}', '{$contact_num}', '$messages[$j]...<$selectedCallerCode>', '$currentDateTime', '$user', '$currentDateTime'),";
             }
         }
     }
 
     $values = rtrim($values, ',');
-
+    
     $insert = "INSERT INTO [sms_queue] ([contact_id], [mobile_no], [sms_message], [date_created], [created_by], [date_resend]) VALUES $values";
     $stmt = sqlsrv_query($conn, $insert);
     if ($stmt === false) {

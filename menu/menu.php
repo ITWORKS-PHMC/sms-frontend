@@ -34,7 +34,7 @@
 <body>
 <aside class="sidebar">
     <ul>
-        <p class="logo">LOGO </p>
+        <img src="img\logo_header.png" alt="logo_header">
         <hr>
         <li> MENU BUTTON </li>
         <hr>
