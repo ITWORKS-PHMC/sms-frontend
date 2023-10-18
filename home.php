@@ -12,7 +12,6 @@ if (!isset($_SESSION['username'])) {
 
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <title>SMS</title>
@@ -36,7 +35,7 @@ if (!isset($_SESSION['username'])) {
         <div class="container home">
             <h3 class="title" id="title"> Perpetual Help Medical Center - Las Piñas City </h3>
             <p class="datetime" id="datetime"></p>
-            <p> Good day, <?php echo $username; ?> </p>
+            <p> Good day, <?php echo str_replace('.',' ', $username. '!'); ?>
             <p> Selected Caller Code: <?php echo $selectedCallerCode; ?> </p>
         </div>
     </div>
