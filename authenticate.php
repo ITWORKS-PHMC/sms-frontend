@@ -35,7 +35,7 @@
 
                 //ldap connection 
                 $domain = "uphmc.com.ph";
-                $ldap_server = "ldap://uphmc-dc103.uphmc.com.ph";
+                $ldap_server = "ldap://uphmc-dc104.uphmc.com.ph";
 
                 // Get the username and password from the user.
                 $username = $_POST["username"];
