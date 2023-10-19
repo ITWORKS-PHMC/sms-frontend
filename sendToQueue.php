@@ -18,6 +18,11 @@ if (isset($_POST['data'])) {
     $currentDateTime = date("Y-m-d H:i:s");
     $user = $username;
     $pattern = "/(\+639)(\d{2})/";
+    $response = array(
+        "message" => "",
+        "invalid_num" => [],
+        "valid_num" => []
+    );
 
     $values = "";
     // print_r($data);
@@ -28,11 +33,8 @@ if (isset($_POST['data'])) {
             $firstFiveDigits = substr($contact_num, 0, 6);
 
             if (!preg_match($pattern, $firstFiveDigits, $matches)) {
-                //* Number will not add in insert string query
-                // TODO alert where the prefix that is not in the list will not send
-                // $error = "Prefix number does not exist in the database.";
-                echo "Incorrect Prefix. Invalid Number";
-                echo '<script>alert("No match found!");</script>';
+                $response['message'] = "Invalid Number";
+                array_push($response['invalid_num'], $contact_num);
             }
 
             $sql = "SELECT [prefix_number] FROM prefix_numbers WHERE [prefix_number] = ?";
@@ -46,20 +48,17 @@ if (isset($_POST['data'])) {
             $result = sqlsrv_fetch_array($query);
             $cur = $j + 1;
             if (is_array($result)) {
-                // $values .= "('{$contactId}', '{$contact_num}', '$messages[$j] Part $cur of $messages_count', '$currentDateTime', '$currentDateTime'),";
-                //TODO pag galing sa resend hindi mababago yung datecreated and createdby yung dateresend lang and modifiedby lang  
-                $values .= "('{$contactId}', '{$contact_num}', '$messages[$j]...<$selectedCallerCode>', '$currentDateTime', '$user', '$currentDateTime'),";
-            }
+
+    if (empty($response['invalid_num'])) {
+        $response['message'] = "Success";
+        $values = rtrim($values, ',');
+
+        $insert = "INSERT INTO [sms_queue] ([contact_id], [mobile_no], [sms_message], [date_created], [created_by], [date_resend]) VALUES $values";
+        $stmt = sqlsrv_query($conn, $insert);
+        if ($stmt === false) {
+            die(print_r(sqlsrv_errors(), true));
         }
     }
-
-    $values = rtrim($values, ',');
-    
-    $insert = "INSERT INTO [sms_queue] ([contact_id], [mobile_no], [sms_message], [date_created], [created_by], [date_resend]) VALUES $values";
-    $stmt = sqlsrv_query($conn, $insert);
-    if ($stmt === false) {
-        die(print_r(sqlsrv_errors(), true));
-    }
-    echo "Success";
+    echo json_encode($response);
 }
 ?>

@@ -172,7 +172,8 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
             // Function to create a new row in the recipient table
             function createRecipientRow(recipient) {
                 const row = document.createElement("tr");
-                // row.setAttribute("data-recipient-id", recipient.id);
+                row.classList.add("contactNumRow");
+                row.setAttribute("id", recipient.contact_num);
 
                 // Recipient cell for Recipient Number <UNKNOWN USER>
                 const recipientCell2 = document.createElement("td");
@@ -283,14 +284,16 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 
                 /* Alerts the results */
                 posting.done(function (response) {
-                    console.log(response);
-                    if (response === "Success") {
+                    const obj = JSON.parse(response)
+                    if (obj['message'] === "Success") {
                         alert("Message Sent to Queue!");
-                        // Clear the URL by redirecting to the same page without query parameters
                         window.location.href = window.location.href.split('?')[0];
+                    } else if (obj['message'] === "Invalid Prefix") {
+                        alert("Message cannot be send due to unauthorize number. Please contact IT Department at local: 459/458.");
+                        obj["invalid_num"].forEach(number => {
+                            document.getElementById(number).classList.add("invalid");
+                        });
                     }
-                    // console.log(data)
-                    // window.location.href = window.location;
                 });
                 posting.fail(function () {
                     console.log("Failed")
