@@ -318,6 +318,7 @@ table {
   margin-right: 10px; 
   border-radius: 5px;
   border: 1.5px solid #b2b2b2;
+  border-collapse: collapse;
 }
 td,
 th {
@@ -340,81 +341,6 @@ tr:nth-child(all) {
 
 /* For unread messages */
 .highlight {
-  background-color: #28d645;
-}
-
-/* ALERT MESSAGE */
-#myAlert {
-  visibility: hidden;
-  position: fixed;
-  color: white;
-  border-radius: 10px;
-  top: 0;
-  right: 0;
-  transform: translate(-15px, 15px);
-  background: #28d645;
-  overflow: hidden;
-}
-.myAlert-text-icon {
-  align-items: stretch;
-  box-shadow: 0 1px 1px rgb(10 10 10 / 10%);
-  display: flex;
-  max-width: 250px;
-}
-.myAlert-message {
-  align-items: center;
-  display: flex;
-  flex-grow: 1;
-  font-weight: 700;
-  padding: 15px 25px;
-}
-.close {
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  appearance: none;
-  background: 0 0;
-  border: none;
-  color: currentColor;
-  font-family: inherit;
-  font-size: 1em;
-  margin: 0;
-  padding: 0;
-  align-items: center;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  padding: 0.75rem 1rem;
-}
-#myAlert.show {
-  visibility: visible;
-}
-
-#myAlert.show {
-  animation: show 0.5s forwards;
-}
-
-@keyframes show {
-  0% {
-    transform: translate(-15px, 15px) scale(0);
-  }
-  50% {
-    transform: translate(-15px, 15px) scale(1.2);
-  }
-  70% {
-    transform: translate(-15px, 15px) scale(0.9);
-  }
-  100% {
-    transform: translate(-15px, 15px) scale(1);
-  }
-}
-
-#myAlertBar {
-  height: 2px;
-  background-color: #ddd;
-  color: white;
-  margin-top: 0.5rem;
-}
-#myAlertProgress {
   background-color: #28d645;
 }
 
@@ -468,4 +394,8 @@ tr:nth-child(all) {
   background-color: #1b4332;
   color: #eff3f4;
   transition: background-color 0.2s;
+}
+
+.contactNumRow.invalid {
+  background-color: red;
 }

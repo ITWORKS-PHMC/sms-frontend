@@ -58,10 +58,10 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                             onKeyPress="if(this.value.length==10) return false;" oninput="validateInput()"
                             placeholder="Input number here..">
 
-                        <button id="submitButton" type="button" class="add-button" onClick="addRecipient()" disabled>Add to
-                            Recipient
+                        <button id="submitButton" type="button" class="add-button" onClick="addRecipient(this)"
+                            disabled>
+                            Add to Recipient
                         </button>
-
                     </div>
                     <a href="contacts.php" class="contacts-button">Contacts</a>
                 </div>
@@ -84,24 +84,9 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 
                     <input id="submit-msg" type="submit" class="submit" name="submit-msg" placeholder="Send here"
                         value="Send">
-                    <!-- onclick="showAlert()"  -->
                     <input type="hidden" id="hidden-numbers" name="hidden-numbers" required>
                 </div>
             </form>
-
-            <!-- for alert -->
-            <!-- <div id="myAlert">
-                <div class="myAlert-text-icon">
-                    <div class="myAlert-message"> Message is in Queue </div>
-                    <button class="close" onclick="hideAlert()">
-                        <i class='bx bx-x'></i>
-                    </button>
-                </div>
-            </div>
-
-            <div id="myAlertProgress">
-                <div id="myAlertBar"> </div>
-            </div> -->
 
             <!-- for broadcast -->
             <!-- <div class="sms-broadcast">
@@ -134,7 +119,6 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
             // Retrieve the required elements
             const recipientInput = document.getElementById("recipientInput");
             const recipientTableBody = document.getElementById("recipientTableBody");
-
             const pageUrl = window.location.search.substring(1)
             const urlVariables = pageUrl.split('&')
             let recipients = [];
@@ -184,16 +168,11 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 // Recipient cell for Mobile Number 
                 const recipientCell = document.createElement("td");
                 recipientCell.classList.add("contactNum");
-                // recipientCell.textContent = "+63" + recipient.contact_num;
                 recipientCell.textContent = recipient.contact_num;
                 row.appendChild(recipientCell);
 
                 // Action cell
                 const actionCell = document.createElement("td");
-                // const editBtn = document.createElement("button");
-                // editBtn.textContent = "Edit";
-                // editBtn.addEventListener("click", () => editRecipient(recipient.id));
-                // actionCell.appendChild(editBtn);
 
                 const deleteBtn = document.createElement("button");
                 deleteBtn.setAttribute("id", recipient.id);
@@ -215,7 +194,8 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
             }
 
             // Function to add a recipient
-            function addRecipient() {
+            function addRecipient(element) {
+                // TODO: Check if there's duplicate numbers
                 const recipientValue = "+63" + recipientInput.value.trim();
                 let contactNumbers = document.getElementById('hidden-numbers').value
 
@@ -233,16 +213,16 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                     recipientInput.value = "";
                     renderRecipientTable();
                 }
+                element.disabled = true;
             }
 
-            //Function to delete a recipient
+            // Function to delete a recipient
             function deleteRecipient(recipientId) {
                 recipients = recipients.filter(recipient => recipient.id !== recipientId);
                 renderRecipientTable();
             }
 
-
-            //Function to send the data to queue
+            // Function to send the data to queue
             function sendToQueue(e) {
                 e.preventDefault();
 
@@ -271,7 +251,6 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 /* stop form from submitting normally */
                 event.preventDefault();
 
-                /* get the action attribute from the <form action=""> element */
                 const url = 'sendToQueue.php'
 
                 /* Send the data using post with element id name and name2 */
@@ -303,7 +282,6 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
         </script>
         <script src="script.js"></script>
     </div>
-
 </body>
 
 </html>
