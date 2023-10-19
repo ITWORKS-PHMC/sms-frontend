@@ -25,7 +25,6 @@ if (isset($_POST['data'])) {
     );
 
     $values = "";
-    // print_r($data);
     for ($i = 0; $i < count($data); $i++) {
         $contactId = $data[$i]['id'] > 0 ? $data[$i]['id'] : 0;
         for ($j = 0; $j < $messages_count; $j++) {
@@ -47,7 +46,29 @@ if (isset($_POST['data'])) {
 
             $result = sqlsrv_fetch_array($query);
             $cur = $j + 1;
+
+            //TODO for unsend and inbox - if message is from unsend and inbox dateresend and modifiedby must update depending on user who is currently log-on  
             if (is_array($result)) {
+                $insert_msg = $messages[$j];
+
+                if ($messages_count > 1) {
+                    $insert_msg .= " [$cur/$messages_count]";
+                }
+
+                if ($cur === $messages_count) {
+                    //special characters for <>
+                    $insert_msg .= "...&lt;$selectedCallerCode&gt;";
+                }
+
+                $values .= "('{$contactId}', '{$contact_num}', '$insert_msg', '$currentDateTime', '$user', '$currentDateTime'),";
+
+                array_push($response['valid_num'], $contact_num);
+            } else {
+                $response['message'] = "Invalid Prefix";
+                array_push($response['invalid_num'], $contact_num);
+            }
+        }
+    }
 
     if (empty($response['invalid_num'])) {
         $response['message'] = "Success";
