@@ -20,8 +20,20 @@
         $unreadCount = 0;
     }
 
+    $inbox = "SELECT COUNT(*) AS sms_received_id FROM sms_received";
+    $inbox_count = sqlsrv_query($conn, $inbox);
+
+    if ($inbox_count === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    if (sqlsrv_fetch($inbox_count)) {
+        $allmsg = sqlsrv_get_field($inbox_count, 0);
+    } else {
+        $allmsg = 0;
+    }
+
     sqlsrv_free_stmt($stmt_count);
-    // sqlsrv_close($conn);
 ?>
 
 <!DOCTYPE html>
@@ -44,7 +56,7 @@
 
         <li><a href="smsinbox.php">Inbox
                 <div class="inbox-counter" id="counterInbox">
-                    <?php echo $unreadCount; ?>
+                    <?php echo $unreadCount. '/'. $allmsg; ?>
                 </div>
             </a></li> 
 
