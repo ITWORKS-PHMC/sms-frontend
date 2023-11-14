@@ -62,7 +62,9 @@ if ($conn === false) {
                         echo "<tr id='msg-{$obj['sms_id']}'>";
 
                         echo "<td>{$obj['mobile_no']}</td>";
-                        echo "<td>" . wordwrap($obj['sms_message'], 35, "<br>\n", true) . "</td>";
+
+                        echo "<td>" . htmlspecialchars(wordwrap($obj['sms_message'], 60, "<br>\n", true)) . "</td>";
+                        
                         // echo "<td>{$obj['date_received']->format('Y-m-d H:i:s')}</td>";
                         echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
 

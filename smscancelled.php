@@ -55,11 +55,8 @@
                     echo "<td>{$obj['sms_id']}</td>";
                     echo "<td>{$obj['contact_id']}</td>";
                     echo "<td>{$obj['mobile_no']}</td>";
-                    echo "<td>" . wordwrap($obj['sms_message'], 35, "<br>\n", true) . "</td>";
-                    // echo "<td class='read_status'>{$obj['read_status']}</td>";
-                
-                    // echo "<td>{$obj['date_received']->format('Y-m-d H:i:s')}</td>";
-                    echo "<td><button onclick='showPopup()' class='viewButton'>View</button></td>";
+                    echo "<td>" . htmlspecialchars(wordwrap($obj['sms_message'], 50, "<br>\n", true)) . "</td>";
+
                     echo "</tr>";
                 }
                 sqlsrv_free_stmt($stmt);

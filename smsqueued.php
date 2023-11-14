@@ -70,12 +70,8 @@ if ($conn === false) {
                             echo $obj['mobile_no'];
                             echo "</td>";
 
-                            echo "<td>";
-                            echo wordwrap($obj['sms_message'], 50, "<br>\n", true);
-                            echo "</td>";
-                            // echo "<td>"; echo $obj['stat']; echo "</td>"; 
-                            // echo "<td>"; echo $obj['date_created']; echo "</td>"; 
-                            // echo "<td>"; echo $obj['created_by']; echo "</td>"; 
+                            echo "<td>" . htmlspecialchars(wordwrap($obj['sms_message'], 50, "<br>\n", true)) . "</td>";
+
                             echo "</tr>";
                         }
                         sqlsrv_free_stmt($stmt);

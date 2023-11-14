@@ -56,8 +56,7 @@ if (isset($_POST['data'])) {
                 }
 
                 if ($cur === $messages_count) {
-                    //special characters for <>
-                    $insert_msg .= "...&lt;$selectedCallerCode&gt;";
+                    $insert_msg .= "...<$selectedCallerCode>"; 
                 }
 
                 $values .= "('{$contactId}', '{$contact_num}', '$insert_msg', '$currentDateTime', '$user', '$currentDateTime'),";
