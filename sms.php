@@ -1,5 +1,9 @@
 <?php
-// session_start();
+include("./database/connection.php");
+$conn = sqlsrv_connect($serverName, $connectionInfo);
+if ($conn === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
 // if (!isset($_SESSION['loggedin'])) {
 //     header('Location: login.php');
 //     exit;
@@ -45,15 +49,11 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
         <?php include("./menu/menu.php"); ?>
 
         <div class="container new-message">
-            <h1> Create New Messages </h1>
-            <form action="#" id="send-message" method="post">
-
-                <div class="contact">
-                    <div class="top">
-                        <span class="country">
-                            +63
-                        </span>
-
+            <h1>Create New Messages</h1>
+            <div class="contact">
+                <div class="top">
+                    <span class="country">+63</span>
+                    <form>
                         <input type="text" id="recipientInput" name="number"
                             onKeyPress="if(this.value.length==10) return false;" oninput="validateInput()"
                             placeholder="Input number here..">
@@ -62,26 +62,29 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                             disabled>
                             Add to Recipient
                         </button>
-                    </div>
-                    <a href="contacts.php" class="contacts-button">Contacts</a>
+                    </form>
                 </div>
+                <a href="contacts.php" class="contacts-button">Contacts</a>
+            </div>
 
+            <form action="#" id="send-message" method="post">
                 <div class="sms-message">
                     <textarea id="message" name="message" class="message" rows="5" placeholder="Type something here.."
                         onInput="countCharactersAndPages()" required></textarea>
-                    <p>
-                        Character count:
-                        <span id="charCount"></span>
-                        /
-                        <span id="charLimit"></span>
-                    </p>
-                    <p>
-                        Page count:
-                        <span id="pageCount"></span>
-                        /
-                        <span id="pageCountLimit"></span>
-                    </p>
-
+                    <div class="messageCounter">
+                        <p>
+                            Character count:
+                            <span id="charCount"></span>
+                            <span>/</span>
+                            <span id="charLimit"></span>
+                        </p>
+                        <p>
+                            Page count:
+                            <span id="pageCount"></span>
+                            <span>/</span>
+                            <span id="pageCountLimit"></span>
+                        </p>
+                    </div>
                     <input id="submit-msg" type="submit" class="submit" name="submit-msg" placeholder="Send here"
                         value="Send">
                     <input type="hidden" id="hidden-numbers" name="hidden-numbers" required>
@@ -105,11 +108,13 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
             <!-- Recipient Table -->
             <div class="sms-recipient">
                 <table id="recipientTable" class="recipient-table">
-                    <tr>
-                        <th>Recipient Name</th>
-                        <th>Mobile Number</th>
-                        <th>Delete</th>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>Recipient Name</th>
+                            <th>Mobile Number</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
                     <tbody id="recipientTableBody"></tbody>
                 </table>
             </div>
@@ -141,12 +146,11 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                             contactNumbers += contactNumber + ';'
                             document.getElementById('hidden-numbers').value = contactNumbers
 
-                            recipients.push(
-                                {
-                                    "id": person.split("~")[0],
-                                    "name": person.split("~")[1],
-                                    "contact_num": contactNumber
-                                })
+                            recipients.push({
+                                "id": person.split("~")[0],
+                                "name": person.split("~")[1],
+                                "contact_num": contactNumber
+                            })
                         })
                     }
                 }

@@ -53,7 +53,7 @@ body {
   text-decoration: none;
 }
 .login .submit:hover {
-  background-color: #1b4332;
+  background-color: #3a5a40;
   color: #eff3f4;
   transition: background-color 0.2s;
 }
@@ -62,7 +62,7 @@ body {
 header {
   position: fixed;
   width: 100%;
-  background-color: #1b4332;
+  background-color: #3a5a40;
   color: #fff;
   padding: 2px;
 }
@@ -101,7 +101,7 @@ header {
   border-right: 1px solid #b2b2b2;
 }
 .sidebar .menulabel {
-  color: #1b4332;
+  color: #3a5a40;
 }
 .sidebar ul {
   display: block;
@@ -167,7 +167,7 @@ header {
 }
 .tablink:hover {
   color: white;
-  background-color: #1b4332;
+  background-color: #3a5a40;
 }
 .tabcontent {
   display: none;
@@ -241,7 +241,7 @@ header {
   cursor: pointer;
 }
 .container.new-message .contact .top .add-button:hover {
-  background-color: #1b4332;
+  background-color: #3a5a40;
   color: #eff3f4;
   transition: background-color 0.2s;
 }
@@ -265,18 +265,17 @@ header {
   gap: 0.5rem;
 }
 .container.new-message .contact a:hover {
-  background-color: #1b4332;
+  background-color: #3a5a40;
   color: #eff3f4;
   transition: background-color 0.2s;
 }
 .container.new-message .sms-message {
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  width: 60vw;
 }
 .container.new-message .sms-message .message {
   display: inline-flex;
-  width: 60vw;
   margin-top: 0.5rem;
   padding: 10px;
   color: #202020;
@@ -286,6 +285,11 @@ header {
   text-decoration: none;
   border-radius: 5px;
   border: 1.5px solid #b2b2b2;
+}
+.container.new-message .sms-message .messageCounter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .container.new-message .sms-message .submit {
   display: inline-flex;
@@ -299,7 +303,7 @@ header {
   text-decoration: none;
 }
 .container.new-message .sms-message .submit:hover {
-  background-color: #1b4332;
+  background-color: #3a5a40;
   color: #eff3f4;
   transition: background-color 0.2s;
 }
@@ -311,11 +315,20 @@ header {
   cursor: not-allowed;
 }
 
+/* Incorrect prefix */
+.contactNumRow.invalid {
+  background-color: #922c06;
+  color: #eff3f4;
+}
+.contactNumRow.invalid:hover {
+  color: #922c06;
+}
+
 /* RECIPIENT TABLE */
 table {
   width: 60vw;
   margin-top: 0.5rem;
-  margin-right: 10px; 
+  margin-right: 10px;
   border-radius: 5px;
   border: 1.5px solid #b2b2b2;
   border-collapse: collapse;
