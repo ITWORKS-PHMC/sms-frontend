@@ -44,9 +44,10 @@ if ($conn === false) {
             <table id="recipientTable" class="recipient-table">
                 <thead>
                     <tr>
-                        <th> Mobile Number </th>
-                        <th> Text Message </th>
-                        <th> View </th>
+                        <th>#</th>
+                        <th>Mobile Number</th>
+                        <th>Text Message</th>
+                        <th>View</th>
                     </tr>
                 </thead>
 
@@ -58,17 +59,20 @@ if ($conn === false) {
                         echo 'ERROR';
                     }
 
+                    $rowNumber = 1;
                     while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                         echo "<tr id='msg-{$obj['sms_id']}'>";
+                        echo '<td>' . $rowNumber . '</td>';
 
                         echo "<td>{$obj['mobile_no']}</td>";
 
                         echo "<td>" . htmlspecialchars(wordwrap($obj['sms_message'], 60, "<br>\n", true)) . "</td>";
                         
                         // echo "<td>{$obj['date_received']->format('Y-m-d H:i:s')}</td>";
+                        
                         echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
-
                         echo "</tr>";
+                        $rowNumber++;
                     }
                     sqlsrv_free_stmt($stmt);
                     ?>
@@ -81,23 +85,23 @@ if ($conn === false) {
 
                 <div id="sender"></div>
                 <div id="message"></div>
-                
-                <button type="button" class="replyButton" id="replyButton" onclick="addRecipient(this)">
-                    Reply
+
+                <button type="button" class="replyButton" id="resendButton" onclick="addRecipient(this)">
+                    Resend
                 </button>
             </div>
         </div>
     </div>
     <script>
         function showPopup(id) {
-            // document.getElementById("replyButton").value = id;
+            document.getElementById("resendButton").value = id;
             const row = document.getElementById(`msg-${id}`);
             console.log(row);
             const cells = document.querySelectorAll(`#msg-${id} > td`);
             console.log(cells);
 
-            const sender = cells[0].textContent;
-            const message = cells[1].textContent;
+            const sender = cells[1].textContent;
+            const message = cells[2].textContent;
 
             const popup = document.getElementById("popup");
 
@@ -106,37 +110,26 @@ if ($conn === false) {
 
             contentSender.textContent = "Sender: " + sender;
             contentMessage.textContent = "Message: " + message;
-
+            
             popup.style.display = "flex";
         }
+       
+        function addRecipient(element) {
+            const cells = document.querySelectorAll(`#msg-${element.value} > td`);
 
-        // /* Send the data using post with element id name and name */
-        // if (status == 0) {
-        //     let update = $.post("smsInboxUpdate.php", {
-        //     id: id,
-        //     });
+            const contact_num = cells[1].textContent;
+            const message = cells[2].textContent;
 
-        //     /* Alerts the results */
-        //     update.done(function (response) {
-        //     console.log("RESPONSE", response);
-        //     if (response === "Record updated successfully") {
-        //         row.classList.remove("highlight");
-        //         document.querySelector(`#msg-${id} > .read_status`).textContent = 1;
-        //         document.getElementById("counterInbox").textContent =
-        //         Number(document.getElementById("counterInbox").textContent) - 1;
-        //         popup.style.display = "flex";
-        //     }
-        //     });
-
-        //     update.fail(function () {
-        //     console.log("Failed");
-        //     });
-        // }
+            // let contact_string = `0~? ?~${sender}`
+            let contact_string = `0~${contact_num}~${contact_num}`
+            window.location.href = `http://localhost/sms-frontend/sms.php?to=${contact_string}`;
+            // window.location.href = `http://uphmc-sms01.uphmc.com.ph/sms-frontend/sms.php?to=${contact_string}`; //server phmc-sms01
+        } 
 
         function closePopup() {
             const popup = document.getElementById("popup");
             popup.style.display = "none";
-        }
+        }        
     </script>
 </body>
 

@@ -333,8 +333,13 @@ table {
   border: 1.5px solid #b2b2b2;
   border-collapse: collapse;
 }
-td,
 th {
+  text-align: center;
+  padding: 8px;
+  border: 1px solid #dddddd;
+  background-color: #a3b18a;
+}
+td {
   text-align: left;
   padding: 3px;
   border-radius: 5px;
@@ -354,7 +359,10 @@ tr:nth-child(all) {
 
 /* For unread messages */
 .highlight {
-  background-color: #28d645;
+  background-color: #3a5a40;
+}
+.highlight:hover {
+  color: #3a5a40;
 }
 
 /* INBOX */
@@ -402,13 +410,61 @@ tr:nth-child(all) {
 }
 
 .viewButton:hover,
-.closeButton:hover, 
+.closeButton:hover,
 .replyButton:hover {
-  background-color: #1b4332;
+  background-color: #3a5a40;
   color: #eff3f4;
   transition: background-color 0.2s;
 }
 
-.contactNumRow.invalid {
-  background-color: red;
+/* PAYMENT POPUP */
+/* .overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
 }
+.popup-contacts {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  z-index: 1000000;
+  background-color: white;
+  /* width: 500px; */
+/* height: 500px; */
+/* max-width: 80%; */
+
+/* .popup-header {
+  padding: 0px 1px 10px 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.popup-header .title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+.popup-header .closePopup {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+.popup-body {
+  padding: 1px 15px;
+  padding: 0px 1px 20px 5px;
+  text-align: left;
+}
+.popup-body .doctorslist {
+  align-items: center;
+}  */

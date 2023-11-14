@@ -42,11 +42,12 @@ if ($conn === false) {
             <table id="recipientTable" class="recipient-table">
                 <thead>
                     <tr>
-                        <th> Mobile Number </th>
-                        <th> Text Message </th>
-                        <th> Read Status </th>
-                        <th> Date/Time Received </th>
-                        <th> View </th>
+                        <th>#</th>
+                        <th>Read Status</th>
+                        <th>Mobile Number</th>
+                        <th>Text Message</th>
+                        <th>Date/Time Received</th>
+                        <th>View</th>
                     </tr>
                 </thead>
 
@@ -59,13 +60,22 @@ if ($conn === false) {
                     echo 'ERROR';
                 }
 
+                $rowNumber = 1;
                 while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                     $class = "";
                     if ($obj['read_status'] == 0) {
                         $class .= "highlight";
                     }
-
+                    
                     echo "<tr class='$class' id='msg-{$obj['sms_received_id']}'>";
+                    echo '<td>' . $rowNumber . '</td>';
+
+                    if ($obj['read_status'] == 0) {
+                        echo "<td class='read_status'>Unread</td>";
+                    }else{
+                        echo "<td class='read_status'>Read</td>";
+                    }
+
                     echo "<td>{$obj['mobile_no']}</td>";
                     //TODO
                     // message should be 10 char length 
@@ -73,17 +83,19 @@ if ($conn === false) {
                     // echo "<td>";
                     // echo substr($obj['sms_message'], 0, 10);
                     // echo "</td>";
-                    echo "<td>" . wordwrap($obj['sms_message'], 35, "<br>\n", true) . "</td>";
-                    echo "<td class='read_status'>{$obj['read_status']}</td>";
-                    echo "<td>{$obj['date_received']->format('Y-m-d H:i:s')}</td>";
-                    echo "<td><button onclick='showPopup({$obj['sms_received_id']})' class='viewButton'>View</button></td>";
 
+                    echo "<td>" . wordwrap($obj['sms_message'], 35, "<br>\n", true) . "</td>";
+                   
+                    echo "<td>{$obj['date_received']->format('Y-m-d H:i:s')}</td>";
+
+                    echo "<td><button onclick='showPopup({$obj['sms_received_id']})' class='viewButton'>View</button></td>";
                     echo "</tr>";
+                    $rowNumber++;
                 }
                 sqlsrv_free_stmt($stmt);
                 ?>
             </table>
-
+                            
             <div class="popup" id="popup">
                 <button onclick="closePopup()" class="closeButton">
                     Close
@@ -101,15 +113,69 @@ if ($conn === false) {
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- <script src="script.js"></script> -->
     <script>
+        function showPopup(id) {
+        document.getElementById("replyButton").value = id;
+        const row = document.getElementById(`msg-${id}`);
+        console.log(row);
+        const cells = document.querySelectorAll(`#msg-${id} > td`);
+
+        const status = cells[1].textContent;
+        const sender = cells[2].textContent;
+        const message = cells[3].textContent;
+        const receiveDate = cells[4].textContent;
+
+        const popup = document.getElementById("popup");
+
+        const contentStatus = document.getElementById("readStatus");
+        const contentSender = document.getElementById("sender");
+        const contentMessage = document.getElementById("message");
+        const contentDate = document.getElementById("date");
+
+        contentStatus.textContent = "Read Status: " + status;
+        contentSender.textContent = "Sender: " + sender;
+        contentMessage.textContent = "Message: " + message;
+        contentDate.textContent = "Date: " + receiveDate;
+
+        /* Send the data using post with element id name and name */
+        if (status == 0) {
+            let update = $.post("smsInboxUpdate.php", {
+            id: id,
+            });
+
+            /* Alerts the results */
+            update.done(function (response) {
+            console.log("RESPONSE", response);
+            if (response === "Record updated successfully") {
+                row.classList.remove("highlight");
+                document.querySelector(`#msg-${id} > .read_status`).textContent = 1;
+                document.getElementById("counterInbox").textContent =
+                Number(document.getElementById("counterInbox").textContent) - 1;
+                popup.style.display = "flex";
+            }
+            });
+            
+            update.fail(function () {
+            console.log("Failed");
+            });
+        }
+
+        popup.style.display = "flex";
+        }
+
+        function closePopup() {
+        const popup = document.getElementById("popup");
+        popup.style.display = "none";
+        }
+        
         function addRecipient(element) {
             const cells = document.querySelectorAll(`#msg-${element.value} > td`);
-
-            const contact_num = cells[0].textContent;
-            const message = cells[1].textContent;
-            const status = cells[2].textContent;
-            const receiveDate = cells[3].textContent;
+            
+            const status = cells[1].textContent;
+            const contact_num = cells[2].textContent;
+            const message = cells[3].textContent;
+            const receiveDate = cells[4].textContent;
 
             // let contact_string = `0~? ?~${contact_num}`
             let contact_string = `0~${contact_num}~${contact_num}`

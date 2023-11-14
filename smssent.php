@@ -1,7 +1,6 @@
 <?php
 //database connection 
 include("./database/connection.php");
-
 $conn = sqlsrv_connect($serverName, $connectionInfo);
 if ($conn === false) {
     die(print_r(sqlsrv_errors(), true));
@@ -13,6 +12,8 @@ if ($conn === false) {
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=500, initial-scale=1" />
     <title>SMS</title>
     <link rel="sms icon" type="x-icon" href="img\logo.png">
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
@@ -38,36 +39,45 @@ if ($conn === false) {
                 <table id="recipientTable" class="recipient-table">
                     <form class="" action="" method="post">
                         <tr>
-                            <!-- <th> Contact ID </th> -->
-                            <th> Mobile Number </th>
-                            <th> Text Message </th>
-                            <!-- <th> Stat </th>
-                            <th> Date/Time Created </th>
-                            <th> Created By </th> -->
+                            <th>#</th>
+                            <th>Mobile Number</th>
+                            <th>Text Message</th>
+                            <th>Date & Time Created</th>
+                            <th>Created By</th> 
+                            <th>Date & Time Sent</th>
                         </tr>
-                        <?php
-                        $tsql = "SELECT * from sms_sent";
-                        $stmt = sqlsrv_query($conn, $tsql);
 
+                        <?php
+                        $tsql = "SELECT * FROM sms_sent ORDER BY date_sent DESC";
+                        $stmt = sqlsrv_query($conn, $tsql);
                         if ($stmt == false) {
                             echo 'ERROR';
                         }
 
+                        $rowNumber = 1;
                         while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                             echo "<tr>";
+                            echo '<td>' . $rowNumber . '</td>';
+
+                            echo "<td>{$obj['mobile_no']}</td>";
+
                             echo "<td>" . htmlspecialchars(wordwrap($obj['sms_message'], 50, "<br>\n", true)) . "</td>";
 
+                            echo "<td>{$obj['date_created']->format('Y-m-d H:i:s')}</td>";
+
+                            echo "<td>{$obj['created_by']}</td>";
+
+                            echo "<td>{$obj['date_sent']->format('Y-m-d H:i:s')}</td>";
                             echo "</tr>";
+                            $rowNumber++;
                         }
                         sqlsrv_free_stmt($stmt);
-                        sqlsrv_close($conn);
                         ?>
                     </form>
                 </table>
             </div>
         </div>
     </div>
-
 </body>
 
 </html>

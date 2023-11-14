@@ -19,39 +19,6 @@ function showPassword() {
   }
 }
 
-// SMS
-//Alert Messages
-// function showAlert() {
-//   var myAlert = document.getElementById("myAlert");
-//   move();
-
-//   myAlert.className = "show";
-
-//   setTimeout(function () {
-//     hideAlert();
-//   }, 5000);
-// }
-// function hideAlert() {
-//   myAlert.className = myAlert.className.replace("show", "");
-// }
-// function move() {
-//   let i = 0;
-//   if (i == 0) {
-//     var elem = document.getElementById("myAlertBar");
-//     var width = 1;
-//     var interval = setInterval(frame, 30);
-//     function frame() {
-//       if (width >= 100) {
-//         clearInterval();
-//         interval = 0;
-//       } else {
-//         width++;
-//         elem.style.width = width + "vw";
-//       }
-//     }
-//   }
-// }
-
 //Page and characters count
 function countCharactersAndPages() {
   const text = document.getElementById("message").value;
@@ -93,72 +60,6 @@ function checkAll(myCheckbox) {
   }
 }
 
-// INBOX
-//Pop up message
-function showPopup(id) {
-  document.getElementById("replyButton").value = id;
-  const row = document.getElementById(`msg-${id}`);
-  console.log(row);
-  const cells = document.querySelectorAll(`#msg-${id} > td`);
-
-  const sender = cells[0].textContent;
-  const message = cells[1].textContent;
-  const status = cells[2].textContent;
-  const receiveDate = cells[3].textContent;
-
-  const popup = document.getElementById("popup");
-
-  const contentSender = document.getElementById("sender");
-  const contentMessage = document.getElementById("message");
-  const contentStatus = document.getElementById("readStatus");
-  const contentDate = document.getElementById("date");
-
-  contentSender.textContent = "Sender: " + sender;
-  contentMessage.textContent = "Message: " + message;
-  contentStatus.textContent = "Read Status: " + status;
-  contentDate.textContent = "Date: " + receiveDate;
-
-  /* Send the data using post with element id name and name */
-  if (status == 0) {
-    let update = $.post("smsInboxUpdate.php", {
-      id: id,
-    });
-
-    /* Alerts the results */
-    update.done(function (response) {
-      console.log("RESPONSE", response);
-      if (response === "Record updated successfully") {
-        row.classList.remove("highlight");
-        document.querySelector(`#msg-${id} > .read_status`).textContent = 1;
-        document.getElementById("counterInbox").textContent =
-          Number(document.getElementById("counterInbox").textContent) - 1;
-        popup.style.display = "flex";
-      }
-    });
-    
-    update.fail(function () {
-      console.log("Failed");
-    });
-  }
-
-  popup.style.display = "flex";
-}
-
-function closePopup() {
-  const popup = document.getElementById("popup");
-  popup.style.display = "none";
-}
-
 // Initial character and page count
 countCharactersAndPages();
 
-// Function to check if the recipient table is empty and enable/disable the send button accordingly
-// function checkRecipientTable() {
-// const table = document.getElementById('');
-//     const sendButton = document.getElementById('submit-msg');
-//     if (table.rows.length > 0) {
-//         sendButton.disabled = false;
-//     } else {
-//         sendButton.disabled = true;
-//     }
-// }

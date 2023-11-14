@@ -35,36 +35,39 @@
             <table id="recipientTable" class="recipient-table">
                 <thead>
                     <tr>
-                        <th> ID </th>
-                        <th> Contact ID </th>
-                        <th> Mobile Number </th>
-                        <th> Text Message </th>
-                        <th> View </th>
+                        <th>#</th>
+                        <th>Mobile Number</th>
+                        <th>Text Message</th>
+                        <th>Date & Time Created</th>
+                        <th>Cancelled By</th>
+                        <th>Date & Time Cancelled</th>
                     </tr>
                 </thead>
-
                 <tbody id="recipientTableBody"></tbody>
-
                 <?php
-                // $tsql = "SELECT * FROM sms_unsent ORDER BY date_received DESC;";
+                // $tsql = "SELECT * FROM sms_unsent ORDER BY date_received DESC";
                 $tsql = "SELECT * FROM sms_cancelled;";
                 $stmt = sqlsrv_query($conn, $tsql);
                 if ($stmt == false) {
                     echo 'ERROR';
                 }
 
+                $rowNumber = 1;
                 while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                    // echo "<tr class='$class' id='msg-{$obj['sms_received_id']}'>";
-                    echo "<td>{$obj['sms_id']}</td>";
-                    echo "<td>{$obj['contact_id']}</td>";
+                    echo "<tr>";
+                    echo '<td>' . $rowNumber . '</td>';
+
                     echo "<td>{$obj['mobile_no']}</td>";
+
                     echo "<td>" . htmlspecialchars(wordwrap($obj['sms_message'], 50, "<br>\n", true)) . "</td>";
 
+                    // echo "<td>{$obj['date_created']->format('Y-m-d H:i:s')}</td>";
                 
-                    // echo "<td>{$obj['date_received']->format('Y-m-d H:i:s')}</td>";
-                    echo "<td><button onclick='showPopup()' class='viewButton'>View</button></td>";
+                    echo "<td>{$obj['created_by']}</td>";
 
+                    // echo "<td>{$obj['date_cancelled']->format('Y-m-d H:i:s')}</td>";
                     echo "</tr>";
+                    $rowNumber++;
                 }
                 sqlsrv_free_stmt($stmt);
                 ?>
@@ -72,4 +75,5 @@
         </div>
     </div>
 </body>
+
 </html>
