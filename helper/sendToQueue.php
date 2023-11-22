@@ -10,11 +10,14 @@ if ($conn === false) {
     die(print_r(sqlsrv_errors(), true));
 }
 
+
+
 // This is for inserting numbers messages to sms_queue table 
 if (isset($_POST['data'])) {
     $data = $_POST['data'];
     $messages = str_split($_POST['message'], 140);
     $messages_count = count($messages);
+    date_default_timezone_set('Asia/Manila');
     $currentDateTime = date("Y-m-d H:i:s");
     $user = $username;
     $pattern = "/(\+639)(\d{2})/";
@@ -56,7 +59,7 @@ if (isset($_POST['data'])) {
                 }
 
                 if ($cur === $messages_count) {
-                    $insert_msg .= "...<$selectedCallerCode>"; 
+                    $insert_msg .= "...<$selectedCallerCode>";
                 }
 
                 $values .= "('{$contactId}', '{$contact_num}', '$insert_msg', '$currentDateTime', '$user', '$currentDateTime'),";
