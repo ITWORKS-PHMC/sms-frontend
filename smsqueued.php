@@ -63,7 +63,7 @@ if ($conn === false) {
 
                             echo "<td>" . htmlspecialchars(wordwrap($obj['sms_message'], 50, "<br>\n", true)) . "</td>";
 
-                            echo "<td>{$obj['date_created']->format('Y-m-d H:i:s')}</td>";
+                            echo "<td>{$obj['date_created']->format('Y-m-d h:i:s A')}</td>";
 
                             echo "<td>" . $obj['created_by'] . "</td>"; 
                             echo "</tr>";
