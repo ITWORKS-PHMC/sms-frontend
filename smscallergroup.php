@@ -34,42 +34,53 @@ if (!isset($_SESSION['username'])) {
     <?php include("./nav/navbar.php"); ?>
     <div class="content">
         <?php include("./menu/menu.php"); ?>
-
-        <div class="container colorgroup">
+        <div class="container">
             <h1> Changing of Caller Group </h1>
-            <p>Selected Caller Code:
-                <?php echo $selectedCallerCode; ?>
-            </p>
+            <div class="callergroupSelection">
+                <div class="callerGroupOption">
+                    <p>Current Caller Group Code:
+                        <?php echo "<u>" . $selectedCallerCode . "</u>"; ?>
+                    </p>
+                </div>
+                <form action="callergroupSelection.php" method="post">
+                    <div class="callerGroupOption">
+                        <span> Want to change caller code? Choose here: </span>
+                        <select id="callercode" name="callercode" class="callerOptionsBtn">
+                            <?php
+                            //database connection 
+                            include("./database/connection.php");
+                            $conn = sqlsrv_connect($serverName, $connectionInfo);
+                            if ($conn === false) {
+                                die(print_r(sqlsrv_errors(), true));
+                            }
 
-            <form action="callergroupSelection.php" method="post">
-                <span> Want to change caller code? Choose here: </span>
-                <select id="callercode" name="callercode">
-                    <?php
-                    //database connection 
-                    include("./database/connection.php");
-                    $conn = sqlsrv_connect($serverName, $connectionInfo);
-                    if ($conn === false) {
-                        die(print_r(sqlsrv_errors(), true));
-                    }
+                            $sql = "SELECT [caller_group_code] FROM vw_caller_group_members WHERE [username] = ?";
+                            $params = array($username);
+                            $query = sqlsrv_prepare($conn, $sql, $params);
 
-                    $sql = "SELECT [caller_group_code] FROM vw_caller_group_members WHERE [username] = ?";
-                    $params = array($username);
-                    $query = sqlsrv_prepare($conn, $sql, $params);
+                            if (!sqlsrv_execute($query)) {
+                                die(print_r(sqlsrv_errors(), true));
+                            }
 
-                    if (!sqlsrv_execute($query)) {
-                        die(print_r(sqlsrv_errors(), true));
-                    }
+                            $callerGroupCode = "";
+                            echo "<option value=''>Select Caller Group Code</option>";
 
-                    $callerGroupCode = "";
-                    while ($obj = sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC)) {
-                        echo "<option value='" . $obj['caller_group_code'] . "'>" . $obj['caller_group_code'] . "</option>";
-                    }
+                            while ($obj = sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC)) {
+                                $selected = ($obj['caller_group_code'] == $callerGroupCode) ? "selected" : "";
+                                echo "<option value='" . $obj['caller_group_code'] . "' $selected>" . $obj['caller_group_code'] . "</option>";
+                            }
 
-                    sqlsrv_close($conn);
-                    ?>
-                </select>
-                <button type="submit" class="submit">Change</button>
-            </form>
+                            sqlsrv_close($conn);
+                            ?>
+                        </select>
+
+                        <div class="callerGroupOptionBtn">
+                            <button type="submit" class="callerOptionsSubmitBtn">Change</button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </body>
