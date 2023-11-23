@@ -15,6 +15,7 @@ if ($conn === false) {
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,6 +33,7 @@ if ($conn === false) {
 
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <?php include("./nav/navbar.php"); ?>
     <div class="content">
@@ -66,27 +68,23 @@ if ($conn === false) {
                     if ($obj['read_status'] == 0) {
                         $class .= "highlight";
                     }
-                    
+
                     echo "<tr class='$class' id='msg-{$obj['sms_received_id']}'>";
                     echo '<td>' . $rowNumber . '</td>';
 
+                    echo "<td class='read_status' id='stats-{$obj['read_status']}'>";
                     if ($obj['read_status'] == 0) {
-                        echo "<td class='read_status'>Unread</td>";
-                    }else{
-                        echo "<td class='read_status'>Read</td>";
+                        echo "Unread";
+                    } else {
+                        echo "Read";
                     }
+                    echo "</td>";
 
                     echo "<td>{$obj['mobile_no']}</td>";
-                    //TODO
-                    // message should be 10 char length 
-                    // to see the content click view to pop up the full content 
-                    // echo "<td>";
-                    // echo substr($obj['sms_message'], 0, 10);
-                    // echo "</td>";
 
-                    echo "<td>" . wordwrap($obj['sms_message'], 35, "<br>\n", true) . "</td>";
-                   
-                    echo "<td>{$obj['date_received']->format('Y-m-d H:i:s')}</td>";
+                    echo "<td data-full-message='" . htmlspecialchars($obj['sms_message']) . "'>" . htmlspecialchars(mb_substr($obj['sms_message'], 0, 5)) . "...</td>";
+
+                    echo "<td>{$obj['date_received']->format('Y-m-d h:i:s A')}</td>";
 
                     echo "<td><button onclick='showPopup({$obj['sms_received_id']})' class='viewButton'>View</button></td>";
                     echo "</tr>";
@@ -95,92 +93,99 @@ if ($conn === false) {
                 sqlsrv_free_stmt($stmt);
                 ?>
             </table>
-                            
-            <div class="popup" id="popup">
-                <button onclick="closePopup()" class="closeButton">
-                    Close
-                </button>
-
-                <div id="sender"></div>
-                <div id="message"></div>
-                <div id="readStatus"></div>
-                <div id="date"></div>
-
-                <button type="button" class="replyButton" id="replyButton" onclick="addRecipient(this)">
-                    Reply
-                </button>
+            
+            <div id="popup" class="overlay">
+                <div class="popup">
+                    <div class="popup-header">
+                        <h2 class="title">Inbox</h2>
+                        <button onclick="closePopup()" class="closePopup">&times;</button>
+                    </div>
+                    <div class="popup-body">
+                        <div id="date"></div>
+                        <br>
+                        <div id="readStatus"></div>
+                        <br>
+                        <div id="sender"></div>
+                        <br>
+                        <div id="message"></div>
+                    </div>
+                    <div class="popup-button">
+                        <button onclick="addRecipient(this)" id="replyButton" class="replyButton">Reply</button>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 
-    <!-- <script src="script.js"></script> -->
     <script>
         function showPopup(id) {
-        document.getElementById("replyButton").value = id;
-        const row = document.getElementById(`msg-${id}`);
-        console.log(row);
-        const cells = document.querySelectorAll(`#msg-${id} > td`);
+            document.getElementById("replyButton").value = id;
+            const row = document.getElementById(`msg-${id}`);
+            console.log(row);
+            const cells = document.querySelectorAll(`#msg-${id} > td`);
 
-        const status = cells[1].textContent;
-        const sender = cells[2].textContent;
-        const message = cells[3].textContent;
-        const receiveDate = cells[4].textContent;
+            const status = cells[1].textContent;
+            const sender = cells[2].textContent;
+            const message = cells[3].getAttribute("data-full-message");
+            const receiveDate = cells[4].textContent;
 
-        const popup = document.getElementById("popup");
+            const popup = document.getElementById("popup");
 
-        const contentStatus = document.getElementById("readStatus");
-        const contentSender = document.getElementById("sender");
-        const contentMessage = document.getElementById("message");
-        const contentDate = document.getElementById("date");
+            const contentStatus = document.getElementById("readStatus");
+            const contentSender = document.getElementById("sender");
+            const contentMessage = document.getElementById("message");
+            const contentDate = document.getElementById("date");
 
-        contentStatus.textContent = "Read Status: " + status;
-        contentSender.textContent = "Sender: " + sender;
-        contentMessage.textContent = "Message: " + message;
-        contentDate.textContent = "Date: " + receiveDate;
+            document.getElementById("message").className = "popupMessage";
 
-        /* Send the data using post with element id name and name */
-        if (status == 0) {
-            let update = $.post("smsInboxUpdate.php", {
-            id: id,
-            });
+            contentStatus.textContent = "Read Status: " + status;
+            contentSender.textContent = "Sender: " + sender;
+            contentMessage.textContent = "Message: " + message;
+            contentDate.textContent = "Date: " + receiveDate;
 
-            /* Alerts the results */
-            update.done(function (response) {
-            console.log("RESPONSE", response);
-            if (response === "Record updated successfully") {
-                row.classList.remove("highlight");
-                document.querySelector(`#msg-${id} > .read_status`).textContent = 1;
-                document.getElementById("counterInbox").textContent =
-                Number(document.getElementById("counterInbox").textContent) - 1;
-                popup.style.display = "flex";
+            /* Send the data using post with element id name and name */
+            if (status == "Unread") {
+                let update = $.post("smsInboxUpdate.php", {
+                    id: id,
+                });
+
+                /* Alerts the results */
+                update.done(function (response) {
+                    console.log("RESPONSE", response);
+                    if (response === "Record updated successfully") {
+                        row.classList.remove("highlight");
+                        document.querySelector(`#msg-${id} > .read_status`).textContent = 1;
+                        document.getElementById("counterInbox").textContent =
+                            Number(document.getElementById("counterInbox").textContent) - 1;
+                        popup.style.display = "flex";
+                    }
+                });
+
+                update.fail(function () {
+                    console.log("Failed");
+                });
             }
-            });
-            
-            update.fail(function () {
-            console.log("Failed");
-            });
-        }
 
-        popup.style.display = "flex";
+            popup.style.display = "flex";
         }
 
         function closePopup() {
-        const popup = document.getElementById("popup");
-        popup.style.display = "none";
+            const popup = document.getElementById("popup");
+            popup.style.display = "none";
         }
-        
+
         function addRecipient(element) {
             const cells = document.querySelectorAll(`#msg-${element.value} > td`);
-            
+
             const status = cells[1].textContent;
             const contact_num = cells[2].textContent;
             const message = cells[3].textContent;
             const receiveDate = cells[4].textContent;
 
-            // let contact_string = `0~? ?~${contact_num}`
             let contact_string = `0~${contact_num}~${contact_num}`
-            window.location.href = `http://localhost/sms-frontend/sms.php?to=${contact_string}`;
-            // window.location.href = `http://uphmc-sms01.uphmc.com.ph/sms-frontend/sms.php?to=${contact_string}`; //server phmc-sms01
+            // window.location.href = `http://localhost/sms-frontend/sms.php?to=${contact_string}`;
+            window.location.href = `http://phmc-sms/sms-frontend/sms.php?to=${contact_string}`; //server phmc-sms
         } 
     </script>
 </body>

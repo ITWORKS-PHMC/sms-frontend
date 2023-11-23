@@ -65,9 +65,9 @@ if ($conn === false) {
                         echo '<td>' . $rowNumber . '</td>';
 
                         echo "<td>{$obj['mobile_no']}</td>";
-
-                        echo "<td>" . htmlspecialchars(wordwrap($obj['sms_message'], 60, "<br>\n", true)) . "</td>";
                         
+                        echo "<td data-full-message='" . htmlspecialchars($obj['sms_message']) . "'>" . htmlspecialchars(mb_substr($obj['sms_message'], 0, 5)) . "...</td>";
+
                         // echo "<td>{$obj['date_received']->format('Y-m-d H:i:s')}</td>";
                         
                         echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
@@ -78,17 +78,22 @@ if ($conn === false) {
                     ?>
                 </tbody>
             </table>
-            <div class="popup" id="popup">
-                <button onclick="closePopup()" class="closeButton">
-                    Close
-                </button>
 
-                <div id="sender"></div>
-                <div id="message"></div>
-
-                <button type="button" class="replyButton" id="resendButton" onclick="addRecipient(this)">
-                    Resend
-                </button>
+            <div id="popup" class="overlay">
+                <div class="popup">
+                    <div class="popup-header">
+                        <h2 class="title">Unsent Messages</h2>
+                        <button onclick="closePopup()" class="closePopup">&times;</button>
+                    </div>
+                    <div class="popup-body">
+                        <div id="sender"></div>
+                        <br>
+                        <div id="message"></div>
+                    </div>
+                    <div class="popup-button">
+                        <button onclick="addRecipient(this)" class="replyButton" id="resendButton">Resend</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -101,16 +106,17 @@ if ($conn === false) {
             console.log(cells);
 
             const sender = cells[1].textContent;
-            const message = cells[2].textContent;
+            const fullMessage = cells[2].getAttribute("data-full-message");
 
             const popup = document.getElementById("popup");
 
             const contentSender = document.getElementById("sender");
             const contentMessage = document.getElementById("message");
+            
+            document.getElementById("message").className = "popupMessage";
 
             contentSender.textContent = "Sender: " + sender;
-            contentMessage.textContent = "Message: " + message;
-            
+            contentMessage.textContent = "Message: " + fullMessage;
             popup.style.display = "flex";
         }
        
@@ -120,10 +126,9 @@ if ($conn === false) {
             const contact_num = cells[1].textContent;
             const message = cells[2].textContent;
 
-            // let contact_string = `0~? ?~${sender}`
             let contact_string = `0~${contact_num}~${contact_num}`
-            window.location.href = `http://localhost/sms-frontend/sms.php?to=${contact_string}`;
-            // window.location.href = `http://uphmc-sms01.uphmc.com.ph/sms-frontend/sms.php?to=${contact_string}`; //server phmc-sms01
+            // window.location.href = `http://localhost/sms-frontend/sms.php?to=${contact_string}`;
+            window.location.href = `http://phmc-sms/sms-frontend/sms.php?to=${contact_string}`; //server phmc-sms01
         } 
 
         function closePopup() {

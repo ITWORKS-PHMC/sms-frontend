@@ -12,8 +12,6 @@ if ($conn === false) {
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="viewport" content="width=500, initial-scale=1" />
     <title>SMS</title>
     <link rel="sms icon" type="x-icon" href="img\logo.png">
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
@@ -30,54 +28,98 @@ if ($conn === false) {
 
 <body>
     <?php include("./nav/navbar.php"); ?>
-
     <div class="content">
         <?php include("./menu/menu.php"); ?>
         <div class="container sent">
             <h1> Sent Messages </h1>
-            <div class="sms-recipient">
-                <table id="recipientTable" class="recipient-table">
-                    <form class="" action="" method="post">
-                        <tr>
-                            <th>#</th>
-                            <th>Mobile Number</th>
-                            <th>Text Message</th>
-                            <th>Date & Time Created</th>
-                            <th>Created By</th> 
-                            <th>Date & Time Sent</th>
-                        </tr>
+            <table id="recipientTable" class="recipient-table">
+                <thread>
+                    <tr>
+                        <th>#</th>
+                        <th>Mobile Number</th>
+                        <th>Text Message</th>
+                        <th>Date & Time Created</th>
+                        <th>Created By</th>
+                        <th>Date & Time Sent</th>
+                        <th>View</th>
+                    </tr>
+                </thread>
 
-                        <?php
-                        $tsql = "SELECT * FROM sms_sent ORDER BY date_sent DESC";
-                        $stmt = sqlsrv_query($conn, $tsql);
-                        if ($stmt == false) {
-                            echo 'ERROR';
-                        }
+                <tbody id="recipientTableBody">
+                    <?php
+                    $tsql = "SELECT * FROM sms_sent ORDER BY date_sent DESC";
+                    $stmt = sqlsrv_query($conn, $tsql);
+                    if ($stmt == false) {
+                        echo 'ERROR';
+                    }
 
-                        $rowNumber = 1;
-                        while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                            echo "<tr>";
-                            echo '<td>' . $rowNumber . '</td>';
+                    $rowNumber = 1;
+                    while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                        echo "<tr id='msg-{$obj['sms_id']}'>";
+                        echo '<td>' . $rowNumber . '</td>';
 
-                            echo "<td>{$obj['mobile_no']}</td>";
+                        echo "<td>{$obj['mobile_no']}</td>";
 
-                            echo "<td>" . htmlspecialchars(wordwrap($obj['sms_message'], 50, "<br>\n", true)) . "</td>";
+                        echo "<td data-full-message='" . htmlspecialchars($obj['sms_message']) . "'>" . htmlspecialchars(mb_substr($obj['sms_message'], 0, 5)) . "...</td>";
 
-                            echo "<td>{$obj['date_created']->format('Y-m-d H:i:s')}</td>";
+                        echo "<td>{$obj['date_created']->format('Y-m-d h:i:s A')}</td>";
 
-                            echo "<td>{$obj['created_by']}</td>";
+                        echo "<td>{$obj['created_by']}</td>";
 
-                            echo "<td>{$obj['date_sent']->format('Y-m-d H:i:s')}</td>";
-                            echo "</tr>";
-                            $rowNumber++;
-                        }
-                        sqlsrv_free_stmt($stmt);
-                        ?>
-                    </form>
-                </table>
+                        echo "<td>{$obj['date_sent']->format('Y-m-d h:i:s A')}</td>";
+
+                        echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
+                        echo "</tr>";
+                        $rowNumber++;
+                    }
+                    sqlsrv_free_stmt($stmt);
+                    ?>
+                </tbody>
+            </table>
+
+            <div id="popup" class="overlay">
+                <div class="popup">
+                    <div class="popup-header">
+                        <h2 class="title">Sent Messages</h2>
+                        <button onclick="closePopup()" class="closePopup">&times;</button>
+                    </div>
+                    <div class="popup-body">
+                        <div id="sender"></div>
+                        <br>
+                        <div id="message"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    <script>
+        function showPopup(id) {
+            const row = document.getElementById(`msg-${id}`);
+            console.log(row);
+            const cells = document.querySelectorAll(`#msg-${id} > td`);
+            console.log(cells);
+
+            const sender = cells[1].textContent;
+            const fullMessage = cells[2].getAttribute("data-full-message");
+
+            const popup = document.getElementById("popup");
+
+            const contentSender = document.getElementById("sender");
+            const contentMessage = document.getElementById("message");
+
+            document.getElementById("message").className = "popupMessage";
+
+            contentSender.textContent = "Sender: " + sender;
+            contentMessage.textContent = "Message: " + fullMessage;
+
+            popup.style.display = "flex";
+        }
+
+        function closePopup() {
+            const popup = document.getElementById("popup");
+            popup.style.display = "none";
+        }        
+    </script>
 </body>
 
 </html>
