@@ -11,7 +11,6 @@ if ($conn === false) {
 }
 
 
-
 // This is for inserting numbers messages to sms_queue table 
 if (isset($_POST['data'])) {
     $data = $_POST['data'];
