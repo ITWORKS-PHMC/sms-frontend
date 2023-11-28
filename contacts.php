@@ -15,6 +15,10 @@ $conn = sqlsrv_connect($serverName, $connectionInfo);
 if ($conn === false) {
     die(print_r(sqlsrv_errors(), true));
 }
+if (!isset($_SESSION["recipients"])) {
+    $_SESSION["recipients"] = [];
+} else {
+}
 ?>
 
 <!DOCTYPE html>
@@ -42,30 +46,32 @@ if ($conn === false) {
     <div class="content">
         <aside class="sidebar">
             <ul id="selectedContacts">
-                <li>
-                    <button type="button" class="select-button" onclick="getSelectedContacts()">View Selected
-                        Contacts</button>
-                </li>
-                <li>
-                    <button type="button" class="add-button" onClick="addRecipient()">Add to Recipient</button>
-                </li>
-
-                <h3>Selected Contacts</h3>
+                <div class="addRecipient">
+                    <li>
+                        <button class="addRecipientButton" onClick="addRecipient()">Add to Recipient</button>
+                    </li>
+                </div>
+                <h3 class="addRecipientTitle">Selected Contacts</h3>
                 <ul id="selectedContactsList"></ul>
             </ul>
         </aside>
 
         <div class="container contacts">
-            <button class="tablink" onclick="openPage('Contact', this, '#eff3f4')" id="defaultOpen">Contacts</button>
-            <button class="tablink" onclick="openPage('CallerGroup', this, '#eff3f4')"> Caller Group </button>
+            <div class="contactsTabs">
+                <button class="tablink" onclick="openPage('Contact', this, '#eff3f4')" id="defaultOpen">Contacts</button>
+                <button class="tablink" onclick="openPage('CallerGroup', this, '#eff3f4')"> Caller Group </button>
+            </div>
 
             <div id="Contact" class="tabcontent">
                 <h1> Contacts </h1>
                 <table id="recipientTable" class="recipient-table">
                     <form class="" action="" method="post">
                         <tr>
-                            <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all"
-                                    onclick="checkAll(this)"></td>
+                            <td>
+                                <span>Select</span><br>
+                                <input type="checkbox" class="select_all_items" id="option-all"
+                                    onclick="checkAll(this, 'selectedContacts')" onchange="toggleSelect()">
+                            </td>
                             <td> Contact ID </td>
                             <td> Employee Number </td>
                             <td> Full Name </td>
@@ -84,7 +90,12 @@ if ($conn === false) {
                             $contact = "{$obj['contact_id']}~{$obj['contact_fname']} {$obj['contact_lname']}~{$obj['mobile_no']}";
                             if ($obj['active'] == 1) {
                                 echo "<tr>";
-                                echo "<td> <input type='checkbox' name='selectedContacts' value='$contact'> </td>";
+
+                                if (in_array($obj['mobile_no'], array_keys($_SESSION['recipients']))) {
+                                    echo "<td> <input type='checkbox' name='selectedContacts' value='$contact' onchange='toggleSelect(this)' checked> </td>";
+                                } else {
+                                    echo "<td> <input type='checkbox' name='selectedContacts' value='$contact' onchange='toggleSelect(this)'> </td>";
+                                }
                                 echo "<td> {$obj['contact_id']} </td>";
                                 echo "<td> {$obj['employee_no']} </td>";
                                 echo "<td>{$obj['contact_lname']} {$obj['contact_fname']} {$obj['contact_mname']}</td>";
@@ -99,8 +110,8 @@ if ($conn === false) {
             </div>
 
             <div id="CallerGroup" class="tabcontent">
-                <h1> Caller Group </h1>
-                <p> *Double click the Caller Group Code Cell to view the members </p>
+                <h1>Caller Group</h1>
+                <p>*Double click the Caller Group Code Cell to view the members</p>
                 <form>
                     <div class="table-containers">
                         <table class="recipient-table">
@@ -155,6 +166,16 @@ if ($conn === false) {
 
     <script src="script.js"></script>
     <script>
+        const recipients = JSON.stringify(<?php echo json_encode($_SESSION['recipients']); ?>);
+        const parsedRecipients = JSON.parse(recipients)
+        let selectedContacts = {}
+
+        for (const [key, value] of Object.entries(parsedRecipients)) {
+            selectedContacts[value["id"]] = `${value["id"]}~${value["name"]}~${key}`
+        }
+
+        displaySelectedContacts()
+
         function showMembers(element) {
             let callerGroupCode = element.innerHTML;
             console.log(callerGroupCode);
@@ -194,45 +215,68 @@ if ($conn === false) {
             xhr.send("caller_group_code=" + callerGroupCode);
         }
 
-        function getSelectedContacts() {
-            var checkboxes = document.getElementsByName('selectedContacts');
-            var selectedContacts = [];
-
-            // Loop through checkboxes to find the selected ones
-            for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].checked) {
-                    selectedContacts.push(checkboxes[i].value);
+        function selectCallerGroup(element) {
+            let callerGroupCode = element.value
+            let xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    let membersData = JSON.parse(xhr.responseText);
+                    console.log({ selectedContacts, membersData })
                 }
-            }
+            };
 
-            // Display selected contacts in a list
-            displaySelectedContacts(selectedContacts);
+            xhr.open("POST", "contactsMembers.php?caller_group_code=" + callerGroupCode, true);
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhr.send("caller_group_code=" + callerGroupCode);
         }
 
-        function displaySelectedContacts(selectedContacts) {
-            var selectedContactsList = document.getElementById('selectedContactsList');
+        function displaySelectedContacts() {
+            console.log(selectedContacts)
+            let selectedContactsList = document.getElementById('selectedContactsList');
 
             // Clear existing contacts
             selectedContactsList.innerHTML = '';
 
-            // Display selected contacts in the list
-            selectedContacts.forEach(function (contact) {
-                var listItem = document.createElement('li');
-                listItem.textContent = contact;
+            // Display selected contacts in the dictionary
+            for (const [key, value] of Object.entries(selectedContacts)) {
+                // console.log(key, value);
+                let listItem = document.createElement('li');
+                listItem.textContent = value;
                 selectedContactsList.appendChild(listItem);
-            });
+            }
+            // selectedContacts.forEach(function (contact) {
+            // });
+        }
+
+        function toggleSelect(element) {
+            let checkboxes = document.getElementsByName('selectedContacts');
+            selectedContacts = {}
+
+            // Loop through checkboxes to find the selected ones
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    selectedContacts[checkboxes[i].value.split("~")[0]] = checkboxes[i].value
+                }
+            }
+
+            displaySelectedContacts();
         }
 
         function addRecipient() {
             let contact_string = "";
-            $("input:checkbox[name=selectedContacts]:checked").each(function () {
+            $("input:checkbox:checked").each(function () {
                 contact_string += $(this).val() + ","
             });
 
             contact_string = contact_string.replace(/,+$/, '');
-            window.location.href = `http://localhost/sms-frontend/sms.php?to=${contact_string}`;
-            // window.location.href = `http://uphmc-sms01.uphmc.com.ph/sms-frontend/sms.php?to=${contact_string}`; //server phmc-sms01
-            
+
+            href_string = `http://localhost/sms-frontend/sms.php`
+            // href_string = `http://phmc-sms/sms-frontend/sms.php` // server phmc-sms01
+            if (contact_string !== '') {
+                href_string += `?to=${contact_string}`
+            }
+
+            window.location.href = href_string;
         }
 
         function openPage(pageName, elmnt, color) {

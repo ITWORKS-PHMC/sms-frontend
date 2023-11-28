@@ -47,8 +47,8 @@ function validateInput() {
 
 // CONTACTS
 //select all items in the checkbox
-function checkAll(myCheckbox) {
-  let checkboxes = document.querySelectorAll("input[type='checkbox']");
+function checkAll(myCheckbox, name="") {
+  let checkboxes = document.querySelectorAll(`input[type='checkbox'][name='${name}']`);
   if (myCheckbox.checked == true) {
     checkboxes.forEach(function (checkbox) {
       checkbox.checked = true;
