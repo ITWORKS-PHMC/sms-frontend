@@ -58,7 +58,7 @@
                     <?php echo $unreadCount. '/'. $allmsg; ?>
                 </div>
             </a></li> 
-
+        <li><a href="smsjunk.php">Junk Messages</a></li>
         <li><a href="smssent.php">Sent Messages</a></li>
         <li><a href="smsunsent.php">Unsent Messages</a></li>
         <li><a href="smscancelled.php">Cancelled Messages </a></li>
