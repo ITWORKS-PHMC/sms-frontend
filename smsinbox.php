@@ -21,8 +21,6 @@ if ($conn === false) {
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="viewport" content="width=500, initial-scale=1" />
     <title>SMS</title>
     <link rel="sms icon" type="x-icon" href="img\logo.png">
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
@@ -41,7 +39,6 @@ if ($conn === false) {
     <?php include("./nav/navbar.php"); ?>
     <div class="content">
         <?php include("./menu/menu.php"); ?>
-
         <div class="container inbox">
             <h1> Inbox </h1>
             <table id="recipientTable" class="recipient-table">
@@ -59,7 +56,7 @@ if ($conn === false) {
                 <tbody id="recipientTableBody"></tbody>
 
                 <?php
-                $tsql = "SELECT * FROM sms_received ORDER BY date_received DESC;";
+                $tsql = "SELECT sms_received_id, caller_group_code, mobile_no, sms_message, date_received, read_status, sms_status, error_log FROM sms_received ORDER BY date_received DESC;";
                 $stmt = sqlsrv_query($conn, $tsql);
                 if ($stmt == false) {
                     echo 'ERROR';
@@ -67,31 +64,38 @@ if ($conn === false) {
 
                 $rowNumber = 1;
                 while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                    $smsMessage = $obj['sms_message'];
                     $class = "";
                     if ($obj['read_status'] == 0) {
                         $class .= "highlight";
                     }
 
-                    echo "<tr class='$class' id='msg-{$obj['sms_received_id']}'>";
-                    echo '<td>' . $rowNumber . '</td>';
+                    if (strpos($smsMessage, '<' .$selectedCallerCode. '>') !== false) {
+                        echo "<tr class='$class' id='msg-{$obj['sms_received_id']}'>";
+                        echo '<td>' . $rowNumber . '</td>';
 
-                    echo "<td class='read_status' id='stats-{$obj['read_status']}'>";
-                    if ($obj['read_status'] == 0) {
-                        echo "Unread";
+                        echo "<td class='read_status' id='stats-{$obj['read_status']}'>";
+                        if ($obj['read_status'] == 0) {
+                            echo "Unread";
+                        } else {
+                            echo "Read";
+                        }
+                        echo "</td>";
+
+                        echo "<td>{$obj['mobile_no']}</td>";
+
+                        echo "<td data-full-message='" . htmlspecialchars($smsMessage) . "'>" . htmlspecialchars(mb_substr($smsMessage, 0, 5)) . "...</td>";
+
+                        echo "<td>{$obj['date_received']->format('Y-m-d h:i:s A')}</td>";
+
+                        echo "<td><button onclick='showPopup({$obj['sms_received_id']})' class='viewButton'>View</button></td>";
+                        echo "</tr>";
+                        $rowNumber++;
                     } else {
-                        echo "Read";
+                        echo "<tr style='display: none;'>";
+                        echo "<td>Caller code doesn't match in this message</td>";
+                        echo "</tr>";
                     }
-                    echo "</td>";
-
-                    echo "<td>{$obj['mobile_no']}</td>";
-
-                    echo "<td data-full-message='" . htmlspecialchars($obj['sms_message']) . "'>" . htmlspecialchars(mb_substr($obj['sms_message'], 0, 5)) . "...</td>";
-
-                    echo "<td>{$obj['date_received']->format('Y-m-d h:i:s A')}</td>";
-
-                    echo "<td><button onclick='showPopup({$obj['sms_received_id']})' class='viewButton'>View</button></td>";
-                    echo "</tr>";
-                    $rowNumber++;
                 }
                 sqlsrv_free_stmt($stmt);
                 ?>

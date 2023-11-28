@@ -20,7 +20,6 @@ if (!$query) {
 $membersData = array();
 
 while ($row = sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC)) {
-    // Add each row to the result array
     $membersData[] = $row;
 }
 

@@ -10,12 +10,10 @@ $selectedCallerCode = $_SESSION['selectedCallerCode'];
 
 // Database connection 
 include("./database/connection.php");
-
 $conn = sqlsrv_connect($serverName, $connectionInfo);
 if ($conn === false) {
     die(print_r(sqlsrv_errors(), true));
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -55,7 +53,7 @@ if ($conn === false) {
 
                 <tbody id="recipientTableBody">
                     <?php
-                    $tsql = "SELECT * FROM sms_unsent;";
+                    $tsql = "SELECT sms_id, contact_id, mobile_no, sms_message, stat, date_created, created_by, date_unsent,error_log FROM sms_unsent;";
                     $stmt = sqlsrv_query($conn, $tsql);
                     if ($stmt == false) {
                         echo 'ERROR';
@@ -63,18 +61,38 @@ if ($conn === false) {
 
                     $rowNumber = 1;
                     while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                        echo "<tr id='msg-{$obj['sms_id']}'>";
-                        echo '<td>' . $rowNumber . '</td>';
+                        $smsMessage = $obj['sms_message'];
+                        $pattern = '/(.+?)\s*\[(\d+)\/(\d+)\]\.\.\.<'. $selectedCallerCode .'>/';
+                        if (strpos($smsMessage, '<' .$selectedCallerCode. '>') !== false) {
+                            if (preg_match($pattern, $smsMessage, $matches)) {
+                                echo "<tr id='msg-{$obj['sms_id']}'>";
+                                echo '<td>' . $rowNumber . '</td>';
 
-                        echo "<td>{$obj['mobile_no']}</td>";
-                        
-                        echo "<td data-full-message='" . htmlspecialchars($obj['sms_message']) . "'>" . htmlspecialchars(mb_substr($obj['sms_message'], 0, 5)) . "...</td>";
+                                echo "<td>{$obj['mobile_no']}</td>";
 
-                        // echo "<td>{$obj['date_received']->format('Y-m-d H:i:s')}</td>";
-                        
-                        echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
-                        echo "</tr>";
-                        $rowNumber++;
+                                // echo "<td data-full-message='" . htmlspecialchars($smsMessage) . "'>" . htmlspecialchars(mb_substr($smsMessage, 0, 5)) . "...</td>";
+                                echo "<td> this message has multiple pages: ". htmlspecialchars($matches[0]) ."</td>";
+
+                                echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
+                                echo "</tr>";
+                                $rowNumber++;
+                            } else {
+                                echo "<tr id='msg-{$obj['sms_id']}'>";
+                                echo '<td>' . $rowNumber . '</td>';
+
+                                echo "<td>{$obj['mobile_no']}</td>";
+
+                                echo "<td data-full-message='" . htmlspecialchars($smsMessage) . "'>" . htmlspecialchars(mb_substr($smsMessage, 0, 5)) . "...</td>";
+
+                                echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
+                                echo "</tr>";
+                                $rowNumber++;
+                            }
+                        } else {
+                            echo "<tr style='display: none;'>";
+                            echo "<td>Caller code doesn't match in this message</td>";
+                            echo "</tr>";
+                        }
                     }
                     sqlsrv_free_stmt($stmt);
                     ?>

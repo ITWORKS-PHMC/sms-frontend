@@ -56,7 +56,7 @@ if ($conn === false) {
 
                 <tbody id="recipientTableBody">
                     <?php
-                    $tsql = "SELECT * FROM sms_sent ORDER BY date_sent DESC";
+                    $tsql = "SELECT sms_id, contact_id, mobile_no, sms_message, stat, date_created, created_by, date_resend, resend_by, date_sent FROM sms_sent ORDER BY date_sent DESC";
                     $stmt = sqlsrv_query($conn, $tsql);
                     if ($stmt == false) {
                         echo 'ERROR';
@@ -64,22 +64,50 @@ if ($conn === false) {
 
                     $rowNumber = 1;
                     while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                        echo "<tr id='msg-{$obj['sms_id']}'>";
-                        echo '<td>' . $rowNumber . '</td>';
+                        $smsMessage = $obj['sms_message'];
+                        $pattern = '/(.+?)\s*\[(\d+)\/(\d+)\]\.\.\.<'. $selectedCallerCode .'>/';
+                        if (strpos($smsMessage, '<' .$selectedCallerCode. '>') !== false) {
+                            if (preg_match($pattern, $smsMessage, $matches)) {
+                                echo "<tr id='msg-{$obj['sms_id']}'>";
+                                echo '<td>' . $rowNumber . '</td>';
 
-                        echo "<td>{$obj['mobile_no']}</td>";
+                                echo "<td>{$obj['mobile_no']}</td>";
 
-                        echo "<td data-full-message='" . htmlspecialchars($obj['sms_message']) . "'>" . htmlspecialchars(mb_substr($obj['sms_message'], 0, 5)) . "...</td>";
+                                // echo "<td data-full-message='" . htmlspecialchars($smsMessage) . "'>" . htmlspecialchars(mb_substr($smsMessage, 0, 5)) . "...</td>";
+                                echo "<td data-full-message='" . htmlspecialchars($smsMessage) . "'> MULTIPLE MSG [". $matches[2] . "/". $matches[3]. "] : " . htmlspecialchars(mb_substr($matches[0], 0, 50)) ."</td>";
 
-                        echo "<td>{$obj['date_created']->format('Y-m-d h:i:s A')}</td>";
+                                echo "<td>{$obj['date_created']->format('Y-m-d h:i:s A')}</td>";
 
-                        echo "<td>{$obj['created_by']}</td>";
+                                echo "<td>{$obj['created_by']}</td>";
 
-                        echo "<td>{$obj['date_sent']->format('Y-m-d h:i:s A')}</td>";
+                                echo "<td>{$obj['date_sent']->format('Y-m-d h:i:s A')}</td>";
 
-                        echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
-                        echo "</tr>";
-                        $rowNumber++;
+                                echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
+                                echo "</tr>";
+                                $rowNumber++;
+                            } else {
+                                echo "<tr id='msg-{$obj['sms_id']}'>";
+                                echo '<td>' . $rowNumber . '</td>';
+
+                                echo "<td>{$obj['mobile_no']}</td>";
+
+                                echo "<td data-full-message='" . htmlspecialchars($smsMessage) . "'>" . htmlspecialchars(mb_substr($smsMessage, 0, 5)) . "...</td>";
+
+                                echo "<td>{$obj['date_created']->format('Y-m-d h:i:s A')}</td>";
+
+                                echo "<td>{$obj['created_by']}</td>";
+
+                                echo "<td>{$obj['date_sent']->format('Y-m-d h:i:s A')}</td>";
+
+                                echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
+                                echo "</tr>";
+                                $rowNumber++;
+                            }
+                        } else {
+                            echo "<tr style='display: none;'>";
+                            echo "<td>Caller code doesn't match in this message</td>";
+                            echo "</tr>";
+                        }
                     }
                     sqlsrv_free_stmt($stmt);
                     ?>

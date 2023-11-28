@@ -51,35 +51,63 @@ if ($conn === false) {
                             <th>Mobile Number</th>
                             <th>Text Message</th>
                             <th>Date/Time Created</th>
-                            <th>Created By</th> 
+                            <th>Created By</th>
                         </tr>
 
                         <?php
-                        $tsql = "SELECT * from sms_queue";
+                        $tsql = "SELECT sms_id, contact_id, mobile_no, sms_message, stat, date_created, created_by, date_resend, resend_by FROM sms_queue";
                         $stmt = sqlsrv_query($conn, $tsql);
 
                         if ($stmt == false) {
                             echo 'ERROR';
                         }
-                        
+
                         $rowNumber = 1;
                         while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                            echo "<tr>";
-                            echo '<td>' . $rowNumber . '</td>';
+                            $smsMessage = $obj['sms_message'];
+                            $pattern = '/(.+?)\s*\[(\d+)\/(\d+)\]\.\.\.<' . $selectedCallerCode . '>/';
+                            if (strpos($smsMessage, '<' . $selectedCallerCode . '>') !== false) {
+                                if (preg_match($pattern, $smsMessage, $matches)) {
+                                    // echo "<tr id='msg-{$obj['sms_id']}'>";
+                                    echo "<tr>";
+                                    echo '<td>' . $rowNumber . '</td>';
 
-                            echo "<td>" . $obj['mobile_no'] . "</td>";
+                                    echo "<td>{$obj['mobile_no']}</td>";
 
-                            echo "<td>" . htmlspecialchars(wordwrap($obj['sms_message'], 50, "<br>\n", true)) . "</td>";
+                                    // echo "<td>" . htmlspecialchars(wordwrap($obj['sms_message'], 50, "<br>\n", true)) . "</td>";
+                                    echo "<td> this message has multiple pages: " . htmlspecialchars($matches[0]) . "</td>";
 
-                            echo "<td>{$obj['date_created']->format('Y-m-d h:i:s A')}</td>";
+                                    echo "<td>{$obj['date_created']->format('Y-m-d h:i:s A')}</td>";
 
-                            echo "<td>" . $obj['created_by'] . "</td>"; 
-                            echo "</tr>";
-                            $rowNumber++;
+                                    echo "<td>{$obj['created_by']}</td>";
+
+                                    // echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
+                                    echo "</tr>";
+                                    $rowNumber++;
+                                } else {
+                                    // echo "<tr id='msg-{$obj['sms_id']}'>";
+                                    echo "<tr>";
+                                    echo '<td>' . $rowNumber . '</td>';
+
+                                    echo "<td>{$obj['mobile_no']}</td>";
+
+                                    echo "<td>" . htmlspecialchars(wordwrap($obj['sms_message'], 50, "<br>\n", true)) . "</td>";
+
+                                    echo "<td>{$obj['date_created']->format('Y-m-d h:i:s A')}</td>";
+
+                                    echo "<td>{$obj['created_by']}</td>";
+
+                                    // echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
+                                    echo "</tr>";
+                                    $rowNumber++;
+                                }
+                            } else {
+                                echo "<tr style='display: none;'>";
+                                echo "<td>Caller code doesn't match in this message</td>";
+                                echo "</tr>";
+                            }
                         }
-                      
                         sqlsrv_free_stmt($stmt);
-                        sqlsrv_close($conn);
                         ?>
                     </form>
                 </table>
