@@ -12,10 +12,24 @@ $conn = sqlsrv_connect($serverName, $connectionInfo);
 if ($conn === false) {
     die(print_r(sqlsrv_errors(), true));
 }
-// if (!isset($_SESSION['loggedin'])) {
-//     header('Location: login.php');
-//     exit;
-// }
+
+if (!isset($_SESSION["recipients"])) {}
+
+$_SESSION["recipients"] = [];
+
+if (isset($_GET["to"])) {
+    $recipients_arr = explode(",", $_GET['to']);
+
+    foreach ($recipients_arr as $recipient) {
+        $data = explode("~", $recipient);
+        $number = str_replace(" ", "+", $data[2]);
+
+        $_SESSION['recipients'][$number] = [
+            "id" => $data[0],
+            "name" => $data[1]
+        ];
+    }
+}
 
 //HandLe AJAX request
 if (isset($_POST['ajax']) && isset($_POST['checked'])) {
@@ -25,6 +39,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
     exit;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -230,7 +245,22 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 
             // Function to delete a recipient
             function deleteRecipient(recipientId) {
+                let toDelete = recipients.filter(recipient => recipient.id === recipientId)[0]
                 recipients = recipients.filter(recipient => recipient.id !== recipientId);
+                
+                let posting = $.post('helper/RemoveRecipient.php', {
+                    contactNum: toDelete["contact_num"]
+                });
+
+                /* Alerts the results */
+                posting.done(function (response) {
+                    console.log(JSON.parse(response))
+                });
+                posting.fail(function () {
+                    console.log("Failed")
+                    alert("Failed to send!");
+                });
+
                 renderRecipientTable();
             }
 
@@ -263,17 +293,14 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 /* stop form from submitting normally */
                 event.preventDefault();
 
-                const url = 'sendToQueue.php'
-
-                /* Send the data using post with element id name and name2 */
-                console.log(document.getElementById("message").value);
+                const url = 'helper/sendToQueue.php'
 
                 var posting = $.post(url, {
                     data: recipients,
                     message: document.getElementById("message").value
                 });
 
-                /* Alerts the results */
+                /* Alerts the results - message is in queue*/
                 posting.done(function (response) {
                     const obj = JSON.parse(response)
                     if (obj['message'] === "Success") {
@@ -290,7 +317,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                     console.log("Failed")
                     alert("Failed to send!");
                 });
-            }); 
+            });
         </script>
         <script src="script.js"></script>
     </div>
