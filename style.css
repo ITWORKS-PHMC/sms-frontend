@@ -223,10 +223,10 @@ header {
 .addRecipientTitle {
   text-align: center;
 }
-.contactsButton {
+.addRecipientButton {
   display: flex;
   width: fit-content;
-  padding: 20px;
+  padding: 20px 40px 20px 40px;
   color: #202020;
   border: 1.5px solid #b2b2b2;
   border-radius: 5px;
@@ -250,6 +250,7 @@ header {
   border-top-right-radius: 10px;
   border-bottom: none;
 }
+.addRecipientButton:hover,
 .tablink:hover {
   color: white;
   background-color: #3a5a40;

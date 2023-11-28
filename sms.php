@@ -108,8 +108,11 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                             <span id="pageCountLimit"></span>
                         </p>
                     </div>
-                    <input id="submit-msg" type="submit" class="submit" name="submit-msg" placeholder="Send here"
-                        value="Send">
+                    <div class="messageSubmit">
+                        <input id="submit-msg" type="submit" class="submit" name="submit-msg" placeholder="Send here"
+                            value="Send">
+                    </div>    
+                    <!-- onclick="checkTableData()" for disabledbutton  -->
                     <input type="hidden" id="hidden-numbers" name="hidden-numbers" required>
                 </div>
             </form>
