@@ -124,6 +124,12 @@ if ($conn === false) {
                         <div id="sender"></div>
                         <br>
                         <div id="message"></div>
+                        <br>
+                        <div id="dateCreated"></div>
+                        <br>
+                        <div id="createdBy"></div>
+                        <br>
+                        <div id="dateSent"></div>
                     </div>
                 </div>
             </div>
@@ -138,16 +144,25 @@ if ($conn === false) {
 
             const sender = cells[1].textContent;
             const fullMessage = cells[2].getAttribute("data-full-message");
+            const dateCreated = cells[3].textContent;
+            const createdBy = cells[4].textContent;
+            const dateSent = cells[5].textContent;
 
             const popup = document.getElementById("popup");
 
             const contentSender = document.getElementById("sender");
             const contentMessage = document.getElementById("message");
+            const contentDateCreated = document.getElementById("dateCreated");
+            const contentCreatedBy = document.getElementById("createdBy");
+            const contentDateSent = document.getElementById("dateSent");
 
             document.getElementById("message").className = "popupMessage";
 
             contentSender.textContent = "Sender: " + sender;
             contentMessage.textContent = "Message: " + fullMessage;
+            contentDateCreated.textContent = "Date Created: " + dateCreated;
+            contentCreatedBy.textContent = "Created By: " + createdBy;
+            contentDateSent.textContent = "Date Sent: " + dateSent;
 
             popup.style.display = "flex";
         }
