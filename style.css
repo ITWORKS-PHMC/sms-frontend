@@ -216,6 +216,27 @@ header {
 }
 
 /* CONTACTS TAB */
+.addRecipient {
+  display: flex;
+  justify-content: center;
+}
+.addRecipientTitle {
+  text-align: center;
+}
+.contactsButton {
+  display: flex;
+  width: fit-content;
+  padding: 20px;
+  color: #202020;
+  border: 1.5px solid #b2b2b2;
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+.contactsTabs {
+  padding-top: 20px;
+}
 .tablink {
   display: inline-block;
   height: 10vh;
@@ -355,10 +376,15 @@ header {
   justify-content: space-between;
   align-items: center;
 }
+.container.new-message .sms-message .messageSubmit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .container.new-message .sms-message .submit {
   display: inline-flex;
   width: fit-content;
-  padding: 10px;
+  padding: 10px 30px 10px 30px;
   color: #202020;
   border: 1.5px solid #b2b2b2;
   border-radius: 5px;
@@ -377,6 +403,22 @@ header {
   background-color: #cccccc;
   color: #666666;
   cursor: not-allowed;
+}
+.deleteButton {
+  display: inline-flex;
+  width: fit-content;
+  padding: 10px;
+  color: #202020;
+  border: 1.5px solid #b2b2b2;
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+.deleteButton:hover {
+  background-color: #3a5a40;
+  color: #eff3f4;
+  transition: background-color 0.2s;
 }
 
 /* Incorrect prefix */
@@ -401,13 +443,16 @@ th {
   text-align: center;
   padding: 8px;
   border: 1px solid #dddddd;
-  background-color: #a3b18a;
+  background-color: #3a5a40;
+  color: white;
+  font-weight: normal;
 }
 td {
   text-align: left;
   padding: 3px;
   border-radius: 5px;
   border: 1.5px solid #b2b2b2;
+  width: max-content;
 }
 tr:nth-child(all) {
   background-color: #dddddd;
@@ -423,7 +468,7 @@ tr:nth-child(all) {
 
 /* For unread messages */
 .highlight {
-  background-color: #3a5a40;
+  background-color: #588157;
 }
 .highlight:hover {
   color: #3a5a40;
@@ -431,17 +476,69 @@ tr:nth-child(all) {
 
 /* INBOX */
 /* Pop-up message */
-.popup {
+.overlay {
   display: none;
   position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+.popup {
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 20px;
   background-color: white;
+  padding: 20px;
   border: 1px solid #ccc;
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  border-radius: 10px;
+  z-index: 10;
+  background-color: white;
+  width: 500px;
+  max-width: 80%;
+}
+.popup-header {
+  padding: 0px 1px 10px 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.popup-header .title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+.popup-header .closePopup {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+.popup-body {
+  padding: 0px 1px 20px 5px;
+  text-align: left;
+}
+.popupMessage {
+  max-width: 600px;
+  word-wrap: break-word;
+}
+.popup-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.popup-button .replyButton {
+  border: 1.5px solid #b2b2b2;
+  border-radius: 5px;
+  padding: 10px;
+}
+.popup-button .replyButton:hover {
+  background-color: #3a5a40;
+  color: #eff3f4;
+  transition: background-color 0.2s;
 }
 .viewButton {
   display: flex;
