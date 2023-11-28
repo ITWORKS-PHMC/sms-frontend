@@ -5,6 +5,8 @@ if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
+$username = $_SESSION['username'];
+$selectedCallerCode = $_SESSION['selectedCallerCode'];
 
 // Database connection 
 include("./database/connection.php");
@@ -13,7 +15,8 @@ if ($conn === false) {
     die(print_r(sqlsrv_errors(), true));
 }
 
-if (!isset($_SESSION["recipients"])) {}
+if (!isset($_SESSION["recipients"])) {
+}
 
 $_SESSION["recipients"] = [];
 
@@ -108,28 +111,42 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                             <span id="pageCountLimit"></span>
                         </p>
                     </div>
+
+                    <?php
+                    // Broadcast
+                    $tsql ="SELECT access_level FROM caller_group WHERE caller_group_code = '$selectedCallerCode'";
+                    $stmt = sqlsrv_query($conn, $tsql);
+
+                    if ($stmt) {
+                        $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+                        $accessLevel = $row['access_level'];
+                        if ($accessLevel == 2 || $accessLevel == 3 || $accessLevel == 4) {
+                            echo '<div class="sms-broadcast">
+                                    <form action="" method="post">
+                                        <div class="broadcastDate">
+                                            <input type="checkbox" class="checkbox" id="checkbox" name="checkbox"> Broadcast Schedule: </input>
+                                            <input type="datetime-local" class="schedule" id="schedule" name="schedule"></input>
+                                        </div>
+                                        <div class="broadcastTitle">
+                                            <label class="title"> Broadcast Title: </label>
+                                            <input type="text" class="titlebox" id="title" name="broadcast-msg"></input>
+                                        </div>
+                                        <input type="submit" class="broadcast-submit" value="Submit">
+                                    </form>
+                                </div>';
+                        } else {
+                            echo '<div style="display:none;"></div>';
+                        }
+                    } 
+                    ?>
+
                     <div class="messageSubmit">
                         <input id="submit-msg" type="submit" class="submit" name="submit-msg" placeholder="Send here"
                             value="Send">
-                    </div>    
-                    <!-- onclick="checkTableData()" for disabledbutton  -->
+                    </div>
                     <input type="hidden" id="hidden-numbers" name="hidden-numbers" required>
                 </div>
             </form>
-
-            <!-- for broadcast -->
-            <!-- <div class="sms-broadcast">
-            <form action="" method="post">
-                <input type="checkbox" class="checkbox" id="checkbox" name="checkbox"> Broadcast Schedule: </input>
-                <input type="datetime-local" class="schedule" id="schedule" name="schedule"></input>
-                <input type="submit" class="broadcast-submit" value="Submit">
-
-                <div class="broadcasttitle">
-                <label class="title"> Broadcast Title: </label>
-                <input type="text" class="titlebox" id="title" name="broadcast-msg"></input>
-                </div>
-            </form>
-            </div> -->
 
             <!-- Recipient Table -->
             <div class="sms-recipient">
@@ -250,7 +267,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
             function deleteRecipient(recipientId) {
                 let toDelete = recipients.filter(recipient => recipient.id === recipientId)[0]
                 recipients = recipients.filter(recipient => recipient.id !== recipientId);
-                
+
                 let posting = $.post('helper/RemoveRecipient.php', {
                     contactNum: toDelete["contact_num"]
                 });
