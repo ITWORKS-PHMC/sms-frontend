@@ -1,10 +1,17 @@
 <?php
 session_start();
+// Redirect to the login page if not login 
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit();
+}
 $username = $_SESSION['username'];
 
-if (!isset($_SESSION['username'])) {
-    header("Location: login.php"); // Redirect to the login page if not login 
-    exit();
+// Database connection 
+include("./database/connection.php");
+$conn = sqlsrv_connect($serverName, $connectionInfo);
+if ($conn === false) {
+    die(print_r(sqlsrv_errors(), true));
 }
 ?>
 
@@ -30,14 +37,7 @@ if (!isset($_SESSION['username'])) {
                     <span> Caller Group Code: </span>
                     <select id="callercode" name="callercode" class="callerOptionsBtn">
                         <?php
-                        //database connection 
-                        include("./database/connection.php");
-                        $conn = sqlsrv_connect($serverName, $connectionInfo);
-                        if ($conn === false) {
-                            die(print_r(sqlsrv_errors(), true));
-                        }
-
-                        $sql = "SELECT [caller_group_code] FROM vw_caller_group_members WHERE [username] = ?";
+                        $sql = "SELECT caller_group_code FROM vw_caller_group_members WHERE username = ?";
                         $params = array($username);
                         $query = sqlsrv_prepare($conn, $sql, $params);
 

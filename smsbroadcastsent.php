@@ -1,10 +1,19 @@
 <?php
-// //If not loggedIn cannot passthrough
-// session_start();
-// if (!isset($_SESSION['loggedin'])) {
-//     header('Location: login.php');
-//     exit;
-// }
+session_start();
+// Redirect to the login page if not login 
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit();
+}
+$username = $_SESSION['username'];
+$selectedCallerCode = $_SESSION['selectedCallerCode'];
+
+// Database connection 
+include("./database/connection.php");
+$conn = sqlsrv_connect($serverName, $connectionInfo);
+if ($conn === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
 ?>
 
 <!DOCTYPE html>
@@ -45,8 +54,7 @@
                 </thead>
                 <tbody id="recipientTableBody"></tbody>
                 <?php
-                // $tsql = "SELECT * FROM sms_unsent ORDER BY date_received DESC";
-                $tsql = "SELECT * FROM sms_cancelled;";
+                $tsql = "SELECT sms_id, contact_id, mobile_no, sms_message, stat, date_created, created_by, date_cancelled, cancelled_by FROM sms_cancelled;";
                 $stmt = sqlsrv_query($conn, $tsql);
                 if ($stmt == false) {
                     echo 'ERROR';

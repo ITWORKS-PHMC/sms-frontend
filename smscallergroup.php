@@ -1,11 +1,18 @@
 <?php
 session_start();
-$username = $_SESSION['username'];
-$selectedCallerCode = $_SESSION['selectedCallerCode'];
-
+// Redirect to the login page if not login 
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
+}
+$username = $_SESSION['username'];
+$selectedCallerCode = $_SESSION['selectedCallerCode'];
+
+// Database connection 
+include("./database/connection.php");
+$conn = sqlsrv_connect($serverName, $connectionInfo);
+if ($conn === false) {
+    die(print_r(sqlsrv_errors(), true));
 }
 ?>
 
@@ -47,14 +54,7 @@ if (!isset($_SESSION['username'])) {
                         <span> Want to change caller code? Choose here: </span>
                         <select id="callercode" name="callercode" class="callerOptionsBtn">
                             <?php
-                            //database connection 
-                            include("./database/connection.php");
-                            $conn = sqlsrv_connect($serverName, $connectionInfo);
-                            if ($conn === false) {
-                                die(print_r(sqlsrv_errors(), true));
-                            }
-
-                            $sql = "SELECT [caller_group_code] FROM vw_caller_group_members WHERE [username] = ?";
+                            $sql = "SELECT caller_group_code FROM vw_caller_group_members WHERE username = ?";
                             $params = array($username);
                             $query = sqlsrv_prepare($conn, $sql, $params);
 
@@ -73,11 +73,9 @@ if (!isset($_SESSION['username'])) {
                             sqlsrv_close($conn);
                             ?>
                         </select>
-
                         <div class="callerGroupOptionBtn">
                             <button type="submit" class="callerOptionsSubmitBtn">Change</button>
                         </div>
-
                     </div>
                 </form>
             </div>

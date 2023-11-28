@@ -1,4 +1,12 @@
 <?php
+session_start();
+// Redirect to the login page if not login 
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// Database connection 
 include("./database/connection.php");
 $conn = sqlsrv_connect($serverName, $connectionInfo);
 if ($conn === false) {

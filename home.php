@@ -1,12 +1,18 @@
 <?php
 session_start();
+// Redirect to the login page if not login 
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit();
+}
 $username = $_SESSION['username'];
 $selectedCallerCode = $_SESSION['selectedCallerCode'];
 
-if (!isset($_SESSION['username'])) {
-    // Redirect to the login page if not login 
-    header("Location: login.php");
-    exit();
+// Database connection 
+include("./database/connection.php");
+$conn = sqlsrv_connect($serverName, $connectionInfo);
+if ($conn === false) {
+    die(print_r(sqlsrv_errors(), true));
 }
 ?>
 
@@ -32,7 +38,6 @@ if (!isset($_SESSION['username'])) {
                     <p> Good day, <?php echo str_replace('.',' ', $username. '!'); ?>
                 </div>
                 <div class="dashboardCallerCode">
-               
                     <p> Selected Caller Code:  <?php echo "<u>" . $selectedCallerCode . "</u>"; ?>
                 </div>
             </div>

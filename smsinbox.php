@@ -1,11 +1,14 @@
 <?php
-// session_start();
-// if (!isset($_SESSION['username'])) {
-//     header("Location: login.php"); // Redirect to the login page if not login 
-//     exit();
-// }
+session_start();
+// Redirect to the login page if not login 
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php"); 
+    exit();
+}
+$username = $_SESSION['username'];
+$selectedCallerCode = $_SESSION['selectedCallerCode'];
 
-//database connection 
+// Database connection 
 include("./database/connection.php");
 $conn = sqlsrv_connect($serverName, $connectionInfo);
 if ($conn === false) {

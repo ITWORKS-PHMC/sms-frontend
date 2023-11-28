@@ -4,12 +4,11 @@ $username = $_SESSION['username'];
 $selectedCallerCode = $_SESSION['selectedCallerCode'];
 
 //Database Connection 
-include("./database/connection.php");
+include("../database/connection.php");
 $conn = sqlsrv_connect($serverName, $connectionInfo);
 if ($conn === false) {
     die(print_r(sqlsrv_errors(), true));
 }
-
 
 // This is for inserting numbers messages to sms_queue table 
 if (isset($_POST['data'])) {

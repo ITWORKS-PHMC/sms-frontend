@@ -1,5 +1,5 @@
 <?php
-//database connection 
+// Database connection 
 include("./database/connection.php");
 
 if (isset($_POST['id'])) {
