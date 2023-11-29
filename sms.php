@@ -93,6 +93,38 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 <a href="contacts.php" class="contacts-button">Contacts</a>
             </div>
 
+            <!-- Broadcast -->
+            <div class="contact-broadcast">
+                <?php
+                $tsql = "SELECT access_level FROM caller_group WHERE caller_group_code = '$selectedCallerCode'";
+                $stmt = sqlsrv_query($conn, $tsql);
+
+                if ($stmt) {
+                    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+                    $accessLevel = $row['access_level'];
+                    if (in_array($accessLevel, [2, 3, 4])) {
+                        echo '<div class="sms-broadcast">
+                                <form action="" method="post">
+                                    <div class="broadcastDate">
+                                        <label for="schedule">Broadcast Schedule: </label>
+                                        <input type="datetime-local" class="broadcastSchedule" id="schedule" name="schedule"></input>
+                                    </div>
+                                    <div class="broadcastInput">
+                                        <label class="title"> Broadcast Title: </label>
+                                        <input type="text" class="broadcastTitle" id="title" name="broadcast-msg"></input>
+                                    </div>
+                                    <div class="broadcastSubmit">
+                                        <input type="submit" class="broadcastSet" value="Set Schedule">
+                                    </div>
+                                </form>
+                              </div>';
+                    } else {
+                        echo '<div style="display:none;"></div>';
+                    }
+                }
+                ?>
+            </div>
+
             <form action="#" id="send-message" method="post">
                 <div class="sms-message">
                     <textarea id="message" name="message" class="message" rows="5" placeholder="Type something here.."
@@ -111,34 +143,6 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                             <span id="pageCountLimit"></span>
                         </p>
                     </div>
-
-                    <?php
-                    // Broadcast
-                    $tsql ="SELECT access_level FROM caller_group WHERE caller_group_code = '$selectedCallerCode'";
-                    $stmt = sqlsrv_query($conn, $tsql);
-
-                    if ($stmt) {
-                        $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
-                        $accessLevel = $row['access_level'];
-                        if ($accessLevel == 2 || $accessLevel == 3 || $accessLevel == 4) {
-                            echo '<div class="sms-broadcast">
-                                    <form action="" method="post">
-                                        <div class="broadcastDate">
-                                            <input type="checkbox" class="checkbox" id="checkbox" name="checkbox"> Broadcast Schedule: </input>
-                                            <input type="datetime-local" class="schedule" id="schedule" name="schedule"></input>
-                                        </div>
-                                        <div class="broadcastTitle">
-                                            <label class="title"> Broadcast Title: </label>
-                                            <input type="text" class="titlebox" id="title" name="broadcast-msg"></input>
-                                        </div>
-                                        <input type="submit" class="broadcast-submit" value="Submit">
-                                    </form>
-                                </div>';
-                        } else {
-                            echo '<div style="display:none;"></div>';
-                        }
-                    } 
-                    ?>
 
                     <div class="messageSubmit">
                         <input id="submit-msg" type="submit" class="submit" name="submit-msg" placeholder="Send here"
