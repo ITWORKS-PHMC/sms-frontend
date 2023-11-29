@@ -3,40 +3,32 @@ session_start();
 $username = $_SESSION['username'];
 $selectedCallerCode = $_SESSION['selectedCallerCode'];
 
-//database connection 
+// Database connection 
 include("./database/connection.php");
 $conn = sqlsrv_connect($serverName, $connectionInfo);
 if ($conn === false) {
     die(print_r(sqlsrv_errors(), true));
 }
 
-$tsql = "SELECT COUNT(*) AS sms_received_id FROM sms_received WHERE read_status = 0";
-$stmt_count = sqlsrv_query($conn, $tsql);
-
-if ($stmt_count === false) {
-    die(print_r(sqlsrv_errors(), true));
+// Total count of message received
+$tsql = "SELECT sms_message, read_status FROM sms_received";
+$stmt = sqlsrv_query($conn, $tsql);
+if ($stmt == false) {
+    echo 'ERROR';
 }
 
-if (sqlsrv_fetch($stmt_count)) {
-    $unreadCount = sqlsrv_get_field($stmt_count, 0);
-} else {
-    $unreadCount = 0;
+$allMsg = 0;
+$unreadMsg = 0;
+while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+    $smsMessage = $obj['sms_message'];
+    if (strpos($smsMessage, '<' .$selectedCallerCode. '>') !== false) {
+        $allMsg++;
+        if ($obj['read_status'] == 0) {
+            $unreadMsg++;
+        }
+    }
 }
-
-$inbox = "SELECT COUNT(*) AS sms_received_id FROM sms_received";
-$inbox_count = sqlsrv_query($conn, $inbox);
-
-if ($inbox_count === false) {
-    die(print_r(sqlsrv_errors(), true));
-}
-
-if (sqlsrv_fetch($inbox_count)) {
-    $allmsg = sqlsrv_get_field($inbox_count, 0);
-} else {
-    $allmsg = 0;
-}
-
-sqlsrv_free_stmt($stmt_count);
+sqlsrv_free_stmt($stmt);
 ?>
 
 <!DOCTYPE html>
@@ -57,9 +49,9 @@ sqlsrv_free_stmt($stmt_count);
             <li><a class="active" href="sms.php">Create New Message</a></li>
             <li><a href="smsqueued.php">Queue Messages</a></li>
 
-            <li><a href="smsinbox.php">Inbox
+            <li><a href="smsinbox.php">Received
                     <div class="inbox-counter" id="counterInbox">
-                        <?php echo $unreadCount . '/' . $allmsg; ?>
+                        <?php echo $unreadMsg . '/' . $allMsg; ?>  
                     </div>
                 </a></li>
             <li><a href="smssent.php">Sent Messages</a></li>
@@ -68,10 +60,10 @@ sqlsrv_free_stmt($stmt_count);
 
             <?php
             $tsql = "SELECT access_level FROM caller_group WHERE caller_group_code = '$selectedCallerCode'";
-            $stmt = sqlsrv_query($conn, $tsql);
+            $stmt_caller = sqlsrv_query($conn, $tsql);
 
-            if ($stmt) {
-                $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+            if ($stmt_caller) {
+                $row = sqlsrv_fetch_array($stmt_caller, SQLSRV_FETCH_ASSOC);
                 $accessLevel = $row['access_level'];
 
                 echo '<ul>';
