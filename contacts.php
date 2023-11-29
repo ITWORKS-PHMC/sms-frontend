@@ -45,14 +45,16 @@ if (!isset($_SESSION["recipients"])) {
 
     <div class="content">
         <aside class="sidebar">
-            <ul id="selectedContacts">
+                <ul id="selectedContacts">
                 <div class="addRecipient">
                     <li>
                         <button class="addRecipientButton" onClick="addRecipient()">Add to Recipient</button>
                     </li>
                 </div>
-                <h3 class="addRecipientTitle">Selected Contacts</h3>
+                <div class="scrollable-content">
+                    <h3 class="addRecipientTitle">Selected Contacts</h3>
                 <ul id="selectedContactsList"></ul>
+                </div>
             </ul>
         </aside>
 
