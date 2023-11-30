@@ -145,6 +145,7 @@ header {
   padding: 0;
   color: #000;
 }
+
 .sidebar ul li {
   display: block;
   padding: 5px;
@@ -178,6 +179,12 @@ header {
   height: 30px;
   padding-left: 8px;
 }
+.menuTitle{
+  background-color: #3A5A40;
+  color: #eff3f4;
+  text-align: center;
+}
+
 
 /* HOME PAGE */
 .container.home .title {
@@ -289,9 +296,6 @@ header {
   margin-left: 240px;
 }
 .container {
-  padding-top: 30px;
-}
-.container.contacts {
   padding-top: 50px;
 }
 

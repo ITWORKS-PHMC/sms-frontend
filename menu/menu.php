@@ -1,5 +1,4 @@
 <?php
-session_start();
 $username = $_SESSION['username'];
 $selectedCallerCode = $_SESSION['selectedCallerCode'];
 
@@ -21,7 +20,7 @@ $allMsg = 0;
 $unreadMsg = 0;
 while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     $smsMessage = $obj['sms_message'];
-    if (strpos($smsMessage, '<' .$selectedCallerCode. '>') !== false) {
+    if (strpos($smsMessage, '<' . $selectedCallerCode . '>') !== false) {
         $allMsg++;
         if ($obj['read_status'] == 0) {
             $unreadMsg++;
@@ -42,16 +41,18 @@ sqlsrv_free_stmt($stmt);
 <body>
     <aside class="sidebar">
         <ul>
-            <img src="img\logo_header.png" alt="logo_header">
-            <hr>
-            <li> MENU BUTTON </li>
-            <hr>
-            <li><a class="active" href="sms.php">Create New Message</a></li>
+            <img src="img\logo_header.png" alt="logo_header" class="imgMenu">
+            <div class="menuTitle">
+                <hr>
+                <li> MENU BUTTON </li>
+                <hr>
+            </div>
+            <li><a href="sms.php">Create New Message</a></li>
             <li><a href="smsqueued.php">Queue Messages</a></li>
 
             <li><a href="smsinbox.php">Received
                     <div class="inbox-counter" id="counterInbox">
-                        <?php echo $unreadMsg . '/' . $allMsg; ?>  
+                        <?php echo $unreadMsg . '/' . $allMsg; ?>
                     </div>
                 </a></li>
             <li><a href="smssent.php">Sent Messages</a></li>
@@ -70,19 +71,20 @@ sqlsrv_free_stmt($stmt);
                 if ($accessLevel != 1) {
                     echo '<li><a href="smsbroadcastsent.php">Broadcast Sent Messages</a></li>';
                     echo '<li><a href="smsbroadcastunsent.php">Broadcast Unsent Messages</a></li>';
-                    if($accessLevel == 4){
+                    if ($accessLevel == 4) {
                         echo '<li><a href="smsjunk.php">Junk Messages</a></li>';
                     }
                 }
                 echo '</ul>';
-            } 
+            }
             ?>
-            <hr>
-            <li>CHANGE GROUP</li>
-            <hr>
+            <div class="menuTitle">
+                <hr>
+                <li> CHANGE GROUP </li>
+                <hr>
+            </div>
             <li><a href="smscallergroup.php">Caller Group</a></li>
         </ul>
     </aside>
 </body>
-
 </html>
