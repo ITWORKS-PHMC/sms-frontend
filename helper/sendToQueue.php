@@ -53,11 +53,7 @@ if (isset($_POST['data'])) {
                 $insert_msg = $messages[$j];
 
                 if ($messages_count > 1) {
-                    $insert_msg .= " [$cur/$messages_count]";
-                }
-
-                if ($cur === $messages_count) {
-                    $insert_msg .= "...<$selectedCallerCode>";
+                    $insert_msg .= " [$cur/$messages_count]...<$selectedCallerCode>";
                 }
 
                 $values .= "('{$contactId}', '{$contact_num}', '$insert_msg', '$currentDateTime', '$user', '$currentDateTime'),";
