@@ -41,7 +41,6 @@ if ($conn === false) {
         <?php include("./menu/menu.php"); ?>
         <div class="container cancelled">
             <h1> Cancelled Messages </h1>
-            <?php echo $selectedCallerCode ?>
             <table id="recipientTable" class="recipient-table">
                 <thead>
                     <tr>
@@ -65,44 +64,23 @@ if ($conn === false) {
                 $rowNumber = 1;
                 while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                     $smsMessage = $obj['sms_message'];
-                    $pattern = '/(.+?)\s*\[(\d+)\/(\d+)\]\.\.\.<' . $selectedCallerCode . '>/';
                     if (strpos($smsMessage, '<' . $selectedCallerCode . '>') !== false) {
-                        if (preg_match($pattern, $smsMessage, $matches)) {
-                            echo "<tr>";
-                            echo '<td>' . $rowNumber . '</td>';
+                        echo "<tr>";
+                        echo '<td>' . $rowNumber . '</td>';
 
-                            echo "<td>{$obj['mobile_no']}</td>";
+                        echo "<td>{$obj['mobile_no']}</td>";
 
-                            // echo "<td data-full-message='" . htmlspecialchars($smsMessage) . "'>" . htmlspecialchars(mb_substr($smsMessage, 0, 5)) . "...</td>";
-                            echo "<td> this message has multiple pages: " . htmlspecialchars($matches[0]) . "</td>";
-                            
-                            // echo "<td>{$obj['date_created']->format('Y-m-d H:i:s')}</td>";
+                        echo "<td data-full-message='" . htmlspecialchars($smsMessage) . "'>" . htmlspecialchars(mb_substr($smsMessage, 0, 5)) . "...</td>";
+
+                        // echo "<td>{$obj['date_created']->format('Y-m-d H:i:s')}</td>";
                 
-                            echo "<td>{$obj['created_by']}</td>";
+                        echo "<td>{$obj['created_by']}</td>";
 
-                            // echo "<td>{$obj['date_cancelled']->format('Y-m-d H:i:s')}</td>";
-
-                            echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
-                            echo "</tr>";
-                            $rowNumber++;
-                        } else {
-                            echo "<tr>";
-                            echo '<td>' . $rowNumber . '</td>';
-
-                            echo "<td>{$obj['mobile_no']}</td>";
-
-                            echo "<td data-full-message='" . htmlspecialchars($smsMessage) . "'>" . htmlspecialchars(mb_substr($smsMessage, 0, 5)) . "...</td>";
-                           
-                            // echo "<td>{$obj['date_created']->format('Y-m-d H:i:s')}</td>";
+                        // echo "<td>{$obj['date_cancelled']->format('Y-m-d H:i:s')}</td>";
                 
-                            echo "<td>{$obj['created_by']}</td>";
-
-                            // echo "<td>{$obj['date_cancelled']->format('Y-m-d H:i:s')}</td>";
-
-                            echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
-                            echo "</tr>";
-                            $rowNumber++;
-                        }
+                        echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
+                        echo "</tr>";
+                        $rowNumber++;
                     } else {
                         echo "<tr style='display: none;'>";
                         echo "<td>Caller code doesn't match in this message</td>";

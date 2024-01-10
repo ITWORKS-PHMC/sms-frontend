@@ -37,83 +37,139 @@ if ($conn === false) {
 
 <body>
     <?php include("./nav/navbar.php"); ?>
-
     <div class="content">
         <?php include("./menu/menu.php"); ?>
-
         <div class="container queue">
             <h1> Queue Messages </h1>
-            <div class="sms-recipient">
-                <table id="recipientTable" class="recipient-table">
-                    <form class="" action="" method="post">
-                        <tr>
-                            <th>#</th>
-                            <th>Mobile Number</th>
-                            <th>Text Message</th>
-                            <th>Date/Time Created</th>
-                            <th>Created By</th>
-                        </tr>
+            <table id="recipientTable" class="recipient-table">
+                <thread>
+                    <tr>
+                        <th>Ticket #</th>
+                        <th>Sent By</th>
+                        <th>Mobile Number</th>
+                        <th>Recipient</th>
+                        <th>Text Message</th>
+                        <th>Date/Time Created</th>
+                        <th>View</th>
+                    </tr>
+                </thread>
 
-                        <?php
-                        $tsql = "SELECT sms_id, contact_id, mobile_no, sms_message, stat, date_created, created_by, date_resend, resend_by FROM sms_queue";
-                        $stmt = sqlsrv_query($conn, $tsql);
+                <tbody id="recipientTableBody">
+                    <?php
+                    $tsql = "SELECT DISTINCT s.sms_id, s.contact_id, s.mobile_no, s.sms_message, s.date_created, s.created_by, s.date_resend, s.resend_by, c.contact_lname, c.contact_fname, c.contact_mname
+                        FROM sms_queue s
+                        LEFT JOIN vw_caller_group_members c ON s.mobile_no = c.mobile_no;";
 
-                        if ($stmt == false) {
-                            echo 'ERROR';
-                        }
+                    $stmt = sqlsrv_query($conn, $tsql);
+                    if ($stmt == false) {
+                        echo 'ERROR';
+                    }
 
-                        $rowNumber = 1;
-                        while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                            $smsMessage = $obj['sms_message'];
-                            $pattern = '/(.+?)\s*\[(\d+)\/(\d+)\]\.\.\.<' . $selectedCallerCode . '>/';
-                            if (strpos($smsMessage, '<' . $selectedCallerCode . '>') !== false) {
-                                if (preg_match($pattern, $smsMessage, $matches)) {
-                                    // echo "<tr id='msg-{$obj['sms_id']}'>";
-                                    echo "<tr>";
-                                    echo '<td>' . $rowNumber . '</td>';
+                    while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                        $smsMessage = $obj['sms_message'];
+                        $mobileNo = $obj['mobile_no'];
+                        if (strpos($smsMessage, '<' . $selectedCallerCode . '>') !== false) {
+                            echo "<tr id='msg-{$obj['sms_id']}'>";
+                            echo "<td>{$obj['sms_id']}</td>";
 
-                                    echo "<td>{$obj['mobile_no']}</td>";
+                            echo "<td>{$obj['created_by']}</td>";
 
-                                    // echo "<td>" . htmlspecialchars(wordwrap($obj['sms_message'], 50, "<br>\n", true)) . "</td>";
-                                    echo "<td> this message has multiple pages: " . htmlspecialchars($matches[0]) . "</td>";
-
-                                    echo "<td>{$obj['date_created']->format('Y-m-d h:i:s A')}</td>";
-
-                                    echo "<td>{$obj['created_by']}</td>";
-
-                                    // echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
-                                    echo "</tr>";
-                                    $rowNumber++;
-                                } else {
-                                    // echo "<tr id='msg-{$obj['sms_id']}'>";
-                                    echo "<tr>";
-                                    echo '<td>' . $rowNumber . '</td>';
-
-                                    echo "<td>{$obj['mobile_no']}</td>";
-
-                                    echo "<td>" . htmlspecialchars(wordwrap($obj['sms_message'], 50, "<br>\n", true)) . "</td>";
-
-                                    echo "<td>{$obj['date_created']->format('Y-m-d h:i:s A')}</td>";
-
-                                    echo "<td>{$obj['created_by']}</td>";
-
-                                    // echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
-                                    echo "</tr>";
-                                    $rowNumber++;
-                                }
+                            if ($obj['contact_lname']) {
+                                $maskedMobileNo = substr($mobileNo, 0, 6) . str_repeat('*', strlen($mobileNo) - 8) . substr($mobileNo, -2);
+                                echo "<td>{$maskedMobileNo}</td>";
+                                echo "<td>{$obj['contact_lname']}, {$obj['contact_fname']} {$obj['contact_mname']} </td>";
                             } else {
-                                echo "<tr style='display: none;'>";
-                                echo "<td>Caller code doesn't match in this message</td>";
-                                echo "</tr>";
+                                echo "<td>{$mobileNo}</td>";
+                                echo "<td>Unknown User</td>";
                             }
+
+                            echo "<td data-full-message='" . htmlspecialchars($smsMessage) . "'>" . htmlspecialchars(mb_substr($smsMessage, 0, 5)) . "...</td>";
+
+                            echo "<td>{$obj['date_created']->format('Y-m-d h:i:s A')}</td>";
+
+                            echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
+                            echo "</tr>";
+                        } else {
+                            echo "<tr style='display: none;'>";
+                            echo "<td>Caller code doesn't match in this message</td>";
+                            echo "</tr>";
                         }
-                        sqlsrv_free_stmt($stmt);
-                        ?>
-                    </form>
-                </table>
+                    }
+                    sqlsrv_free_stmt($stmt);
+                    ?>
+                </tbody>
+            </table>
+
+            <div id="popup" class="overlay">
+                <div class="popup">
+                    <div class="popup-header">
+                        <h2 class="title">Queue Messages</h2>
+                        <button onclick="closePopup()" class="closePopup">&times;</button>
+                    </div>
+                    <div class="popup-body">
+                        <div id="ticketNum"></div>
+                        <br>
+                        <div id="dateCreated"></div>
+                        <br>
+                        <div id="sentBy"></div>
+                        <br>
+                        <div id="mobileNumber"></div>
+                        <br>
+                        <div id="recipient"></div>
+                        <br>
+                        <div id="message"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    <script>
+        function showPopup(id) {
+            const row = document.getElementById(`msg-${id}`);
+            console.log(row);
+            const cells = document.querySelectorAll(`#msg-${id} > td`);
+            console.log(cells);
+
+            const ticket = cells[0].textContent;
+            const sentBy = cells[1].textContent;
+            const mobileNumber = cells[2].textContent;
+            const recipient = cells[3].textContent;
+            const fullMessage = cells[4].getAttribute("data-full-message");
+            const dateCreated = cells[5].textContent;
+
+            const popup = document.getElementById("popup");
+
+            const contentTicket = document.getElementById("ticketNum");
+            const contentDateCreated = document.getElementById("dateCreated");
+            const contentMobile = document.getElementById("mobileNumber");
+            const contentSentBy = document.getElementById("sentBy");
+            const contentRecipient = document.getElementById("recipient");
+            const contentMessage = document.getElementById("message");
+
+            document.getElementById("message").className = "popupMessage";
+
+            contentTicket.innerHTML = "<strong>Ticket #:</strong> " + ticket;
+            contentDateCreated.innerHTML = "<strong>Date & Time Created:</strong> " + dateCreated;
+            contentMobile.innerHTML = "<strong>Mobile Number:</strong> " + mobileNumber;
+            contentSentBy.innerHTML = "<strong>Sent By:</strong> " + sentBy;
+            contentRecipient.innerHTML = "<strong>Recipient:</strong> " + recipient;
+            contentMessage.innerHTML = "<strong>Text Message:</strong> " + escapeHtml(fullMessage);
+
+            popup.style.display = "flex";
+        }
+
+        // Function to escape HTML entities (similar to htmlspecialchars)
+        function escapeHtml(text) {
+            var div = document.createElement("div");
+            div.innerText = text;
+            return div.innerHTML;
+        }
+
+        function closePopup() {
+            const popup = document.getElementById("popup");
+            popup.style.display = "none";
+        }        
+    </script>
 </body>
 
 </html>

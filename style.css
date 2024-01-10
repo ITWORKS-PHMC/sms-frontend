@@ -256,10 +256,11 @@ header {
   border-top-right-radius: 10px;
   border-bottom: none;
 }
+
 .addRecipientButton:hover,
 .tablink:hover {
-  color: white;
-  background-color: #3a5a40;
+  /* color: white; */
+  background-color: #4a4848;
 }
 .tabcontent {
   display: none;
@@ -365,60 +366,44 @@ header {
   color: #eff3f4;
   transition: background-color 0.2s;
 }
-
-.container.new-message .contact-broadcast {
-  display: flex;
-  gap: 0.5rem;
-  padding-top: 10px;
-}
-.container.new-message .contact-broadcast .sms-broadcast {
-  display: flex;
-  width: fit-content;
-  padding: 10px;
-  color: #202020;
-  border: 1.5px solid #b2b2b2;
-  border-radius: 5px;
-  outline: none;
-  cursor: pointer;
-  text-decoration: none;
-  gap: 0.5rem;
-}
-.container.new-message .contact-broadcast .sms-broadcast .broadcastDate {
-  display: inline-flex;
-  gap: 0.5rem;
-  padding: 10px;
-  align-items: center;
-}
-.container.new-message .contact-broadcast .sms-broadcast .broadcastInput {
-  display: inline-flex;
-  gap: 0.5rem;
-  padding: 10px;
-  align-items: center;
-}
-.container.new-message .contact-broadcast .sms-broadcast .broadcastSubmit {
-  display: inline-flex;
-  justify-content: center;
-  padding-top: 5px;
-}
-.broadcastSchedule,
-.broadcastTitle,
-.broadcastSet {
-  display: flex;
-  width: fit-content;
-  padding: 10px;
-  color: #202020;
-  border: 1.5px solid #b2b2b2;
-  border-radius: 5px;
-  outline: none;
-  cursor: pointer;
-  text-decoration: none;
-  gap: 0.5rem;
-}
 .container.new-message .sms-message {
   display: flex;
   flex-direction: column;
   width: 60vw;
 }
+.container.new-message .sms-message .contact-broadcast{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  margin-top: 0.5rem;
+  border-radius: 5px;
+  border: 1.5px solid #b2b2b2;
+}
+.container.new-message .sms-message .contact-broadcast .sms-broadcast{
+  display: inline-flex;
+  gap: 0.5rem;
+  padding: 5px;
+  align-items: center;
+}
+.broadcastInput .broadcastTitle, 
+.broadcastDate .broadcastSchedule, 
+.broadcastSubmit .broadcastSet{
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1.5px solid #b2b2b2;
+}
+.broadcastSubmit .broadcastSet:hover{
+  background-color: #3a5a40;
+  color: #eff3f4;
+  transition: background-color 0.2s;
+}
+
+
+
 .container.new-message .sms-message .message {
   display: inline-flex;
   margin-top: 0.5rem;
@@ -635,4 +620,13 @@ tr:nth-child(all) {
   background-color: #3a5a40;
   color: #eff3f4;
   transition: background-color 0.2s;
+}
+
+.dbl-click {
+  cursor: pointer;
+}
+
+.dbl-click:hover {
+  background-color: #a39f9f;
+  font-weight: 600;
 }

@@ -2,7 +2,7 @@
 session_start();
 // Redirect to the login page if not login 
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php"); 
+    header("Location: login.php");
     exit();
 }
 $username = $_SESSION['username'];
@@ -40,13 +40,14 @@ if ($conn === false) {
     <div class="content">
         <?php include("./menu/menu.php"); ?>
         <div class="container inbox">
-            <h1> Inbox </h1>
+            <h1>Received Messages</h1>
             <table id="recipientTable" class="recipient-table">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>Read Status</th>
                         <th>Mobile Number</th>
+                        <th>Sender</th>
                         <th>Text Message</th>
                         <th>Date/Time Received</th>
                         <th>View</th>
@@ -56,7 +57,11 @@ if ($conn === false) {
                 <tbody id="recipientTableBody"></tbody>
 
                 <?php
-                $tsql = "SELECT sms_received_id, caller_group_code, mobile_no, sms_message, date_received, read_status, sms_status, error_log FROM sms_received ORDER BY date_received DESC;";
+                $tsql = "SELECT DISTINCT s.sms_received_id, s.caller_group_code, s.mobile_no, s.sms_message, s.date_received, s.read_status, s.sms_status, s.error_log, c.contact_lname, c.contact_fname, c.contact_mname
+                FROM sms_received s
+                LEFT JOIN vw_caller_group_members c ON s.mobile_no = c.mobile_no
+                ORDER BY s.date_received DESC;";
+
                 $stmt = sqlsrv_query($conn, $tsql);
                 if ($stmt == false) {
                     echo 'ERROR';
@@ -65,12 +70,13 @@ if ($conn === false) {
                 $rowNumber = 1;
                 while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                     $smsMessage = $obj['sms_message'];
+                    $mobileNo = $obj['mobile_no'];
                     $class = "";
                     if ($obj['read_status'] == 0) {
                         $class .= "highlight";
                     }
 
-                    if (strpos($smsMessage, '<' .$selectedCallerCode. '>') !== false) {
+                    if (strpos($smsMessage, '<' . $selectedCallerCode . '>') !== false) {
                         echo "<tr class='$class' id='msg-{$obj['sms_received_id']}'>";
                         echo '<td>' . $rowNumber . '</td>';
 
@@ -81,8 +87,15 @@ if ($conn === false) {
                             echo "Read";
                         }
                         echo "</td>";
-
-                        echo "<td>{$obj['mobile_no']}</td>";
+                        
+                        if ($obj['contact_lname']) {
+                            $maskedMobileNo = substr($mobileNo, 0, 6) . str_repeat('*', strlen($mobileNo) - 8) . substr($mobileNo, -2);
+                            echo "<td>{$maskedMobileNo}</td>";
+                            echo "<td>{$obj['contact_lname']}, {$obj['contact_fname']} {$obj['contact_mname']} </td>";
+                        } else {
+                            echo "<td>{$mobileNo}</td>";
+                            echo "<td>Unknown User</td>";
+                        }
 
                         echo "<td data-full-message='" . htmlspecialchars($smsMessage) . "'>" . htmlspecialchars(mb_substr($smsMessage, 0, 5)) . "...</td>";
 
@@ -100,7 +113,7 @@ if ($conn === false) {
                 sqlsrv_free_stmt($stmt);
                 ?>
             </table>
-            
+
             <div id="popup" class="overlay">
                 <div class="popup">
                     <div class="popup-header">
@@ -112,6 +125,8 @@ if ($conn === false) {
                         <br>
                         <div id="readStatus"></div>
                         <br>
+                        <div id="mobileNumber"></div>
+                        <br>
                         <div id="sender"></div>
                         <br>
                         <div id="message"></div>
@@ -121,7 +136,6 @@ if ($conn === false) {
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -133,23 +147,26 @@ if ($conn === false) {
             const cells = document.querySelectorAll(`#msg-${id} > td`);
 
             const status = cells[1].textContent;
-            const sender = cells[2].textContent;
-            const message = cells[3].getAttribute("data-full-message");
-            const receiveDate = cells[4].textContent;
+            const mobileNumber = cells[2].textContent;
+            const recipient = cells[3].textContent;
+            const fullMessage = cells[4].getAttribute("data-full-message");
+            const receiveDate = cells[5].textContent;
 
             const popup = document.getElementById("popup");
-
+            
             const contentStatus = document.getElementById("readStatus");
+            const contentMobile = document.getElementById("mobileNumber");
             const contentSender = document.getElementById("sender");
             const contentMessage = document.getElementById("message");
             const contentDate = document.getElementById("date");
 
             document.getElementById("message").className = "popupMessage";
 
-            contentStatus.textContent = "Read Status: " + status;
-            contentSender.textContent = "Sender: " + sender;
-            contentMessage.textContent = "Message: " + message;
-            contentDate.textContent = "Date: " + receiveDate;
+            contentStatus.innerHTML = "<strong>Read Status:</strong> " + status;
+            contentMobile.innerHTML = "<strong>Sender Mobile Number:</strong> " + mobileNumber;
+            contentSender.innerHTML = "<strong>Sender Name:</strong> " + recipient;
+            contentMessage.innerHTML = "<strong>Message:</strong> " + escapeHtml(fullMessage);
+            contentDate.innerHTML = "<strong>Date/Time Received:</strong> " + receiveDate;
 
             /* Send the data using post with element id name and name */
             if (status == "Unread") {
@@ -175,6 +192,13 @@ if ($conn === false) {
             }
 
             popup.style.display = "flex";
+        }
+
+        // Function to escape HTML entities (similar to htmlspecialchars)
+        function escapeHtml(text) {
+            var div = document.createElement("div");
+            div.innerText = text;
+            return div.innerHTML;
         }
 
         function closePopup() {

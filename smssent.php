@@ -2,7 +2,7 @@
 session_start();
 // Redirect to the login page if not login 
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php"); 
+    header("Location: login.php");
     exit();
 }
 $username = $_SESSION['username'];
@@ -45,10 +45,11 @@ if ($conn === false) {
                 <thread>
                     <tr>
                         <th>#</th>
+                        <th>Sent By</th>
                         <th>Mobile Number</th>
+                        <th>Recipient</th>
                         <th>Text Message</th>
                         <th>Date & Time Created</th>
-                        <th>Created By</th>
                         <th>Date & Time Sent</th>
                         <th>View</th>
                     </tr>
@@ -56,7 +57,11 @@ if ($conn === false) {
 
                 <tbody id="recipientTableBody">
                     <?php
-                    $tsql = "SELECT sms_id, contact_id, mobile_no, sms_message, stat, date_created, created_by, date_resend, resend_by, date_sent FROM sms_sent ORDER BY date_sent DESC";
+                    $tsql = "SELECT DISTINCT s.sms_id, s.contact_id, s.mobile_no, s.sms_message, s.date_created, s.created_by, s.date_resend, s.resend_by, s.date_sent, c.contact_lname, c.contact_fname, c.contact_mname
+                    FROM sms_sent s
+                    LEFT JOIN vw_caller_group_members c ON s.mobile_no = c.mobile_no
+                    ORDER BY s.date_sent DESC;";
+
                     $stmt = sqlsrv_query($conn, $tsql);
                     if ($stmt == false) {
                         echo 'ERROR';
@@ -65,44 +70,31 @@ if ($conn === false) {
                     $rowNumber = 1;
                     while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                         $smsMessage = $obj['sms_message'];
-                        $pattern = '/(.+?)\s*\[(\d+)\/(\d+)\]\.\.\.<'. $selectedCallerCode .'>/';
-                        if (strpos($smsMessage, '<' .$selectedCallerCode. '>') !== false) {
-                            if (preg_match($pattern, $smsMessage, $matches)) {
-                                echo "<tr id='msg-{$obj['sms_id']}'>";
-                                echo '<td>' . $rowNumber . '</td>';
+                        $mobileNo = $obj['mobile_no'];
+                        if (strpos($smsMessage, '<' . $selectedCallerCode . '>') !== false) {
+                            echo "<tr id='msg-{$obj['sms_id']}'>";
+                            echo '<td>' . $rowNumber . '</td>';
 
-                                echo "<td>{$obj['mobile_no']}</td>";
+                            echo "<td>{$obj['created_by']}</td>";
 
-                                // echo "<td data-full-message='" . htmlspecialchars($smsMessage) . "'>" . htmlspecialchars(mb_substr($smsMessage, 0, 5)) . "...</td>";
-                                echo "<td data-full-message='" . htmlspecialchars($smsMessage) . "'> MULTIPLE MSG [". $matches[2] . "/". $matches[3]. "] : " . htmlspecialchars(mb_substr($matches[0], 0, 50)) ."</td>";
-
-                                echo "<td>{$obj['date_created']->format('Y-m-d h:i:s A')}</td>";
-
-                                echo "<td>{$obj['created_by']}</td>";
-
-                                echo "<td>{$obj['date_sent']->format('Y-m-d h:i:s A')}</td>";
-
-                                echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
-                                echo "</tr>";
-                                $rowNumber++;
+                            if ($obj['contact_lname']) {
+                                $maskedMobileNo = substr($mobileNo, 0, 6) . str_repeat('*', strlen($mobileNo) - 8) . substr($mobileNo, -2);
+                                echo "<td>{$maskedMobileNo}</td>";
+                                echo "<td>{$obj['contact_lname']}, {$obj['contact_fname']} {$obj['contact_mname']} </td>";
                             } else {
-                                echo "<tr id='msg-{$obj['sms_id']}'>";
-                                echo '<td>' . $rowNumber . '</td>';
-
-                                echo "<td>{$obj['mobile_no']}</td>";
-
-                                echo "<td data-full-message='" . htmlspecialchars($smsMessage) . "'>" . htmlspecialchars(mb_substr($smsMessage, 0, 5)) . "...</td>";
-
-                                echo "<td>{$obj['date_created']->format('Y-m-d h:i:s A')}</td>";
-
-                                echo "<td>{$obj['created_by']}</td>";
-
-                                echo "<td>{$obj['date_sent']->format('Y-m-d h:i:s A')}</td>";
-
-                                echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
-                                echo "</tr>";
-                                $rowNumber++;
+                                echo "<td>{$mobileNo}</td>";
+                                echo "<td>Unknown User</td>";
                             }
+
+                            echo "<td data-full-message='" . htmlspecialchars($smsMessage) . "'>" . htmlspecialchars(mb_substr($smsMessage, 0, 5)) . "...</td>";
+
+                            echo "<td>{$obj['date_created']->format('Y-m-d h:i:s A')}</td>";
+
+                            echo "<td>{$obj['date_sent']->format('Y-m-d h:i:s A')}</td>";
+
+                            echo "<td><button onclick='showPopup({$obj['sms_id']}, \"$username\")' class='viewButton'>View</button></td>";
+                            echo "</tr>";
+                            $rowNumber++;
                         } else {
                             echo "<tr style='display: none;'>";
                             echo "<td>Caller code doesn't match in this message</td>";
@@ -121,15 +113,17 @@ if ($conn === false) {
                         <button onclick="closePopup()" class="closePopup">&times;</button>
                     </div>
                     <div class="popup-body">
-                        <div id="sender"></div>
-                        <br>
-                        <div id="message"></div>
-                        <br>
                         <div id="dateCreated"></div>
                         <br>
-                        <div id="createdBy"></div>
+                        <div id="sentBy"></div>
                         <br>
                         <div id="dateSent"></div>
+                        <br>
+                        <div id="mobileNumber"></div>
+                        <br>
+                        <div id="recipient"></div>
+                        <br>
+                        <div id="message"></div>
                     </div>
                 </div>
             </div>
@@ -142,29 +136,39 @@ if ($conn === false) {
             const cells = document.querySelectorAll(`#msg-${id} > td`);
             console.log(cells);
 
-            const sender = cells[1].textContent;
-            const fullMessage = cells[2].getAttribute("data-full-message");
-            const dateCreated = cells[3].textContent;
-            const createdBy = cells[4].textContent;
-            const dateSent = cells[5].textContent;
+            const sentBy = cells[1].textContent;
+            const mobileNumber = cells[2].textContent;
+            const recipient = cells[3].textContent;
+            const fullMessage = cells[4].getAttribute("data-full-message");
+            const dateCreated = cells[5].textContent;
+            const dateSent = cells[6].textContent;
 
             const popup = document.getElementById("popup");
 
-            const contentSender = document.getElementById("sender");
-            const contentMessage = document.getElementById("message");
             const contentDateCreated = document.getElementById("dateCreated");
-            const contentCreatedBy = document.getElementById("createdBy");
+            const contentMobile = document.getElementById("mobileNumber");
+            const contentSentBy = document.getElementById("sentBy");
             const contentDateSent = document.getElementById("dateSent");
+            const contentRecipient = document.getElementById("recipient");
+            const contentMessage = document.getElementById("message");
 
             document.getElementById("message").className = "popupMessage";
 
-            contentSender.textContent = "Sender: " + sender;
-            contentMessage.textContent = "Message: " + fullMessage;
-            contentDateCreated.textContent = "Date Created: " + dateCreated;
-            contentCreatedBy.textContent = "Created By: " + createdBy;
-            contentDateSent.textContent = "Date Sent: " + dateSent;
+            contentDateCreated.innerHTML = "<strong>Date & Time Created:</strong> " + dateCreated;
+            contentMobile.innerHTML = "<strong>Mobile Number:</strong> " + mobileNumber;
+            contentSentBy.innerHTML = "<strong>Sent By:</strong> " + sentBy;
+            contentDateSent.innerHTML = "<strong>Date & Time Sent:</strong> " + dateSent;
+            contentRecipient.innerHTML = "<strong>Recipient:</strong> " + recipient;
+            contentMessage.innerHTML = "<strong>Text Message:</strong> " + escapeHtml(fullMessage);
 
             popup.style.display = "flex";
+        }
+
+        // Function to escape HTML entities (similar to htmlspecialchars)
+        function escapeHtml(text) {
+            var div = document.createElement("div");
+            div.innerText = text;
+            return div.innerHTML;
         }
 
         function closePopup() {
