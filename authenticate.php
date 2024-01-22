@@ -17,7 +17,8 @@
 
 <body>
     <div class="login">
-        <h2> Perpetual Help Medical Center - Las Piñas Hospital </h2>
+    <img src="img\logo_login.png" alt="logo_header" class="imgLogin">
+        <h2 style="font-family:times"> Text Messaging System </h2>
         <div class="signin">
             <form action="authenticate.php" method="post">
                 <input type="login" id="username" name="username" placeholder="Username" required> <br>
