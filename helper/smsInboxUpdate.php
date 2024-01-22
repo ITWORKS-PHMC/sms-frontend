@@ -1,6 +1,6 @@
 <?php
 // Database connection 
-include("./database/connection.php");
+include("../database/connection.php");
 
 if (isset($_POST['id'])) {
     $conn = sqlsrv_connect($serverName, $connectionInfo);
