@@ -157,7 +157,7 @@ if ($conn === false) {
 
             /* Send the data using post with element id name and name */
             if (status == "Unread") {
-                let update = $.post("smsInboxUpdate.php", {
+                let update = $.post("helper/smsInboxUpdate.php", {
                     id: id,
                 });
 

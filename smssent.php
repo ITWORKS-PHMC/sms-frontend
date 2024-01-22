@@ -92,7 +92,7 @@ if ($conn === false) {
 
                             echo "<td>{$obj['date_sent']->format('Y-m-d h:i:s A')}</td>";
 
-                            echo "<td><button onclick='showPopup({$obj['sms_id']}, \"$username\")' class='viewButton'>View</button></td>";
+                            echo "<td><button onclick='showPopup({$obj['sms_id']})' class='viewButton'>View</button></td>";
                             echo "</tr>";
                             $rowNumber++;
                         } else {
