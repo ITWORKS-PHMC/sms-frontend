@@ -77,10 +77,9 @@ if (!isset($_SESSION["recipients"])) {
                                 <input type="checkbox" class="select_all_items" id="option-all"
                                     onclick="checkAll(this, 'selectedContacts')" onchange="toggleSelect()">
                             </td>
-                            <td> Contact ID </td>
-                            <td> Employee Number </td>
-                            <td> Full Name </td>
-                            <td> Phone Number </td>
+                            <td>Contact ID</td>
+                            <td>Full Name</td>
+                            <td>Phone Number</td>
                         </tr>
 
                         <?php
@@ -92,19 +91,21 @@ if (!isset($_SESSION["recipients"])) {
                         }
 
                         while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                            $mobileNo = $obj['mobile_no'];
                             $contact = "{$obj['contact_id']}~{$obj['contact_fname']} {$obj['contact_lname']}~{$obj['mobile_no']}";
                             if ($obj['active'] == 1) {
                                 echo "<tr>";
 
-                                if (in_array($obj['mobile_no'], array_keys($_SESSION['recipients']))) {
+                                if (in_array($obj['mobile_no'], array_keys($_SESSION["recipients"]["contacts"]))) {
                                     echo "<td> <input type='checkbox' name='selectedContacts' value='$contact' onchange='toggleSelect(this)' checked> </td>";
                                 } else {
                                     echo "<td> <input type='checkbox' name='selectedContacts' value='$contact' onchange='toggleSelect(this)'> </td>";
                                 }
                                 echo "<td> {$obj['contact_id']} </td>";
-                                echo "<td> {$obj['employee_no']} </td>";
                                 echo "<td>{$obj['contact_lname']} {$obj['contact_fname']} {$obj['contact_mname']}</td>";
-                                echo "<td> {$obj['mobile_no']} </td>";
+
+                                $maskedMobileNo = substr($mobileNo, 0, 6) . "*****" . substr($mobileNo, -2);
+                                echo "<td>{$maskedMobileNo}</td>";
                                 echo "</tr>";
                             }
                         }
@@ -276,10 +277,22 @@ if (!isset($_SESSION["recipients"])) {
             selectedContactsList.innerHTML = '';
 
             // Display selected contacts in the dictionary
-            for (const [key, value] of Object.entries(selectedContacts)) {
+            for (const [key, value] of Object.entries(selectedRecipients.contacts)) {
                 // console.log(key, value);
                 let listItem = document.createElement('li');
-                listItem.textContent = value;
+                console.log(value)
+                let contactInfoArr = value.split('~')
+                console.log(contactInfoArr)
+
+                listItem.textContent = `${contactInfoArr[1]} - ${contactInfoArr[2].slice(0, 6) + "*****" + contactInfoArr[2].slice(-2)}`;
+                selectedContactsList.appendChild(listItem);
+            }
+
+            for (const [key, value] of Object.entries(selectedRecipients.groups)) {
+                // console.log(key, value);
+                console.log("GROUP", value)
+                let listItem = document.createElement('li');
+                listItem.textContent = key;
                 selectedContactsList.appendChild(listItem);
             }
         }
