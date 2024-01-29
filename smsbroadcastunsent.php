@@ -53,32 +53,6 @@ if ($conn === false) {
                     </tr>
                 </thead>
                 <tbody id="recipientTableBody"></tbody>
-                <?php
-                $tsql = "SELECT sms_id, contact_id, mobile_no, sms_message, stat, date_created, created_by, date_cancelled, cancelled_by FROM sms_cancelled;";
-                $stmt = sqlsrv_query($conn, $tsql);
-                if ($stmt == false) {
-                    echo 'ERROR';
-                }
-
-                $rowNumber = 1;
-                while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                    echo "<tr>";
-                    echo '<td>' . $rowNumber . '</td>';
-
-                    echo "<td>{$obj['mobile_no']}</td>";
-
-                    echo "<td>" . htmlspecialchars(wordwrap($obj['sms_message'], 50, "<br>\n", true)) . "</td>";
-
-                    // echo "<td>{$obj['date_created']->format('Y-m-d H:i:s')}</td>";
-
-                    echo "<td>{$obj['created_by']}</td>";
-
-                    // echo "<td>{$obj['date_cancelled']->format('Y-m-d H:i:s')}</td>";
-                    echo "</tr>";
-                    $rowNumber++;
-                }
-                sqlsrv_free_stmt($stmt);
-                ?>
             </table>
         </div>
     </div>

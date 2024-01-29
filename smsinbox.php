@@ -170,7 +170,7 @@ if ($conn === false) {
 
             /* Send the data using post with element id name and name */
             if (status == "Unread") {
-                let update = $.post("smsInboxUpdate.php", {
+                let update = $.post("helper/smsInboxUpdate.php", {
                     id: id,
                 });
 
@@ -208,7 +208,6 @@ if ($conn === false) {
 
         function addRecipient(element) {
             const cells = document.querySelectorAll(`#msg-${element.value} > td`);
-
             const status = cells[1].textContent;
             const contact_num = cells[2].textContent;
             const message = cells[3].textContent;
