@@ -15,10 +15,10 @@ if ($conn === false) {
     die(print_r(sqlsrv_errors(), true));
 }
 
-if (!isset($_SESSION["recipients"])) {
-}
-
-$_SESSION["recipients"] = [];
+$_SESSION["recipients"] = array(
+    "contacts" => [],
+    "groups" => []
+);
 
 if (isset($_GET["to"])) {
     $recipients_arr = explode(",", $_GET['to']);
@@ -27,10 +27,18 @@ if (isset($_GET["to"])) {
         $data = explode("~", $recipient);
         $number = str_replace(" ", "+", $data[2]);
 
-        $_SESSION['recipients'][$number] = [
+        $_SESSION["recipients"]["contacts"][$number] = [
             "id" => $data[0],
             "name" => $data[1]
         ];
+    }
+}
+
+if (isset($_GET["group"])) {
+    $groups_arr = explode(",", $_GET['group']);
+
+    foreach ($groups_arr as $group) {
+        array_push($_SESSION["recipients"]["groups"], $group);
     }
 }
 
@@ -71,11 +79,10 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 <body>
     <?php include("./nav/navbar.php"); ?>
     <div class="content">
-
         <?php include("./menu/menu.php"); ?>
-
         <div class="container new-message">
             <h1>Create New Messages</h1>
+            <?php $selectedCallerCode ?>
             <div class="contact">
                 <div class="top">
                     <span class="country">+63</span>
@@ -165,12 +172,27 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                     <tbody id="recipientTableBody"></tbody>
                 </table>
             </div>
+
+            <!-- Group Table -->
+            <div class="sms-recipient">
+                <table id="groupTable" class="recipient-table">
+                    <thead>
+                        <tr>
+                            <th>Group Name</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody id="groupTableBody"></tbody>
+                </table>
+            </div>
         </div>
 
         <script>
             // Retrieve the required elements
             const recipientInput = document.getElementById("recipientInput");
             const recipientTableBody = document.getElementById("recipientTableBody");
+            const tableData = document.getElementById("recipientTable").rows.length;
+            const submitButton = document.getElementById('submit-msg');
             const pageUrl = window.location.search.substring(1)
             const urlVariables = pageUrl.split('&')
             let recipients = [];
@@ -200,6 +222,23 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                             })
                         })
                     }
+
+                    if (parameters[0] === "group" && parameters[1] !== undefined) {
+                        groupTable.style.display = "table";
+
+                        let decodedParameter = decodeURIComponent(parameters[1]).split(",")
+                        decodedParameter.forEach(group => {
+                            let htmlString = `
+                                <tr id="${group}">
+                                    <td>${group}</td>
+                                    <td>
+                                        <button>Delete</button>
+                                    </td>
+                                </tr>
+                            `
+                            document.getElementById("groupTableBody").innerHTML += htmlString
+                        });
+                    }
                 }
                 renderRecipientTable();
             }
@@ -210,7 +249,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 row.classList.add("contactNumRow");
                 row.setAttribute("id", recipient.contact_num);
 
-                // Recipient cell for Recipient Number <UNKNOWN USER>
+                // Recipient cell for Recipient Number <UNKNOWN USER> contact id 
                 const recipientCell2 = document.createElement("td");
                 recipientCell2.classList.add(0);
                 recipientCell2.textContent = recipient.name;
@@ -224,7 +263,6 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 
                 // Action cell
                 const actionCell = document.createElement("td");
-
                 const deleteBtn = document.createElement("button");
                 deleteBtn.setAttribute("id", recipient.id);
                 deleteBtn.textContent = "Delete";
@@ -260,7 +298,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                         "name": 'Unknown', // TODO: If number is existing in contacts, name must be the contact's name
                         "contact_num": recipientValue
                     })
-                    //recipient input clearing after inputing unknown number
+                    // Recipient input clearing after inputing unknown number
                     recipientInput.value = "";
                     renderRecipientTable();
                 }
@@ -276,7 +314,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                     contactNum: toDelete["contact_num"]
                 });
 
-                /* Alerts the results */
+                // Alerts the results
                 posting.done(function (response) {
                     console.log(JSON.parse(response))
                 });
@@ -287,6 +325,7 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 
                 renderRecipientTable();
             }
+
 
             // Function to send the data to queue
             function sendToQueue(e) {
@@ -311,10 +350,10 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 }
                 return true
             }
-
-            /* attach a submit handler to the form */
+            
+            // Stop form from submitting normally 
             $("#send-message").submit(function (event) {
-                /* stop form from submitting normally */
+               
                 event.preventDefault();
 
                 const url = 'helper/sendToQueue.php'
@@ -324,14 +363,14 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                     message: document.getElementById("message").value
                 });
 
-                /* Alerts the results - message is in queue*/
+                // Alerts the results - message is in queue
                 posting.done(function (response) {
                     const obj = JSON.parse(response)
                     if (obj['message'] === "Success") {
                         alert("Message Sent to Queue!");
                         window.location.href = window.location.href.split('?')[0];
                     } else if (obj['message'] === "Invalid Prefix") {
-                        alert("Message cannot be send due to unauthorize number. Please contact IT Department at local: 459/458.");
+                        alert("Message cannot be send due to unauthorize number. Please contact IT Department at local: 458/459 for further questions.");
                         obj["invalid_num"].forEach(number => {
                             document.getElementById(number).classList.add("invalid");
                         });

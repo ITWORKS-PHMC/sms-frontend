@@ -10,15 +10,17 @@ $selectedCallerCode = $_SESSION['selectedCallerCode'];
 
 // Database connection 
 include("./database/connection.php");
-
 $conn = sqlsrv_connect($serverName, $connectionInfo);
 if ($conn === false) {
     die(print_r(sqlsrv_errors(), true));
 }
+
 if (!isset($_SESSION["recipients"])) {
-    $_SESSION["recipients"] = [];
-} else {
-}
+    $_SESSION["recipients"] = array(
+        "contacts" => [],
+        "groups" => []
+    );
+} 
 ?>
 
 <!DOCTYPE html>
@@ -45,23 +47,24 @@ if (!isset($_SESSION["recipients"])) {
 
     <div class="content">
         <aside class="sidebar">
-                <ul id="selectedContacts">
+            <ul id="selectedContacts">
                 <div class="addRecipient">
                     <li>
                         <button class="addRecipientButton" onClick="addRecipient()">Add to Recipient</button>
                     </li>
                 </div>
+                <h3 class="addRecipientTitle">Selected Recipients</h3>
                 <div class="scrollable-content">
-                    <h3 class="addRecipientTitle">Selected Contacts</h3>
-                <ul id="selectedContactsList"></ul>
+                    <ul id="selectedContactsList"></ul>
                 </div>
             </ul>
         </aside>
 
         <div class="container contacts">
             <div class="contactsTabs">
-                <button class="tablink" onclick="openPage('Contact', this, '#eff3f4')" id="defaultOpen">Contacts</button>
-                <button class="tablink" onclick="openPage('CallerGroup', this, '#eff3f4')"> Caller Group </button>
+                <button class="tablink" onclick="openPage('Contact', this, '#3a5a40')"
+                    id="defaultOpen">Contacts</button>
+                <button class="tablink" onclick="openPage('CallerGroup', this, '#3a5a40')"> Caller Group </button>
             </div>
 
             <div id="Contact" class="tabcontent">
@@ -119,10 +122,13 @@ if (!isset($_SESSION["recipients"])) {
                         <table class="recipient-table">
                             <thead>
                                 <tr>
-                                    <td> Select <br> <input type="checkbox" class="select_all_items" id="option-all"
-                                            onclick="checkAll(this)"></td>
-                                    <td> Caller Group Code </td>
-                                    <td> Caller Group Name </td>
+                                    <td>
+                                        <span>Select</span><br>
+                                        <input type="checkbox" class="select_all_itemsGroup"
+                                            onclick="checkAll(this, 'selectedCaller')">
+                                    </td>
+                                    <td>Caller Group Code</td>
+                                    <td>Caller Group Name</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -134,10 +140,14 @@ if (!isset($_SESSION["recipients"])) {
                                 }
 
                                 while ($obj = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                    $group_code = $obj['caller_group_code'];
                                     echo "<tr>";
-                                    echo "<td> <input type='checkbox' name='selectedCaller' value=''> </td>";
-                                    // echo "<td class='dbl-click' ondblclick='getCallerGroupCode(this)'>" . $obj['caller_group_code'] . "</td>";
-                                    echo "<td class='dbl-click' ondblclick='showMembers(this)'>" . $obj['caller_group_code'] . "</td>";
+                                    if (in_array($group_code, $_SESSION["recipients"]["groups"])) {
+                                        echo "<td><input type='checkbox' name='selectedCaller' value='$group_code' onclick='selectCallerGroup(this)' checked /></td>";
+                                    } else {
+                                        echo "<td><input type='checkbox' name='selectedCaller' value='$group_code' onclick='selectCallerGroup(this)' /></td>";
+                                    }
+                                    echo "<td class='dbl-click' ondblclick='showMembers(this)'>$group_code</td>";
                                     echo "<td> {$obj['caller_group_name']} </td>";
                                     echo "</tr>";
                                 }
@@ -146,14 +156,13 @@ if (!isset($_SESSION["recipients"])) {
                             </tbody>
                         </table>
 
-                        <!-- <table id="callerGroupMembersTable" style="display: none;" class="recipient-table"> -->
                         <table id="callerGroupMembersTable" style="display: none;">
                             <thead>
                                 <tr>
-                                    <td> Caller Member Code </td>
-                                    <td> Caller Member Name </td>
-                                    <td> Full Name </td>
-                                    <td> Mobile Number </td>
+                                    <td>Caller Member Code</td>
+                                    <td>Caller Member Name</td>
+                                    <td>Full Name</td>
+                                    <td>Mobile Number</td>
                                 </tr>
                             </thead>
                             <tbody id="callerGroupMembers">
@@ -163,18 +172,29 @@ if (!isset($_SESSION["recipients"])) {
                 </form>
             </div>
         </div>
-
     </div>
 
     <script src="script.js"></script>
     <script>
-        const recipients = JSON.stringify(<?php echo json_encode($_SESSION['recipients']); ?>);
-        const parsedRecipients = JSON.parse(recipients)
-        let selectedContacts = {}
+        const recipients = JSON.stringify(<?php echo json_encode($_SESSION["recipients"]); ?>);
 
-        for (const [key, value] of Object.entries(parsedRecipients)) {
-            selectedContacts[value["id"]] = `${value["id"]}~${value["name"]}~${key}`
+        const parsedRecipients = JSON.parse(recipients)
+        console.log(parsedRecipients)
+        let selectedContacts = {}
+        let selectedRecipients = {
+            contacts: {},
+            groups: {}
         }
+
+        for (const [key, value] of Object.entries(parsedRecipients.contacts)) {
+            selectedRecipients.contacts[value["id"]] = `${value["id"]}~${value["name"]}~${key}`
+        }
+
+        parsedRecipients.groups.forEach(group => {
+            selectedRecipients.groups[group] = {}
+        });
+
+        console.log('HERE', selectedRecipients)
 
         displaySelectedContacts()
 
@@ -218,14 +238,30 @@ if (!isset($_SESSION["recipients"])) {
         }
 
         function selectCallerGroup(element) {
+            if (element.checked === false) {
+                console.log("UNCHECKED")
+
+                console.log(Object.keys(selectedRecipients.groups), element.value)
+                delete selectedRecipients.groups[element.value]
+                console.log(selectedRecipients)
+                displaySelectedContacts()
+                return
+            }
+
+            console.log("CHECKED")
             let callerGroupCode = element.value
             let xhr = new XMLHttpRequest();
+            let selectedContactsList = document.getElementById('selectedContactsList');
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     let membersData = JSON.parse(xhr.responseText);
-                    console.log({ selectedContacts, membersData })
+                    selectedRecipients.groups[callerGroupCode] = membersData
+
+                    displaySelectedContacts()
                 }
             };
+
+            console.log(selectedRecipients)
 
             xhr.open("POST", "contactsMembers.php?caller_group_code=" + callerGroupCode, true);
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -246,21 +282,21 @@ if (!isset($_SESSION["recipients"])) {
                 listItem.textContent = value;
                 selectedContactsList.appendChild(listItem);
             }
-            // selectedContacts.forEach(function (contact) {
-            // });
         }
 
         function toggleSelect(element) {
+            console.log(selectedRecipients)
             let checkboxes = document.getElementsByName('selectedContacts');
-            selectedContacts = {}
+            selectedRecipients.contacts = {}
+            // selectedContacts = {}
 
             // Loop through checkboxes to find the selected ones
             for (var i = 0; i < checkboxes.length; i++) {
                 if (checkboxes[i].checked) {
-                    selectedContacts[checkboxes[i].value.split("~")[0]] = checkboxes[i].value
+
+                    selectedRecipients.contacts[checkboxes[i].value.split("~")[0]] = checkboxes[i].value
                 }
             }
-
             displaySelectedContacts();
         }
 
@@ -281,6 +317,7 @@ if (!isset($_SESSION["recipients"])) {
             window.location.href = href_string;
         }
 
+        // Function for contacts tab
         function openPage(pageName, elmnt, color) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");
