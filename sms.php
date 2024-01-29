@@ -116,40 +116,39 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 <a href="contacts.php" class="contacts-button">Contacts</a>
             </div>
 
-            <!-- Broadcast -->
-            <div class="contact-broadcast">
-                <?php
-                $tsql = "SELECT access_level FROM caller_group WHERE caller_group_code = '$selectedCallerCode'";
-                $stmt = sqlsrv_query($conn, $tsql);
-
-                if ($stmt) {
-                    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
-                    $accessLevel = $row['access_level'];
-                    if (in_array($accessLevel, [2, 3, 4])) {
-                        echo '<div class="sms-broadcast">
-                                <form action="" method="post">
-                                    <div class="broadcastDate">
-                                        <label for="schedule">Broadcast Schedule: </label>
-                                        <input type="datetime-local" class="broadcastSchedule" id="schedule" name="schedule"></input>
-                                    </div>
-                                    <div class="broadcastInput">
-                                        <label class="title"> Broadcast Title: </label>
-                                        <input type="text" class="broadcastTitle" id="title" name="broadcast-msg"></input>
-                                    </div>
-                                    <div class="broadcastSubmit">
-                                        <input type="submit" class="broadcastSet" value="Set Schedule">
-                                    </div>
-                                </form>
-                              </div>';
-                    } else {
-                        echo '<div style="display:none;"></div>';
-                    }
-                }
-                ?>
-            </div>
-
             <form action="#" id="send-message" method="post">
                 <div class="sms-message">
+                    <!-- Broadcast -->
+                    <div class="contact-broadcast">
+                        <?php
+                        $tsql = "SELECT access_level FROM caller_group WHERE caller_group_code = '$selectedCallerCode'";
+                        $stmt = sqlsrv_query($conn, $tsql);
+
+                        if ($stmt) {
+                            $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+                            $accessLevel = $row['access_level'];
+                            if (in_array($accessLevel, [2, 3, 4])) {
+                                echo '<div class="sms-broadcast">
+                                        <form action="" method="post">
+                                            <div class="broadcastInput">
+                                                <label class="title"> Broadcast Title: </label>
+                                                <input type="text" class="broadcastTitle" id="title" name="broadcast-msg"></input>
+                                            </div>
+                                            <div class="broadcastDate">
+                                                <label for="schedule">Broadcast Schedule: </label>
+                                                <input type="datetime-local" class="broadcastSchedule" id="schedule" name="schedule"></input>
+                                            </div>
+                                            <div class="broadcastSubmit">
+                                                <input type="submit" class="broadcastSet" value="Set Schedule">
+                                            </div>
+                                        </form>
+                                    </div>';
+                            } else {
+                                echo '<div style="display:none;"></div>';
+                            }
+                        }
+                        ?>
+                    </div>
                     <textarea id="message" name="message" class="message" rows="5" placeholder="Type something here.."
                         onInput="countCharactersAndPages()" required></textarea>
                     <div class="messageCounter">
