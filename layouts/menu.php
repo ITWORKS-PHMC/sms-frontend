@@ -34,7 +34,6 @@ sqlsrv_free_stmt($stmt);
 <html>
 
 <head>
-    <link rel="stylesheet" href="style.css">
     <meta http-equiv="refresh" content="300"> <!-- Refresh every 300 seconds (5 minutes) -->
 </head>
 

@@ -15,30 +15,28 @@ if ($conn === false) {
     die(print_r(sqlsrv_errors(), true));
 }
 ?>
-
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta charset="utf-8">
-    <title>SMS</title>
-    <link rel="sms icon" type="x-icon" href="img\logo.png">
-    <link rel="stylesheet" href="style.css">
+    <?php include("./layouts/header.php"); ?>
 </head>
 
 <body>
-    <?php include("./nav/navbar.php"); ?>
-
+    <?php include("./layouts/navbar.php"); ?>
     <div class="content">
-        <?php include("./menu/menu.php"); ?>
+        <?php include("./layouts/menu.php"); ?>
         <div class="container home">
             <h3 class="title" id="title"> Perpetual Help Medical Center - Las Piñas City </h3>
             <p class="datetime" id="datetime"></p>
             <div class="userCredentials">
                 <div class="dashboardUsername">
-                    <p> Good day, <?php echo str_replace('.',' ', $username. '!'); ?>
+                    <p> Good day,
+                        <?php echo str_replace('.', ' ', $username . '!'); ?>
                 </div>
                 <div class="dashboardCallerCode">
-                    <p> Selected Caller Code:  <?php echo "<u>" . $selectedCallerCode . "</u>"; ?>
+                    <p> Selected Caller Code:
+                        <?php echo "<u>" . $selectedCallerCode . "</u>"; ?>
                 </div>
             </div>
         </div>

@@ -38,7 +38,7 @@ if (isset($_GET["to"])) {
     $decrypted = openssl_decrypt($_GET["to"], $ciphering, $decryption_key, $options, $decryption_iv);
 
     $recipients_arr = explode(",", $decrypted);
-    
+
     foreach ($recipients_arr as $recipient) {
         $data = explode("~", $recipient);
         $number = str_replace(" ", "+", $data[2]);
@@ -67,35 +67,17 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <title>SMS</title>
-    <link rel="sms icon" type="x-icon" href="img\logo.png">
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
-        integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer">
-
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
-
-    <!-- jquery -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
-        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="style.css">
+    <?php include("./layouts/header.php"); ?>
 </head>
 
 <body>
-    <?php include("./nav/navbar.php"); ?>
+    <?php include("./layouts/navbar.php"); ?>
     <div class="content">
-        <?php include("./menu/menu.php"); ?>
+        <?php include("./layouts/menu.php"); ?>
         <div class="container new-message">
             <h1>Create New Messages</h1>
             <?php $selectedCallerCode ?>

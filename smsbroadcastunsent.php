@@ -20,25 +20,13 @@ if ($conn === false) {
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <title>SMS</title>
-    <link rel="sms icon" type="x-icon" href="img\logo.png">
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
-        integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer">
-
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="style.css">
+    <?php include("./layouts/header.php"); ?>
 </head>
 
 <body>
-    <?php include("./nav/navbar.php"); ?>
+    <?php include("./layouts/navbar.php"); ?>
     <div class="content">
-        <?php include("./menu/menu.php"); ?>
+        <?php include("./layouts/menu.php"); ?>
         <div class="container broadcast-unsent">
             <h1> Broadcast Unsent Messages </h1>
             <table id="recipientTable" class="recipient-table">
