@@ -313,20 +313,37 @@ if (!isset($_SESSION["recipients"])) {
             displaySelectedContacts();
         }
 
-        function addRecipient() {
-            let contact_string = "";
-            $("input:checkbox:checked").each(function () {
-                contact_string += $(this).val() + ","
-            });
+        async function addRecipient() {
+            let to_parameter = "",
+                group_parameter = "";
 
-            contact_string = contact_string.replace(/,+$/, '');
-
-            href_string = `http://localhost/sms-frontend/sms.php`
-            // href_string = `http://phmc-sms/sms-frontend/sms.php` // server phmc-sms01
-            if (contact_string !== '') {
-                href_string += `?to=${contact_string}`
+            for (const [key, value] of Object.entries(selectedRecipients.contacts)) {
+                to_parameter += value + ","
             }
 
+            to_parameter = to_parameter.replace(/,+$/, '');
+
+            let encrypted = await $.post('helper/encrypt.php', {
+                toEncrypt: to_parameter
+            }).done((result) => {
+                return result
+            }).fail((err) => {
+                console.log('Failed', err)
+            });
+
+            group_parameter = group_parameter.replace(/,+$/, '');
+
+            // href_string = `http://localhost/sms-frontend/sms.php`
+            href_string = `http://phmc-sms/sms-frontend/sms.php` // server phmc-sms01
+            if (encrypted !== '') {
+                href_string += `?to=${encodeURIComponent(encrypted)}`
+            }
+
+            if (to_parameter !== '' && group_parameter !== '') {
+                href_string += `&group=${group_parameter}`
+            } else if (group_parameter !== '') {
+                href_string += `?group=${group_parameter}`
+            }
             window.location.href = href_string;
         }
 

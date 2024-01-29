@@ -21,8 +21,24 @@ $_SESSION["recipients"] = array(
 );
 
 if (isset($_GET["to"])) {
-    $recipients_arr = explode(",", $_GET['to']);
+    // Storing the cipher method
+    $ciphering = "AES-128-CTR";
 
+    // Using OpenSSl Encryption method
+    $iv_length = openssl_cipher_iv_length($ciphering);
+    $options = 0;
+
+    // Non-NULL Initialization Vector for decryption
+    $decryption_iv = '1234567891011121';
+
+    // Storing the decryption key
+    $decryption_key = "chasey";
+
+    // Using openssl_decrypt() function to decrypt the data
+    $decrypted = openssl_decrypt($_GET["to"], $ciphering, $decryption_key, $options, $decryption_iv);
+
+    $recipients_arr = explode(",", $decrypted);
+    
     foreach ($recipients_arr as $recipient) {
         $data = explode("~", $recipient);
         $number = str_replace(" ", "+", $data[2]);
@@ -199,15 +215,30 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
             checkGetParameter();
 
             // Store the recipients
-            function checkGetParameter() {
+            async function checkGetParameter() {
                 let contactNumbers = document.getElementById('hidden-numbers').value
+                let groupTable = document.getElementById("groupTable");
+
+                groupTable.style.display = "none";
 
                 for (let i = 0; i < urlVariables.length; i++) {
                     let parameters = urlVariables[i].split('=');
 
                     if (parameters[0] === 'to' && parameters[1] !== undefined) {
-                        let decodedParameter = decodeURIComponent(parameters[1])
-                        let contact_details = decodedParameter.split(",");
+
+                        const url = 'helper/decrypt.php'
+
+                        let decrypted = await $.post(url, {
+                            toDecrypt: decodeURIComponent(parameters[1])
+                        }).done((result) => {
+                            return result
+                        }).fail((err) => {
+                            console.log('Failed', err)
+                        });
+                        console.log(decrypted)
+
+                        // let decodedParameter = decodeURIComponent(parameters[1])
+                        let contact_details = decrypted.split(",");
 
                         contact_details.forEach(person => {
                             // Concatenate numbers in hidden-numbers
