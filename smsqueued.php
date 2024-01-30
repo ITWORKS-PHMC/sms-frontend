@@ -29,6 +29,30 @@ if ($conn === false) {
         <?php include("./layouts/menu.php"); ?>
         <div class="container queue">
             <h1> Queue Messages </h1>
+            <div class="sms-queue">
+                <div id="ticketServing" class="messageCounter">
+                    <?php
+                    $query = "SELECT MIN(sms_id) AS first_id, COUNT(sms_id) AS total_records FROM sms_queue";
+                    $result = sqlsrv_query($conn, $query);
+
+                    if ($result === false) {
+                        die(print_r(sqlsrv_errors(), true));
+                    }
+
+                    $row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC);
+
+                    if ($row) {
+                        $firstId = $row['first_id'];
+                        $totalRecords = $row['total_records'];
+
+                        echo "<p>Now serving ticket #: $firstId<br></p>";
+                        echo "<p>Total # of message in queue: $totalRecords</p>";
+                    } else {
+                        echo "<p>No message in the queue at the moment.</p>";
+                    }
+                    ?>
+                </div>
+            </div>
             <table id="recipientTable" class="recipient-table">
                 <thread>
                     <tr>
@@ -143,7 +167,7 @@ if ($conn === false) {
             document.getElementById("cancelMessage").setAttribute("data-date", row.getAttribute("date"));
             document.getElementById("cancelMessage").setAttribute("data-created", row.getAttribute("created"));
             console.log(row);
-         
+
             popup.style.display = "flex";
         }
 
@@ -155,7 +179,7 @@ if ($conn === false) {
             const stat = document.getElementById("cancelMessage").getAttribute("data-stat");
             const date = document.getElementById("cancelMessage").getAttribute("data-date");
             const created = document.getElementById("cancelMessage").getAttribute("data-created");
-     
+
             /* Send the data using post with element id name and name */
             if (stat == "1") {
                 let cancelled = $.post("helper/smsCancelMsg.php", {
@@ -222,7 +246,7 @@ if ($conn === false) {
             div.innerText = text;
             return div.innerHTML;
         }
-        
+
         function closePopup() {
             const popup = document.getElementById("viewPopup");
             const cancelButton = document.getElementById("cancelPopup");
