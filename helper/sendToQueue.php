@@ -13,6 +13,7 @@ if ($conn === false) {
 // This is for inserting numbers messages to sms_queue table 
 if (isset($_POST['data'])) {
     $data = $_POST['data'];
+    $stat = 1;
     $messages = str_split($_POST['message'], 140);
     $messages_count = count($messages);
     date_default_timezone_set('Asia/Manila');
@@ -56,7 +57,7 @@ if (isset($_POST['data'])) {
                     $insert_msg .= " [$cur/$messages_count]...<$selectedCallerCode>";
                 }
 
-                $values .= "('{$contactId}', '{$contact_num}', '$insert_msg', '$currentDateTime', '$user', '$currentDateTime'),";
+                $values .= "('{$contactId}', '{$contact_num}', '$insert_msg', '$stat', '$currentDateTime', '$user', '$currentDateTime'),";
 
                 array_push($response['valid_num'], $contact_num);
             } else {
@@ -70,7 +71,7 @@ if (isset($_POST['data'])) {
         $response['message'] = "Success";
         $values = rtrim($values, ',');
 
-        $insert = "INSERT INTO [sms_queue] ([contact_id], [mobile_no], [sms_message], [date_created], [created_by], [date_resend]) VALUES $values";
+        $insert = "INSERT INTO [sms_queue] ([contact_id], [mobile_no], [sms_message], [stat], [date_created], [created_by], [date_resend]) VALUES $values";
         $stmt = sqlsrv_query($conn, $insert);
         if ($stmt === false) {
             die(print_r(sqlsrv_errors(), true));

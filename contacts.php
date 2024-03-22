@@ -20,7 +20,17 @@ if (!isset($_SESSION["recipients"])) {
         "contacts" => [],
         "groups" => []
     );
-} 
+} else {
+    // print_r($_SESSION["recipients"]);
+    // echo "<br>";
+    // echo in_array("ITD", $_SESSION["recipients"]["groups"]);
+    // print_r(array_keys($_SESSION["recipients"]));
+    // echo in_array('+639760041293', array_keys($_SESSION["recipients"]));
+    // echo "<br>";
+    // die();
+}
+
+// die();
 ?>
 
 <!DOCTYPE html>
@@ -230,6 +240,9 @@ if (!isset($_SESSION["recipients"])) {
                 console.log("UNCHECKED")
 
                 console.log(Object.keys(selectedRecipients.groups), element.value)
+                // Object.keys(selectedRecipients.groups)
+                //     .filter((key) => key !== element.value)
+                //     .reduce((cur, key) => { return Object.assign(cur, { [key]: selectedRecipients.groups[key] })}, {});
                 delete selectedRecipients.groups[element.value]
                 console.log(selectedRecipients)
                 displaySelectedContacts()
@@ -240,9 +253,12 @@ if (!isset($_SESSION["recipients"])) {
             let callerGroupCode = element.value
             let xhr = new XMLHttpRequest();
             let selectedContactsList = document.getElementById('selectedContactsList');
+            // selectedRecipients.groups = {};
+
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     let membersData = JSON.parse(xhr.responseText);
+                    // console.log({ callerGroupCode, membersData })
                     selectedRecipients.groups[callerGroupCode] = membersData
 
                     displaySelectedContacts()
@@ -257,7 +273,7 @@ if (!isset($_SESSION["recipients"])) {
         }
 
         function displaySelectedContacts() {
-            console.log(selectedContacts)
+            console.log("HERE")
             let selectedContactsList = document.getElementById('selectedContactsList');
 
             // Clear existing contacts

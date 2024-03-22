@@ -195,8 +195,23 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
             let recipients = [];
             checkGetParameter();
 
+            // // checking of tables if theres a value in the recipient table
+            // function checkTableData() {
+
+            //     if (tableData <= 1) { // Check if the table has at least one row (excluding the header).
+            //         submitButton.disabled = true;
+            //     } else {
+            //         submitButton.disabled = false;
+            //     }
+            // }
+            // console.log(tableData.rows.length);
+            // window.onload = checkTableData;
+
+
             // Store the recipients
             async function checkGetParameter() {
+                // let u = String.fromCharCode(157);
+                // console.log("TESTING HERE", atob(atob(u)))
                 let contactNumbers = document.getElementById('hidden-numbers').value
                 let groupTable = document.getElementById("groupTable");
 
@@ -249,6 +264,15 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                                 </tr>
                             `
                             document.getElementById("groupTableBody").innerHTML += htmlString
+
+                            // const deleteBtn = document.createElement("button");
+                            // deleteBtn.setAttribute("id", recipient.id);
+                            // deleteBtn.textContent = "Delete";
+                            // deleteBtn.addEventListener("click", () => deleteRecipient(recipient.id));
+                            // actionCell.appendChild(deleteBtn);
+                            // row.appendChild(actionCell);
+
+                            // return row;
                         });
                     }
                 }
@@ -362,10 +386,10 @@ if (isset($_POST['ajax']) && isset($_POST['checked'])) {
                 }
                 return true
             }
-            
+
             // Stop form from submitting normally 
             $("#send-message").submit(function (event) {
-               
+
                 event.preventDefault();
 
                 const url = 'helper/sendToQueue.php'
